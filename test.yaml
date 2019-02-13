@@ -1,2 +1,2 @@
-version: "3"
-build: ./src
+version: 3.3
+build: ./src/

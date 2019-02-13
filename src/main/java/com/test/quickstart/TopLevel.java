@@ -10,11 +10,13 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
-
+import com.test.quickstart.Validation.Interfaces.ContainsString;
+import com.test.quickstart.Validation.ValidationEnums;
 import javax.validation.constraints.Email;
 
 public class TopLevel {
 	private TypeConverter converter = new TypeConverter();
+	
 	private Object build;
 	@CheckFolderExists(message = "Directory doesn't exist")
 	private String buildS;
@@ -92,8 +94,7 @@ public class TopLevel {
 	private String userns_mode;
 	private Map<String, Volume> volumes;
 	private String working_dir;
-	
-	@NotNull(message = "Version cannot be null")
+	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing or Invalid Docker Compose Version")
 	private String version;
 	private Map<String,Service> services;
 	

@@ -37,7 +37,7 @@ public class YamlParser {
 	        Validator validator = factory.getValidator();
 	        Set<ConstraintViolation<TopLevel>> constraintViolations = validator.validate(level);
 	       for (ConstraintViolation<TopLevel> violation : constraintViolations) {
-	            System.out.println(violation.getMessage()); 
+	            System.out.println(violation.getMessage());
 	        }
 	    }
 	 

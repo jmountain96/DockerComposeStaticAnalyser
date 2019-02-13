@@ -58,4 +58,8 @@ public class ValidationEnums {
 	{
 		consistent, cached, delegated
 	}
+	public enum ContainsStringType
+	{
+		VERSION
+	}
 }
