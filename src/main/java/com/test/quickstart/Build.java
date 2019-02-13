@@ -1,0 +1,135 @@
+package com.test.quickstart;
+
+import java.util.Map;
+
+public class Build {
+	private TypeConverter Converter = new TypeConverter();
+	private String context;
+	private String dockerfile;
+	private Object args;
+	private Map<String, String> argsM;
+	private String[] argsS;
+	private String argType;
+	private String[] cache_from;
+	private Object labels;
+	private Map<String,String> labelsM;
+	private String[] labelsS;
+	private String labelType;
+	private String shm_size;
+	private String target;
+	
+	public String getContext() {
+		return context;
+	}
+	public void setContext(String context) {
+		this.context = context;
+	}
+	public String getDockerfile() {
+		return dockerfile;
+	}
+	public void setDockerfile(String dockerfile) {
+		this.dockerfile = dockerfile;
+	}
+	public Object getArgs() {
+		return args;
+	}
+	public void setArgs(Object args) {
+		this.args = args;
+		convertArgs();
+	}
+	public Map<String, String> getArgsM() {
+		return argsM;
+	}
+	public void setArgsM(Map<String, String> argsM) {
+		this.argsM = argsM;
+	}
+	public String[] getArgsS() {
+		return argsS;
+	}
+	public void setArgsS(String[] argsS) {
+		this.argsS = argsS;
+	}
+	public String getArgType() {
+		return argType;
+	}
+	public void setArgType(String argType) {
+		this.argType = argType;
+	}
+	public String[] getCache_from() {
+		return cache_from;
+	}
+	public void setCache_from(String[] cache_from) {
+		this.cache_from = cache_from;
+	}
+	public Object getLabels() {
+		return labels;
+	}
+	public void setLabels(Object  labels) {
+		this.labels = labels;
+		convertLabels();
+	}
+	public Map<String, String> getLabelsM() {
+		return labelsM;
+	}
+	public void setLabelsM(Map<String, String> labelsM) {
+		this.labelsM = labelsM;
+	}
+	public String[] getLabelsS() {
+		return labelsS;
+	}
+	public void setLabelsS(String[] labelsS) {
+		this.labelsS = labelsS;
+	}
+	public String getLabelType() {
+		return labelType;
+	}
+	public void setLabelType(String labelType) {
+		this.labelType = labelType;
+	}
+	public String getShm_size() {
+		return shm_size;
+	}
+	public void setShm_size(String shm_size) {
+		this.shm_size = shm_size;
+	}
+	public String getTarget() {
+		return target;
+	}
+	public void setTarget(String target) {
+		this.target = target;
+	}
+	private void convertArgs() 
+	{
+		boolean set = false;
+		try {
+			argsM = Converter.convertMap(args);
+			argType = "Map<String,String>";
+			set = true;
+		}
+		catch(java.lang.ClassCastException e){}
+		finally {
+			if(set == false) 
+				{
+				argsS = Converter.convertStringList(args);
+				argType = "String[]";
+			}
+		}
+	}
+	private void convertLabels() 
+	{
+		boolean set = false;
+		try {
+			labelsM = Converter.convertMap(labels);
+			labelType = "Map<String,String>";
+			set = true;
+		}
+		catch(java.lang.ClassCastException e){}
+		finally {
+			if(set == false) 
+				{
+				labelsS = Converter.convertStringList(labels);
+				labelType = "String[]";
+			}
+		}
+	}
+}
