@@ -28,7 +28,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 		
 		default:
 			context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate( "Unkown type"  ).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate( "Unknown type"  ).addConstraintViolation();
             return false;
 		}
 		
