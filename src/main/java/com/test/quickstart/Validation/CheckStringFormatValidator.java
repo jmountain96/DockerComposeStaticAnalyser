@@ -45,7 +45,25 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 					return false;
 				}
 			case TIME:
-				if(value.matches("\\d+(.\\d)?(NS|US|MS|S|M|H)"))
+				if(value.matches("\\d+(.\\d)?(NS|US|MS|S|M|H)") == true)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			case DNS:
+				if(value.matches("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$") == true)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			case DOMAIN:
+				if(value.matches("^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\\.(xn--)?([a-z0-9\\-]{1,61}|[a-z0-9-]{1,30}\\.[a-z]{2,})$") == true)
 				{
 					return true;
 				}

@@ -64,11 +64,11 @@ public class ValidationEnums {
 	}
 	public enum CheckStringType
 	{
-		IMAGE, MEMORY, INTEGER, TIME
+		IMAGE, MEMORY, INTEGER, TIME, DNS, DOMAIN
 	}
 	public enum CheckStringListType
 	{
-		IMAGE 
+		IMAGE, DNS
 	}
 	public enum ListContainsStringType
 	{

@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.Interfaces.ListContainsString;
 import com.test.quickstart.Validation.ValidationEnums;
@@ -36,13 +37,16 @@ public class TopLevel {
 	private Map<String,Configs> configs;
 	private String container_name;
 	private CredentialSpec credential_spec;
-	@CheckStringFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringType.IMAGE)
+	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
 	private String[] devices;
 	private Object dns;
+	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DNS)
 	private String dnsS;
+	@CheckStringListFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringListType.DNS)
 	private String[] dnsSL;
 	private String dnsType;
-	private String domainname;
+	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DOMAIN)
+	private String dns_search;
 	private Object entrypoint;
 	private String[] entrypointSL;
 	private String entrypointS;
@@ -238,10 +242,10 @@ public class TopLevel {
 		this.dnsType = dnsType;
 	}
 	public String getDomainname() {
-		return domainname;
+		return dns_search;
 	}
-	public void setDomainname(String domainname) {
-		this.domainname = domainname;
+	public void setDomainname(String dns_search) {
+		this.dns_search = dns_search;
 	}
 	public Object getEntrypoint() {
 		return entrypoint;
