@@ -1,11 +1,19 @@
 package com.test.quickstart;
 
+import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
+
 public class RollbackConfig {
 	private int parallelism;
+	@CheckStringFormat(message = "Invalid format for rollback config delay", value = ValidationEnums.CheckStringType.TIME)
 	private String delay;
+	@ContainsString(message = "Invalid failure action for rollback config", value = ValidationEnums.ContainsStringType.RBFAILUREACTION)
 	private String failure_action;
+	@CheckStringFormat(message = "Invalid format for rollback config delay", value = ValidationEnums.CheckStringType.TIME)
 	private String monitor;
 	private String max_failure_ration;
+	@ContainsString(message = "Invalid order for rollback config", value = ValidationEnums.ContainsStringType.CONFIGORDER)
 	private String order;
 	public int getParallelism() {
 		return parallelism;

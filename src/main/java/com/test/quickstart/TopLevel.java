@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.Interfaces.ListContainsString;
 import com.test.quickstart.Validation.ValidationEnums;
@@ -35,7 +36,8 @@ public class TopLevel {
 	private Map<String,Configs> configs;
 	private String container_name;
 	private CredentialSpec credential_spec;
-	private String[] depends_on;
+	@CheckStringFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringType.IMAGE)
+	private String[] devices;
 	private Object dns;
 	private String dnsS;
 	private String[] dnsSL;
@@ -204,11 +206,11 @@ public class TopLevel {
 	public void setCredential_spec(CredentialSpec credential_spec) {
 		this.credential_spec = credential_spec;
 	}
-	public String[] getDepends_on() {
-		return depends_on;
+	public String[] getDevices() {
+		return devices;
 	}
-	public void setDepends_on(String[] depends_on) {
-		this.depends_on = depends_on;
+	public void setDevices(String[] devices) {
+		this.devices = devices;
 	}
 	public Object getDns() {
 		return dns;

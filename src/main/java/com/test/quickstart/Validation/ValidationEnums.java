@@ -60,11 +60,11 @@ public class ValidationEnums {
 	}
 	public enum ContainsStringType
 	{
-		VERSION, ENDPOINT_MODE, DEPLOY_MODE, RESTART_POLICY_CONDITION
+		VERSION, ENDPOINT_MODE, DEPLOY_MODE, RESTART_POLICY_CONDITION, RBFAILUREACTION, UCFAILUREACTION, CONFIGORDER
 	}
 	public enum CheckStringType
 	{
-		IMAGE, MEMORY, INTEGER
+		IMAGE, MEMORY, INTEGER, TIME
 	}
 	public enum CheckStringListType
 	{

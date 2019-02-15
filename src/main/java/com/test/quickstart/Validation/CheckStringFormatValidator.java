@@ -44,6 +44,15 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				{
 					return false;
 				}
+			case TIME:
+				if(value.matches("\\d+(.\\d)?(NS|US|MS|S|M|H)"))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			default:
 				return false;
 		}
