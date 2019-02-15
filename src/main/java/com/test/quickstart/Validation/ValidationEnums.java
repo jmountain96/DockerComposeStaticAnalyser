@@ -60,14 +60,19 @@ public class ValidationEnums {
 	}
 	public enum ContainsStringType
 	{
-		VERSION
+		VERSION, ENDPOINT_MODE, DEPLOY_MODE, RESTART_POLICY_CONDITION
 	}
 	public enum CheckStringType
 	{
-		IMAGE
+		IMAGE, MEMORY, INTEGER
 	}
 	public enum CheckStringListType
 	{
-		IMAGE
+		IMAGE 
 	}
+	public enum ListContainsStringType
+	{
+		CAP, CONSTRAINTS, PLACEMENTPREF
+	}
+	
 }

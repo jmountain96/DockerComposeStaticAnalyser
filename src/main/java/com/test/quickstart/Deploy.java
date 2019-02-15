@@ -2,16 +2,21 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
+
 public class Deploy {
 	private TypeConverter Converter = new TypeConverter();
+	@ContainsString(message = "Endpoint mode must be vip or dnsrr", value = ValidationEnums.ContainsStringType.ENDPOINT_MODE)
 	private String endpoint_mode;
 	private Object labels;
 	private Map<String,String> labelsM;
 	private String[] labelsS;
 	private String labelType;
+	@ContainsString(message = "Deploy mode must be global or replicate", value = ValidationEnums.ContainsStringType.DEPLOY_MODE)
 	private String mode;
 	private Placement placement;
-	private String replicas;
+	private int replicas;
 	private Resources resources;
 	private RestartPolicy restart_policy;
 	private RollbackConfig rollback_config;
@@ -82,11 +87,11 @@ public class Deploy {
 		this.placement = placement;
 	}
 
-	public String getReplicas() {
+	public int getReplicas() {
 		return replicas;
 	}
 
-	public void setReplicas(String replicas) {
+	public void setReplicas(int replicas) {
 		this.replicas = replicas;
 	}
 

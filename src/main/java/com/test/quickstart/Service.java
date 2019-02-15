@@ -2,6 +2,8 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.Validation.Interfaces.Dependency;
+
 
 
 public class Service {
@@ -11,10 +13,7 @@ public class Service {
 	private String buildS;
 	private Build buildB;
 	private String buildType;
-	private Object configs;
-	private Map<String,Configs> configsMC;
-	private String[] configsSL;
-	private String configType;
+	private String[] configs;
 	private String[] depends_on;
 	private Deploy deploy;
 	private Object labels;
@@ -37,7 +36,10 @@ public class Service {
 	private Volume[] volumesVL;
 	private String[] volumesSL;
 	private String volumeType;
-	
+	@Dependency(message = "Service relies on config that isn't present")
+	private Dependencies ConfigDependencies;
+	@Dependency(message = "Service relies on another service that isn't present")
+	private Dependencies ServiceDependencies;
 	public TypeConverter getConverter() {
 		return Converter;
 	}
@@ -76,30 +78,18 @@ public class Service {
 	public void setBuildType(String buildType) {
 		this.buildType = buildType;
 	}
-	public Object getConfigs() {
+	public String[] getConfigs() {
 		return configs;
 	}
-	public void setConfigs(Object configs) {
+	public void setConfigs(String[] configs) {
 		this.configs = configs;
-		convertConfigs();
 	}
-	public Map<String, Configs> getConfigsMC() {
-		return configsMC;
+	public Dependencies getConfigDependencies() {
+		return ConfigDependencies;
 	}
-	public void setConfigsMC(Map<String, Configs> configsMC) {
-		this.configsMC = configsMC;
-	}
-	public String[] getConfigsSL() {
-		return configsSL;
-	}
-	public void setConfigsSL(String[] configsSL) {
-		this.configsSL = configsSL;
-	}
-	public String getConfigType() {
-		return configType;
-	}
-	public void setConfigType(String configType) {
-		this.configType = configType;
+	public void setConfigDependencies(String[] configList) {
+		this.ConfigDependencies.dependendents = this.configs;
+		this.ConfigDependencies.target = configList;
 	}
 	public String[] getDepends_on() {
 		return depends_on;
@@ -187,6 +177,13 @@ public class Service {
 	public void setNetworkType(String networkType) {
 		this.networkType = networkType;
 	}
+	public Dependencies getServiceDependencies() {
+		return ServiceDependencies;
+	}
+	public void setServiceDependenciesD(String[] services) {
+		ServiceDependencies.dependendents = this.depends_on;
+		ServiceDependencies.target = services;
+	}
 	public Object getPorts() {
 		return ports;
 	}
@@ -251,23 +248,6 @@ public class Service {
 				{
 				buildS = build.toString();
 				buildType = "String";
-			}
-		}
-	}
-	private void convertConfigs() 
-	{
-		boolean set = false;
-		try {
-			configsMC = Converter.convertMapSC(configs);
-			configType = "Map<String,Configs>";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				configsSL = Converter.convertStringList(configs);
-				configType = "String[]";
 			}
 		}
 	}

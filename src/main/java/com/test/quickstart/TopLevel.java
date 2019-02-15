@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
+import com.test.quickstart.Validation.Interfaces.ListContainsString;
 import com.test.quickstart.Validation.ValidationEnums;
 import javax.validation.constraints.Email;
 
@@ -22,7 +23,9 @@ public class TopLevel {
 	private String buildS;
 	private Build buildB;
 	private String buildType;
+	@ListContainsString(message = "unknown capability within cap_add", value = ValidationEnums.ListContainsStringType.CAP)
 	private String[] cap_add;
+	@ListContainsString(message = "unknown capability within cap_drop", value = ValidationEnums.ListContainsStringType.CAP)
 	private String[] cap_drop;
 	private String cgroup_parent;
 	private Object command;
