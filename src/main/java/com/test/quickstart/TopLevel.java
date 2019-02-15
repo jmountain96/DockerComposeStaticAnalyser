@@ -110,7 +110,17 @@ public class TopLevel {
 	}
 	public void setBuild(Object build) {
 		this.build = build;
-		convertBuild();
+		if(converter.checkString(build) == true)
+		{
+			System.out.println("true");
+			this.buildS = build.toString();
+			this.buildType = "String";
+		}
+		else 
+		{
+			this.buildB = converter.convertBuild(build);
+			this.buildType = "Build";
+		}
 	}
 	public String getBuildS() {
 		return buildS;
@@ -586,23 +596,6 @@ public class TopLevel {
 		for (Entry<String, Service> service : this.services.entrySet())
 		{
 			service.getValue().setName(service.getKey());
-		}
-	}
-	private void convertBuild() 
-	{
-		boolean set = false;
-		try {
-			buildB = (Build)build;
-			buildType = "Build";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				buildS = build.toString();
-				buildType = "String";
-			}
 		}
 	}
 	private void convertCommand() 

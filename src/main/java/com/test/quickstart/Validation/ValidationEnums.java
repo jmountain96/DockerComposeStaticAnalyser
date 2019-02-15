@@ -62,4 +62,12 @@ public class ValidationEnums {
 	{
 		VERSION
 	}
+	public enum CheckStringType
+	{
+		IMAGE
+	}
+	public enum CheckStringListType
+	{
+		IMAGE
+	}
 }

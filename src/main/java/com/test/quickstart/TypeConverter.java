@@ -2,9 +2,25 @@ package com.test.quickstart;
 
 import java.util.Arrays;
 import java.util.Map;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;;
 
 public class TypeConverter {
-
+	
+	
+	
+	public boolean checkString(Object input)
+	{
+		String value = input.toString();
+		if(value.startsWith("{") == false)
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
 	@SuppressWarnings("unchecked")
 	public Map<String,String> convertMap(Object input)
 	{
@@ -40,5 +56,22 @@ public class TypeConverter {
 		Map<String,Configs> _ret;
 		_ret = (Map<String,Configs>)input;
 		return _ret;
+	}
+	@SuppressWarnings("unchecked")
+	public Build convertBuild(Object input)
+	{
+		
+		BeanWrapper ret = new BeanWrapperImpl(new Build());
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		Build b = (Build) ret.getWrappedInstance();
+		System.out.println(b.getContext());
+		return b;
+			
+		
+		
 	}
 }

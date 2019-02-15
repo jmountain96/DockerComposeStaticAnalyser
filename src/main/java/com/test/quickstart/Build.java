@@ -2,10 +2,16 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
+
 public class Build {
 	private TypeConverter Converter = new TypeConverter();
+	@CheckFolderExists(message = "Directory doesn't exist")
 	private String context;
 	private String dockerfile;
+	@CheckFileExists(message = "Referenced alternate Docker file doesn't exist")
+	private String dockerfileContext;
 	private Object args;
 	private Map<String, String> argsM;
 	private String[] argsS;
@@ -29,6 +35,7 @@ public class Build {
 	}
 	public void setDockerfile(String dockerfile) {
 		this.dockerfile = dockerfile;
+		this.dockerfileContext = this.context + dockerfile;
 	}
 	public Object getArgs() {
 		return args;

@@ -1,2 +1,7 @@
-version: 3.3
-build: ./src/
+version: '3'
+build:
+      context: ./dir
+      dockerfile: Dockerfile-alternate
+      args:
+        buildno: 
+      

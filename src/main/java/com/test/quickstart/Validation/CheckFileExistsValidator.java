@@ -8,22 +8,19 @@ import java.nio.file.Paths;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
-public class CheckFolderExistsValidator implements ConstraintValidator<CheckFolderExists, String> {
-
+import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
+public class CheckFileExistsValidator implements ConstraintValidator<CheckFileExists, String> {
 	
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if(value == null)
-		{
-			return true;
-		}
-		Path path = Paths.get(value);
-		if (Files.exists(path, LinkOption.NOFOLLOW_LINKS))
+		File input = new File(value);
+		if (input.exists() == true)
 		{
 			return true;
 		}
 		else 
 		{
+			System.out.println(value);
 			return false;
 		}
 	}
