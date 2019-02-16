@@ -9,6 +9,8 @@ public class Healthcheck {
 	private String[] testSL;
 	private String testS;
 	private String testType;
+	@ContainsString(message = "Helathcheck test type is invalid", value = ValidationEnums.ContainsStringType.HEALTHCHECK)
+	private String testFormat;
 	@CheckStringFormat(message = "Invalid interval for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String interval;
 	@CheckStringFormat(message = "Invalid timeout for healthcheck", value = ValidationEnums.CheckStringType.TIME)
@@ -16,7 +18,7 @@ public class Healthcheck {
 	private int retries;
 	@CheckStringFormat(message = "Invalid retries for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String start_period;
-	@ContainsString(message = "Healthcheck disable must be a bollean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	@ContainsString(message = "Healthcheck disable must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String disable;
 	
 	
@@ -128,6 +130,7 @@ public class Healthcheck {
 		{
 			testSL  = converter.convertStringList(tTest );
 			testType = "String[]";
+			testFormat = testSL[0];
 		}
 		else 
 		{

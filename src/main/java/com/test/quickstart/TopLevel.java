@@ -82,7 +82,8 @@ public class TopLevel {
 	private Object networks;
 	private String[] networksSL;
 	private Map<String,Network> networksM;
-	private String networkType; 
+	private String networkType;
+	@ContainsString(message = "Invalid network type", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String network_mode;
 	private String pid;
 	private Object ports;
@@ -447,7 +448,8 @@ public class TopLevel {
 		return network_mode;
 	}
 	public void setNetwork_mode(String network_mode) {
-		this.network_mode = network_mode;
+		this.network_mode = network_mode.substring(network_mode.lastIndexOf("="));;
+		
 	}
 	public Dependencies getNetworkModeDependencies() {
 		return NetworkModeDependencies;
