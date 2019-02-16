@@ -1,15 +1,22 @@
 package com.test.quickstart;
 
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
+import com.test.quickstart.Validation.ValidationEnums;
 public class Healthcheck {
 	private TypeConverter converter = new TypeConverter();;
 	private Object test;
 	private String[] testSL;
 	private String testS;
 	private String testType;
+	@CheckStringFormat(message = "Invalid interval for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String interval;
+	@CheckStringFormat(message = "Invalid timeout for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String timeout;
-	private String retries;
+	private int retries;
+	@CheckStringFormat(message = "Invalid retries for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String start_period;
+	@ContainsString(message = "Healthcheck disable must be a bollean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String disable;
 	
 	
@@ -84,12 +91,12 @@ public class Healthcheck {
 	}
 
 
-	public String getRetries() {
+	public int getRetries() {
 		return retries;
 	}
 
 
-	public void setRetries(String retries) {
+	public void setRetries(int retries) {
 		this.retries = retries;
 	}
 

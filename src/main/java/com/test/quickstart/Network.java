@@ -2,10 +2,15 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+
 public class Network {
 	private TypeConverter converter = new TypeConverter();
 	private String[] aliases;
+	@CheckStringFormat(message = "Incorrect format for network ipv4_address", value = ValidationEnums.CheckStringType.DNS)
 	private String ipv4_address;
+	@CheckStringFormat(message = "Incorrect format for network ipv4_address", value = ValidationEnums.CheckStringType.IPV6)
 	private String  ipv6_address;
 	private String driver;
 	private Map<String,String> driver_opts;

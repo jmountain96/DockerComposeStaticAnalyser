@@ -18,7 +18,7 @@ public class CheckFileExistsValidator implements ConstraintValidator<CheckFileEx
         this.prefix = constraintAnnotation.value();
     }
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if(value == null)
+		if(value == null || value == "true")
 		{
 			return true;
 		}

@@ -2,6 +2,7 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.Validation.Interfaces.CheckFileExists;
 import com.test.quickstart.Validation.Interfaces.Dependency;
 
 
@@ -21,9 +22,10 @@ public class Service {
 	private String[] labelsS;
 	private String labelType;
 	private String image;
+	@CheckFileExists(message = "The docker-init file specfied by the service init cannot be found", value = "")
 	private String init;
 	private String[] links;
-	private String logging;
+	private Logging logging;
 	private Object networks;
 	private String[] networksSL;
 	private Map<String,Network> networksM;
@@ -36,10 +38,15 @@ public class Service {
 	private Volume[] volumesVL;
 	private String[] volumesSL;
 	private String volumeType;
-	@Dependency(message = "Service relies on config that isn't present")
+	@Dependency(message = "Service depends on config that isn't present")
 	private Dependencies ConfigDependencies;
-	@Dependency(message = "Service relies on another service that isn't present")
+	@Dependency(message = "Service depends on another service that isn't present")
 	private Dependencies ServiceDependencies;
+	@Dependency(message = "Service links another service that isn't present")
+	private Dependencies LinkDependencies;
+	@Dependency(message = "Service references a network that isn't present")
+	private Dependencies NetworkDependencies;
+	
 	public TypeConverter getConverter() {
 		return Converter;
 	}
@@ -146,10 +153,17 @@ public class Service {
 	public void setLinks(String[] links) {
 		this.links = links;
 	}
-	public String getLogging() {
+	public Dependencies getLinkDependencies() {
+		return LinkDependencies;
+	}
+	public void setLinkDependencies(String[] services) {
+		this.LinkDependencies.dependendents = this.links;
+		this.ConfigDependencies.target = services;
+	}
+	public Logging getLogging() {
 		return logging;
 	}
-	public void setLogging(String logging) {
+	public void setLogging(Logging logging) {
 		this.logging = logging;
 	}
 	public Object getNetworks() {
@@ -177,6 +191,19 @@ public class Service {
 	public void setNetworkType(String networkType) {
 		this.networkType = networkType;
 	}
+	public Dependencies getNetworkDependencies() {
+		return NetworkDependencies;
+	}
+	public void setNetworkDependencies(String[] networks) {
+		this.NetworkDependencies.target = networks;
+		if(networkType == "StringList") {
+			this.NetworkDependencies.dependendents = this.networksSL;
+		}
+		else {
+			this.NetworkDependencies.dependendents = this.networksM.keySet().toArray(new String[networksM.size()] );
+		}
+	}
+	
 	public Dependencies getServiceDependencies() {
 		return ServiceDependencies;
 	}

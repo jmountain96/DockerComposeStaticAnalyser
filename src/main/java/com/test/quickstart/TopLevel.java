@@ -9,10 +9,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.CheckFileListExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
+import com.test.quickstart.Validation.Interfaces.Dependency;
 import com.test.quickstart.Validation.Interfaces.ListContainsString;
 import com.test.quickstart.Validation.ValidationEnums;
 import javax.validation.constraints.Email;
@@ -52,7 +55,9 @@ public class TopLevel {
 	private String entrypointS;
 	private String entrypointType;
 	private Object env_file;
+	@CheckFileListExists(message = "One or more files within the env file list cannot be found")
 	private String[] env_fileSL;
+	@CheckFileExists(message = "Specified enviroment file cannot be found", value = "")
 	private String env_fileS;
 	private String env_FileType;
 	private Object environment;
@@ -61,10 +66,13 @@ public class TopLevel {
 	private String environmentType;
 	private String expose;
 	private String[] external_links;
+	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
 	private String[] extra_hosts;
+	private Healthcheck healthcheck;
 	private String hostname;
 	private String image;
 	private String ipc;
+	@ContainsString(message = "Isolation must be default, process or hyperv", value = ValidationEnums.ContainsStringType.ISOLATION) 
 	private String isolation;
 	private Object labels;
 	private Map<String,String> labelsM;
@@ -106,6 +114,9 @@ public class TopLevel {
 	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing or Invalid Docker Compose Version")
 	private String version;
 	private Map<String,Service> services;
+	@Dependency(message = "Service references a network mode for a service that isn't present")
+	private Dependencies NetworkModeDependencies;
+	
 	
 	
 	public TypeConverter getConverter() {
@@ -240,6 +251,18 @@ public class TopLevel {
 	}
 	public void setDnsType(String dnsType) {
 		this.dnsType = dnsType;
+	}
+	public String getDns_search() {
+		return dns_search;
+	}
+	public void setDns_search(String dns_search) {
+		this.dns_search = dns_search;
+	}
+	public Healthcheck getHealthcheck() {
+		return healthcheck;
+	}
+	public void setHealthcheck(Healthcheck healthcheck) {
+		this.healthcheck = healthcheck;
 	}
 	public String getDomainname() {
 		return dns_search;
@@ -425,6 +448,17 @@ public class TopLevel {
 	}
 	public void setNetwork_mode(String network_mode) {
 		this.network_mode = network_mode;
+	}
+	public Dependencies getNetworkModeDependencies() {
+		return NetworkModeDependencies;
+	}
+	public void setNetworkModeDependencies() {
+		if(this.network_mode.startsWith("service:") == true)
+		{
+			NetworkModeDependencies.dependendents[0] = this.network_mode.substring(this.network_mode.lastIndexOf("="));
+		}
+		NetworkModeDependencies.target = this.services.keySet().toArray(new String[services.size()] );
+		
 	}
 	public String getPid() {
 		return pid;

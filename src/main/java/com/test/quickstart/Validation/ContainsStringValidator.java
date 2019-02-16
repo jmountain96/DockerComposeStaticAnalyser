@@ -16,6 +16,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 	private List<String> rb_failure_action = Arrays.asList("CONTINUE", "PAUSE");
 	private List<String> uc_failure_action = Arrays.asList("CONTINUE", "PAUSE", "ROLLBACK");
 	private List<String> configOrder = Arrays.asList("STOP-FIRST", "START-FIRST");
+	private List<String> booleanString= Arrays.asList("TRUE","FALSE");
+	private List<String> isolation = Arrays.asList("DEFAULT","PROCESS","HYPERV");
+	private List<String> healthCheckTest= Arrays.asList("NONE", "CMD", "CMDSHELL");
 	private List<String> versions = Arrays.asList("1.0", "2.0", "2.1", "2.2", "2.3", "2.4", "3.0", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7");
 	public void initialize(ContainsString constraintAnnotation) {
         this.type = constraintAnnotation.value();
@@ -89,7 +92,24 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			{
 				return false;
 			}
-		
+		case BOOLEAN:
+			if(booleanString.contains(value.toUpperCase()) == true)
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		case ISOLATION:
+			if(isolation.contains(value.toUpperCase()) == true)
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}	
 		default:
 			context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate( "Unknown type"  ).addConstraintViolation();
