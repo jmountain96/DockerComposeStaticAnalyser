@@ -85,8 +85,10 @@ public class TopLevel {
 	private String networkType;
 	@ContainsString(message = "Invalid network type", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String network_mode;
+	@ContainsString(message  = "Invalid PID mode", value = ValidationEnums.ContainsStringType.PID)
 	private String pid;
 	private Object ports;
+	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
 	private String[] portsSL;
 	private Ports portsP; 
 	private String portsType;

@@ -53,6 +53,14 @@ public class CheckStringListFormatValidator implements ConstraintValidator<Check
 						}
 				}
 				return true;
+			case PORT:
+				for(String x: value) {
+					if(x.matches("(\\d\\-?)+(:)?(\\d\\-?)+") == false)
+						{
+							return false;
+						}
+				}
+				return true;
 			default:
 				return false;
 		}

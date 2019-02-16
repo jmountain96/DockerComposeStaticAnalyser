@@ -80,6 +80,15 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				{
 					return false;
 				}
+			case PORT:
+				if(value.matches("(\\d\\-?)+(:)?(\\d\\-?)+") == true)
+				{
+					return true;
+				}
+				else 
+				{
+					return false;
+				}
 			default:
 				return false;
 		}
