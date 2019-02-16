@@ -45,6 +45,14 @@ public class CheckStringListFormatValidator implements ConstraintValidator<Check
 							}
 				}
 				return true;
+			case SUBNET:
+				for(String x: value) {
+					if(x.substring(x.lastIndexOf("=")).matches("^([0-9]{1,3}\\.){3}[0-9]{1,3}(\\/([0-9]|[1-2][0-9]|3[0-2]))?$") == false || x.startsWith("subnet: ") == false)
+						{
+							return false;
+						}
+				}
+				return true;
 			default:
 				return false;
 		}

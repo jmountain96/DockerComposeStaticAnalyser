@@ -16,13 +16,14 @@ public class Network {
 	@ContainsString(message = "Invalid network driver", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String driver;
 	private Map<String,String> driver_opts;
-	@ContainsString(message = "Enable ipv6 field must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	@ContainsString(message = "Enable ipv6 field of network must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String enable_ipv6;
-	@ContainsString(message = "External must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	@ContainsString(message = "External of network must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String external;
-	@ContainsString(message = "Attachable field must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	@ContainsString(message = "Attachable field of network must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String attachable;
 	private Ipam ipam;
+	@ContainsString(message = "Internal field of network must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String internal;
 	private Object labels;
 	private Map<String,String> labelsM;

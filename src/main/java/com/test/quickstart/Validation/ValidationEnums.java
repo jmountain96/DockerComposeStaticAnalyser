@@ -68,7 +68,7 @@ public class ValidationEnums {
 	}
 	public enum CheckStringListType
 	{
-		IMAGE, DNS, EXTRAHOST
+		IMAGE, DNS, EXTRAHOST, SUBNET
 	}
 	public enum ListContainsStringType
 	{
