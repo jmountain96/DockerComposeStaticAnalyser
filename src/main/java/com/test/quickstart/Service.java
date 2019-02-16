@@ -29,7 +29,8 @@ public class Service {
 	private Object networks;
 	private String[] networksSL;
 	private Map<String,Network> networksM;
-	private String networkType; 
+	private String networkType;
+	private String[] secrets; 
 	private Object ports;
 	private String[] portsSL;
 	private Ports portsP; 
@@ -46,6 +47,8 @@ public class Service {
 	private Dependencies LinkDependencies;
 	@Dependency(message = "Service references a network that isn't present")
 	private Dependencies NetworkDependencies;
+	@Dependency(message = "Service references a sercret that isn't present")
+	private Dependencies SecretDependencies;
 	
 	public TypeConverter getConverter() {
 		return Converter;
@@ -210,6 +213,19 @@ public class Service {
 	public void setServiceDependenciesD(String[] services) {
 		ServiceDependencies.dependendents = this.depends_on;
 		ServiceDependencies.target = services;
+	}
+	public String[] getSecrets() {
+		return secrets;
+	}
+	public void setSecrets(String[] secrets) {
+		this.secrets = secrets;
+	}
+	public Dependencies getSecretDependencies() {
+		return SecretDependencies;
+	}
+	public void setSecretDependencies(String[] secrets) {
+		SecretDependencies.dependendents = this.secrets;
+		SecretDependencies.target = secrets;
 	}
 	public Object getPorts() {
 		return ports;

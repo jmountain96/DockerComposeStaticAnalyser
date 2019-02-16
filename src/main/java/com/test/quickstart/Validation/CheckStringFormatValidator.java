@@ -89,6 +89,15 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				{
 					return false;
 				}
+			case MAC:
+				if(value.matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$") == true)
+				{
+					return true;
+				}
+				else 
+				{
+					return false;
+				}
 			default:
 				return false;
 		}

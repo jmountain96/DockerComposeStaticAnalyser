@@ -24,6 +24,8 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 	private String pid = "host";
 	private List<String> portProtocol = Arrays.asList("tcp", "udp");
 	private List<String> portMode = Arrays.asList("host", "ingress");
+	private List<String> volumeType = Arrays.asList("volumes", "bind","tmpfs");
+	private List<String> volumeConsistency = Arrays.asList("consistent", "cached", "delegated");
 	public void initialize(ContainsString constraintAnnotation) {
         this.type = constraintAnnotation.value();
     }
@@ -159,7 +161,24 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			{
 				return false;
 			}
-			
+		case VOLUME_TYPE:	
+			if(volumeType.contains(value.toUpperCase()) == true)
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		case VOLUME_CONSISTENCY:
+			if(volumeConsistency.contains(value.toUpperCase()) == true)
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
 		default:
 			context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate( "Unknown type"  ).addConstraintViolation();

@@ -42,6 +42,8 @@ public class TopLevel {
 	private CredentialSpec credential_spec;
 	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
 	private String[] devices;
+	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
+	private String domainname;
 	private Object dns;
 	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DNS)
 	private String dnsS;
@@ -78,6 +80,7 @@ public class TopLevel {
 	private Map<String,String> labelsM;
 	private String[] labelsS;
 	private String labelType;
+	@CheckStringFormat(message = "mac_address must be a valid memory format", value = ValidationEnums.CheckStringType.MAC)
 	private String mac_address;
 	private Object networks;
 	private String[] networksSL;
@@ -92,15 +95,20 @@ public class TopLevel {
 	private String[] portsSL;
 	private Ports portsP; 
 	private String portsType;
+	@ContainsString(message = "Priveleged must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String privileged;
+	@ContainsString(message = "Read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
 	private Object secrets;
 	private String[] secretsL;
 	private Secrets[] secretsSL;
 	private String secretsType;
-	private String[] security_opt;
+	private String security_opt;
+	@CheckStringFormat(message = "shm_size must be a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
 	private String shm_size;
+	@ContainsString(message = "stdin_open must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String stdin_open;
+	@CheckStringFormat(message = "Invalid time specified for stop grace period", value = ValidationEnums.CheckStringType.TIME)
 	private String stop_grace_period;
 	private String stop_signal;
 	private Object sysctls;
@@ -108,11 +116,13 @@ public class TopLevel {
 	private String[] sysctlsSL;
 	private String sysctlsType;
 	private String[] tmpfs;
+	@ContainsString(message = "tty must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String tty;
 	private Ulimits ulimits;
 	private String user;
 	private String userns_mode;
 	private Map<String, Volume> volumes;
+	@CheckFolderExists(message = "Working directory folder doesn't exist")
 	private String working_dir;
 	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing or Invalid Docker Compose Version")
 	private String version;
@@ -532,10 +542,10 @@ public class TopLevel {
 	public void setSecretsType(String secretsType) {
 		this.secretsType = secretsType;
 	}
-	public String[] getSecurity_opt() {
+	public String getSecurity_opt() {
 		return security_opt;
 	}
-	public void setSecurity_opt(String[] security_opt) {
+	public void setSecurity_opt(String security_opt) {
 		this.security_opt = security_opt;
 	}
 	public String getShm_size() {
