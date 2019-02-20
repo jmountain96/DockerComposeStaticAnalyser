@@ -13,12 +13,12 @@ public class DependencyValidator implements ConstraintValidator<Dependency, Depe
 	public boolean isValid(Dependencies value, ConstraintValidatorContext context) {
 		boolean _ret = true;
 		String missingDependencies = null;
-		if(value.dependendents == null)
+		if(value.dependents == null)
 		{
 			return true;
 		}
 		List<String> services = Arrays.asList(value.target);
-		for(String dependency : value.dependendents )
+		for(String dependency : value.dependents )
 		{
 			if(services.contains(dependency) == false)
 			{

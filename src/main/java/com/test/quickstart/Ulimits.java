@@ -4,17 +4,17 @@ import java.util.Map;
 
 public class Ulimits {
 	private String nproc;
-	private Map<String,String> nofile;
+	private Map<String,Integer> nofile;
 	public String getNproc() {
 		return nproc;
 	}
 	public void setNproc(String nproc) {
 		this.nproc = nproc;
 	}
-	public Map<String, String> getNofile() {
+	public Map<String, Integer> getNofile() {
 		return nofile;
 	}
-	public void setNofile(Map<String, String> nofile) {
+	public void setNofile(Map<String, Integer> nofile) {
 		this.nofile = nofile;
 	}
 }

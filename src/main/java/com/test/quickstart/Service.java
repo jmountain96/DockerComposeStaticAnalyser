@@ -1,5 +1,6 @@
 package com.test.quickstart;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
@@ -14,7 +15,10 @@ public class Service {
 	private String buildS;
 	private Build buildB;
 	private String buildType;
-	private String[] configs;
+	private Object configs;
+	private Configs[] configsC;
+	private String[] configsSL;
+	private String configType;
 	private String[] depends_on;
 	private Deploy deploy;
 	private Object labels;
@@ -33,22 +37,22 @@ public class Service {
 	private String[] secrets; 
 	private Object ports;
 	private String[] portsSL;
-	private Ports portsP; 
+	private Ports[] portsP; 
 	private String portsType;
 	private Object volumes;
 	private Volume[] volumesVL;
 	private String[] volumesSL;
 	private String volumeType;
 	@Dependency(message = "Service depends on config that isn't present")
-	private Dependencies ConfigDependencies;
+	private Dependencies ConfigDependencies = new Dependencies();;
 	@Dependency(message = "Service depends on another service that isn't present")
-	private Dependencies ServiceDependencies;
+	private Dependencies ServiceDependencies = new Dependencies();
 	@Dependency(message = "Service links another service that isn't present")
-	private Dependencies LinkDependencies;
+	private Dependencies LinkDependencies = new Dependencies();;
 	@Dependency(message = "Service references a network that isn't present")
-	private Dependencies NetworkDependencies;
+	private Dependencies NetworkDependencies = new Dependencies();;
 	@Dependency(message = "Service references a sercret that isn't present")
-	private Dependencies SecretDependencies;
+	private Dependencies SecretDependencies = new Dependencies();;
 	
 	public TypeConverter getConverter() {
 		return Converter;
@@ -67,7 +71,16 @@ public class Service {
 	}
 	public void setBuild(Object build) {
 		this.build = build;
-		convertBuild();
+		if(Converter.checkString(build) == true)
+		{
+			this.buildS = build.toString();
+			this.buildType = "String";
+		}
+		else 
+		{
+			this.buildB = Converter.convertBuild(build);
+			this.buildType = "Build";
+		}
 	}
 	public String getBuildS() {
 		return buildS;
@@ -88,17 +101,61 @@ public class Service {
 	public void setBuildType(String buildType) {
 		this.buildType = buildType;
 	}
-	public String[] getConfigs() {
+	public Object getConfigs() {
 		return configs;
 	}
-	public void setConfigs(String[] configs) {
+	@SuppressWarnings("unchecked")
+	public void setConfigs(Object configs) {
 		this.configs = configs;
+		ArrayList<Map<String, Object>> configAL = null;
+		if(Converter.checkStringList(configs) == true)
+		{
+			this.configsSL = Converter.convertStringList(configs);
+			this.configType = "String[]";
+		}
+		else 
+		{
+			configAL = (ArrayList<Map<String, Object>>)configs;
+			configsC = Converter.convertConfigsList(configAL);
+			this.configType = "Configs[]";
+		}
+	
+	}
+	public Configs[] getConfigsC() {
+		return configsC;
+	}
+	public void setConfigsC(Configs[] configsC) {
+		this.configsC = configsC;
+	}
+	public String[] getConfigsSL() {
+		return configsSL;
+	}
+	public void setConfigsSL(String[] configsSL) {
+		this.configsSL = configsSL;
+	}
+	public String getConfigType() {
+		return configType;
+	}
+	public void setConfigType(String configType) {
+		this.configType = configType;
 	}
 	public Dependencies getConfigDependencies() {
 		return ConfigDependencies;
 	}
 	public void setConfigDependencies(String[] configList) {
-		this.ConfigDependencies.dependendents = this.configs;
+		if(this.configType == "String[]")
+		{
+			this.ConfigDependencies.dependents = this.configsSL;
+		}
+		else 
+		{
+			String[] configSources = new String[configsC.length];
+			for(int i = 0 ; i < configsC.length ; i++)
+			{
+				configSources[i] = configsC[i].getSource();
+			}
+			this.ConfigDependencies.dependents = configSources;
+		}
 		this.ConfigDependencies.target = configList;
 	}
 	public String[] getDepends_on() {
@@ -160,7 +217,7 @@ public class Service {
 		return LinkDependencies;
 	}
 	public void setLinkDependencies(String[] services) {
-		this.LinkDependencies.dependendents = this.links;
+		this.LinkDependencies.dependents = this.links;
 		this.ConfigDependencies.target = services;
 	}
 	public Logging getLogging() {
@@ -200,10 +257,10 @@ public class Service {
 	public void setNetworkDependencies(String[] networks) {
 		this.NetworkDependencies.target = networks;
 		if(networkType == "StringList") {
-			this.NetworkDependencies.dependendents = this.networksSL;
+			this.NetworkDependencies.dependents = this.networksSL;
 		}
 		else {
-			this.NetworkDependencies.dependendents = this.networksM.keySet().toArray(new String[networksM.size()] );
+			this.NetworkDependencies.dependents = this.networksM.keySet().toArray(new String[networksM.size()] );
 		}
 	}
 	
@@ -211,7 +268,14 @@ public class Service {
 		return ServiceDependencies;
 	}
 	public void setServiceDependenciesD(String[] services) {
-		ServiceDependencies.dependendents = this.depends_on;
+		if(this.depends_on != null)
+		{
+			ServiceDependencies.dependents = this.depends_on;
+		}
+		else 
+		{
+			ServiceDependencies.dependents = null;
+		}
 		ServiceDependencies.target = services;
 	}
 	public String[] getSecrets() {
@@ -224,7 +288,7 @@ public class Service {
 		return SecretDependencies;
 	}
 	public void setSecretDependencies(String[] secrets) {
-		SecretDependencies.dependendents = this.secrets;
+		SecretDependencies.dependents = this.secrets;
 		SecretDependencies.target = secrets;
 	}
 	public Object getPorts() {
@@ -232,7 +296,18 @@ public class Service {
 	}
 	public void setPorts(Object ports) {
 		this.ports = ports;
-		convertPorts();
+		ArrayList<Map<String, Object>> portsAL = null;
+		if(Converter.checkStringList(ports) == true)
+		{
+			this.portsSL = Converter.convertStringList(ports);
+			this.portsType = "String[]";
+		}
+		else 
+		{
+			portsAL = (ArrayList<Map<String, Object>>)ports;
+			portsP = Converter.convertPorts(portsAL);
+			this.portsType = "Ports[]";
+		}
 	}
 	public String[] getPortsSL() {
 		return portsSL;
@@ -240,10 +315,10 @@ public class Service {
 	public void setPortsSL(String[] portsSL) {
 		this.portsSL = portsSL;
 	}
-	public Ports getPortsP() {
+	public Ports[] getPortsP() {
 		return portsP;
 	}
-	public void setPortsP(Ports portsP) {
+	public void setPortsP(Ports[] portsP) {
 		this.portsP = portsP;
 	}
 	public String getPortsType() {
@@ -255,9 +330,21 @@ public class Service {
 	public Object getVolumes() {
 		return volumes;
 	}
+	@SuppressWarnings("unchecked")
 	public void setVolumes(Object volumes) {
 		this.volumes = volumes;
-		convertVolumes();
+		ArrayList<Map<String, Object>> volumeAL = null;
+		if(Converter.checkStringList(volumes) == true)
+		{
+			this.volumesSL = Converter.convertStringList(volumes);
+			this.volumeType = "String[]";
+		}
+		else 
+		{
+			volumeAL = (ArrayList<Map<String, Object>>)volumes;
+			volumesVL = Converter.convertVolumes(volumeAL);
+			this.volumeType = "Volume[]";
+		}
 	}
 	public Volume[] getVolumesVL() {
 		return volumesVL;
@@ -276,23 +363,6 @@ public class Service {
 	}
 	public void setVolumeType(String volumeType) {
 		this.volumeType = volumeType;
-	}
-	private void convertBuild() 
-	{
-		boolean set = false;
-		try {
-			buildB = (Build)build;
-			buildType = "Build";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				buildS = build.toString();
-				buildType = "String";
-			}
-		}
 	}
 	private void convertLabels() 
 	{
@@ -328,40 +398,7 @@ public class Service {
 			}
 		}
 	}
-	private void convertPorts() 
-	{
-		boolean set = false;
-		try {
-			portsP = (Ports)ports;
-			portsType = "Ports";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				portsSL = Converter.convertStringList(ports);
-				portsType = "String[]";
-				
-			}
-		}
-	}
-	private void convertVolumes() 
-	{
-		boolean set = false;
-		try {
-			volumesVL = (Volume[])volumes;
-			volumeType = "Volume[]>";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				volumesSL = Converter.convertStringList(volumes);
-				volumeType = "String[]";
-			}
-		}
-	}
+	
+
 	
 }

@@ -1,5 +1,6 @@
 package com.test.quickstart;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.validation.constraints.AssertTrue;
@@ -93,7 +94,7 @@ public class TopLevel {
 	private Object ports;
 	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
 	private String[] portsSL;
-	private Ports portsP; 
+	private Ports[] portsP; 
 	private String portsType;
 	@ContainsString(message = "Priveleged must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String privileged;
@@ -128,7 +129,7 @@ public class TopLevel {
 	private String version;
 	private Map<String,Service> services;
 	@Dependency(message = "Service references a network mode for a service that isn't present")
-	private Dependencies NetworkModeDependencies;
+	private Dependencies NetworkModeDependencies = new Dependencies();
 	
 	
 	
@@ -145,7 +146,6 @@ public class TopLevel {
 		this.build = build;
 		if(converter.checkString(build) == true)
 		{
-			System.out.println("true");
 			this.buildS = build.toString();
 			this.buildType = "String";
 		}
@@ -469,7 +469,7 @@ public class TopLevel {
 	public void setNetworkModeDependencies() {
 		if(this.network_mode.startsWith("service:") == true)
 		{
-			NetworkModeDependencies.dependendents[0] = this.network_mode.substring(this.network_mode.lastIndexOf("="));
+			NetworkModeDependencies.dependents[0] = this.network_mode.substring(this.network_mode.lastIndexOf("="));
 		}
 		NetworkModeDependencies.target = this.services.keySet().toArray(new String[services.size()] );
 		
@@ -485,7 +485,18 @@ public class TopLevel {
 	}
 	public void setPorts(Object ports) {
 		this.ports = ports;
-		convertPorts();
+		ArrayList<Map<String, Object>> portsAL = null;
+		if(converter.checkStringList(ports) == true)
+		{
+			this.portsSL = converter.convertStringList(ports);
+			this.portsType = "String[]";
+		}
+		else 
+		{
+			portsAL = (ArrayList<Map<String, Object>>)ports;
+			portsP = converter.convertPorts(portsAL);
+			this.portsType = "Ports[]";
+		}
 	}
 	public String[] getPortsSL() {
 		return portsSL;
@@ -493,10 +504,10 @@ public class TopLevel {
 	public void setPortsSL(String[] portsSL) {
 		this.portsSL = portsSL;
 	}
-	public Ports getPortsP() {
+	public Ports[] getPortsP() {
 		return portsP;
 	}
-	public void setPortsP(Ports portsP) {
+	public void setPortsP(Ports[] portsP) {
 		this.portsP = portsP;
 	}
 	public String getPortsType() {
@@ -522,7 +533,18 @@ public class TopLevel {
 	}
 	public void setSecrets(Object secrets) {
 		this.secrets = secrets;
-		convertSecrets();
+		Map<String, Map<String,Object>> secretsAL = null;;
+		if(converter.checkStringList(secrets) == true)
+		{
+			this.secretsL = converter.convertStringList(secrets);
+			this.secretsType = "String[]";
+		}
+		else 
+		{
+			secretsAL = (Map<String, Map<String,Object>>)secrets;
+			secretsSL = converter.convertSecrets(secretsAL);
+			this.secretsType = "Secrets[]";
+		}
 	}
 	public String[] getSecretsL() {
 		return secretsL;
@@ -778,24 +800,6 @@ public class TopLevel {
 				{
 				networksSL = converter.convertStringList(networks);
 				networkType = "String[]";
-			}
-		}
-	}
-	private void convertPorts() 
-	{
-		boolean set = false;
-		try {
-			portsP = (Ports)ports;
-			portsType = "Ports";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				portsSL = converter.convertStringList(ports);
-				portsType = "String[]";
-				
 			}
 		}
 	}

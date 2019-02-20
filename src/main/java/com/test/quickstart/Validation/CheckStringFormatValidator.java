@@ -1,4 +1,7 @@
 package com.test.quickstart.Validation;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -45,7 +48,7 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 					return false;
 				}
 			case TIME:
-				if(value.matches("(\\d+(.\\d)?(NS|US|MS|S|M|H))+") == true)
+				if(value.toUpperCase().matches("(\\d+(.\\d)?(NS|US|MS|S|M|H))+") == true)
 				{
 					return true;
 				}
@@ -98,6 +101,16 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				{
 					return false;
 				}
+			case UNIX_PERM:
+				List<Character> Values = Arrays.asList('0', '1', '2', '4');
+				for(int i = 0; i < value.length(); i++ )
+				{
+					if (Values.contains(value.charAt(i)) == false) 
+					{
+						return false;
+					}
+				}
+				return true;
 			default:
 				return false;
 		}

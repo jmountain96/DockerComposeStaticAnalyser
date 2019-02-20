@@ -1,7 +1,20 @@
-version: '3'
-build:
-      context: ./dir
-      dockerfile: Dockerfile-alternate
-      args:
-        buildno: 
-      
+version: "3.1"
+services:
+  redis:
+    image: redis:latest
+    deploy:
+      replicas: 1
+    secrets:
+      - my_secret
+      - my_other_secrets
+secrets:
+  my_secret:
+    file: ./my_secret.txt
+  my_other_secret:
+    external: true
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost"]
+  interval: 1m30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s

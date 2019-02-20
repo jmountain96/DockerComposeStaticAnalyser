@@ -2,9 +2,13 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.ValidationEnums;
 public class Configs {
 	private TypeConverter converter = new TypeConverter();
 	private String name;
+	@CheckFileExists(message = "Cannot find path to config file", value = "")
 	private String file;
 	private Object external;
 	private Map<String, String> externalM;
@@ -14,6 +18,7 @@ public class Configs {
 	private String target;
 	private String uid;
 	private String gid;
+	@CheckStringFormat(message = "Invalid Config permission mode", value = ValidationEnums.CheckStringType.UNIX_PERM)
 	private String mode;
 	
 	public TypeConverter getConverter() {

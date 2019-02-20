@@ -3,6 +3,7 @@ package com.test.quickstart;
 import java.util.Map;
 import com.test.quickstart.Validation.ValidationEnums;
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 public class Secrets {
 	private TypeConverter converter = new TypeConverter();
@@ -10,6 +11,7 @@ public class Secrets {
 	private String target;
 	private int uid;
 	private int gid;
+	@CheckStringFormat(message = "Invalid Secrets permission mode", value = ValidationEnums.CheckStringType.UNIX_PERM)
 	private String mode;
 	private String name;
 	@CheckFileExists(message = "Secrets file doesn't exist", value = "")

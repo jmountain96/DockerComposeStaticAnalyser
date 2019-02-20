@@ -9,14 +9,14 @@ public class Healthcheck {
 	private String[] testSL;
 	private String testS;
 	private String testType;
-	@ContainsString(message = "Helathcheck test type is invalid", value = ValidationEnums.ContainsStringType.HEALTHCHECK)
+	@ContainsString(message = "Healthcheck test type is invalid", value = ValidationEnums.ContainsStringType.HEALTHCHECK)
 	private String testFormat;
 	@CheckStringFormat(message = "Invalid interval for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String interval;
 	@CheckStringFormat(message = "Invalid timeout for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String timeout;
 	private int retries;
-	@CheckStringFormat(message = "Invalid retries for healthcheck", value = ValidationEnums.CheckStringType.TIME)
+	@CheckStringFormat(message = "Invalid start period for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String start_period;
 	@ContainsString(message = "Healthcheck disable must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String disable;
