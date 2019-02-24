@@ -20,12 +20,13 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 	private List<String> isolation = Arrays.asList("DEFAULT","PROCESS","HYPERV");
 	private List<String> healthCheckTest= Arrays.asList("NONE", "CMD", "CMDSHELL");
 	private List<String> networkMode = Arrays.asList("bridge", "host", "overlay", "macvlan", "none");
-	private List<String> versions = Arrays.asList("1.0", "2.0", "2.1", "2.2", "2.3", "2.4", "3.0", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7");
+	private List<String> versions = Arrays.asList("1","1.0", "2","2.0", "2.1", "2.2", "2.3", "2.4", "3","3.0", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7");
 	private String pid = "host";
 	private List<String> portProtocol = Arrays.asList("tcp", "udp");
 	private List<String> portMode = Arrays.asList("host", "ingress");
 	private List<String> volumeType = Arrays.asList("volumes", "bind","tmpfs");
 	private List<String> volumeConsistency = Arrays.asList("consistent", "cached", "delegated");
+	private List<String> loggingDriver = Arrays.asList("none", "json-file", "local", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "gcplogs", "logentries" );
 	public void initialize(ContainsString constraintAnnotation) {
         this.type = constraintAnnotation.value();
     }
@@ -172,6 +173,15 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 		case VOLUME_CONSISTENCY:
 			if(volumeConsistency.contains(value.toUpperCase()) == true)
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		case LOGGING_DRIVER:
+			if(loggingDriver.contains(value) == true)
 			{
 				return true;
 			}

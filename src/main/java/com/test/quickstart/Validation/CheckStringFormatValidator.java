@@ -110,7 +110,15 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 						return false;
 					}
 				}
-				return true;
+			case SYSLOG:
+				if(value.matches("(tcp|udp){1}(://)\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(:\\d{1,5})?") == true)
+				{
+					return true;
+				}
+				else 
+				{
+					return false;
+				}
 			default:
 				return false;
 		}

@@ -21,6 +21,7 @@ public class Service {
 	private String configType;
 	private String[] depends_on;
 	private Deploy deploy;
+	private String[] env_file;
 	private Object labels;
 	private Map<String,String> labelsM;
 	private String[] labelsS;
@@ -48,11 +49,15 @@ public class Service {
 	@Dependency(message = "Service depends on another service that isn't present")
 	private Dependencies ServiceDependencies = new Dependencies();
 	@Dependency(message = "Service links another service that isn't present")
-	private Dependencies LinkDependencies = new Dependencies();;
+	private Dependencies LinkDependencies = new Dependencies();
 	@Dependency(message = "Service references a network that isn't present")
-	private Dependencies NetworkDependencies = new Dependencies();;
+	private Dependencies NetworkDependencies = new Dependencies();
 	@Dependency(message = "Service references a sercret that isn't present")
-	private Dependencies SecretDependencies = new Dependencies();;
+	private Dependencies SecretDependencies = new Dependencies();
+	@Dependency(message = "Service references a volume that isn't present")
+	private Dependencies VolumeDependencies = new Dependencies();
+	@Dependency(message = "Service references an env_file that isn't present")
+	private Dependencies EnvironmentDependencies = new Dependencies();
 	
 	public TypeConverter getConverter() {
 		return Converter;
@@ -170,6 +175,20 @@ public class Service {
 	public void setDeploy(Deploy deploy) {
 		this.deploy = deploy;
 	}
+	public String[] getEnv_file() {
+		return env_file;
+	}
+	public void setEnv_file(String[] env_file) {
+		this.env_file = env_file;
+	}
+	public Dependencies getEnvironmentDependencies() {
+		return EnvironmentDependencies;
+	}
+	public void setEnvironmentDependencies(String[] environments) {
+		
+		ServiceDependencies.dependents = this.env_file;
+		ServiceDependencies.target = environments;
+	}
 	public Object getLabels() {
 		return labels;
 	}
@@ -218,7 +237,7 @@ public class Service {
 	}
 	public void setLinkDependencies(String[] services) {
 		this.LinkDependencies.dependents = this.links;
-		this.ConfigDependencies.target = services;
+		this.LinkDependencies.target = services;
 	}
 	public Logging getLogging() {
 		return logging;
@@ -363,6 +382,25 @@ public class Service {
 	}
 	public void setVolumeType(String volumeType) {
 		this.volumeType = volumeType;
+	}
+	public Dependencies getVolumeDependencies() {
+		return VolumeDependencies;
+	}
+	public void setVolumeDependencies(String[] volumeList) {
+		if(this.volumeType == "String[]")
+		{
+			this.VolumeDependencies.dependents = this.volumesSL;
+		}
+		else 
+		{
+			String[] volumeSources = new String[volumesVL.length];
+			for(int i = 0 ; i < volumesVL.length ; i++)
+			{
+				volumeSources[i] = volumesVL[i].getSource();
+			}
+			this.VolumeDependencies.dependents = volumeSources;
+		}
+		this.ConfigDependencies.target = volumeList;
 	}
 	private void convertLabels() 
 	{

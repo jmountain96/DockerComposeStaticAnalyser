@@ -25,7 +25,7 @@ public class TypeConverter {
 	
 	public boolean checkStringList(Object input) {
 		String value = input.toString();
-		if(value.startsWith("[{)") == false) 
+		if(value.startsWith("[") == false) 
 		{
 			return false;
 		}

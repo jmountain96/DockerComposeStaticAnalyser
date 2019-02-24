@@ -13,7 +13,7 @@ public class DependencyValidator implements ConstraintValidator<Dependency, Depe
 	public boolean isValid(Dependencies value, ConstraintValidatorContext context) {
 		boolean _ret = true;
 		String missingDependencies = null;
-		if(value.dependents == null)
+		if(value.dependents == null || value.target == null)
 		{
 			return true;
 		}
@@ -29,7 +29,7 @@ public class DependencyValidator implements ConstraintValidator<Dependency, Depe
 		if(_ret == false)
 		{
 			context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate( "Missing service dependencies" + missingDependencies ).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate( "Missing service dependencies " + missingDependencies ).addConstraintViolation();
 		}
 		return _ret;
 	}
