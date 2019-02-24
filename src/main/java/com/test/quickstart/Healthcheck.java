@@ -1,15 +1,24 @@
 package com.test.quickstart;
 
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
+import com.test.quickstart.Validation.ValidationEnums;
 public class Healthcheck {
 	private TypeConverter converter = new TypeConverter();;
 	private Object test;
 	private String[] testSL;
 	private String testS;
 	private String testType;
+	@ContainsString(message = "Healthcheck test type is invalid", value = ValidationEnums.ContainsStringType.HEALTHCHECK)
+	private String testFormat;
+	@CheckStringFormat(message = "Invalid interval for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String interval;
+	@CheckStringFormat(message = "Invalid timeout for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String timeout;
-	private String retries;
+	private int retries;
+	@CheckStringFormat(message = "Invalid start period for healthcheck", value = ValidationEnums.CheckStringType.TIME)
 	private String start_period;
+	@ContainsString(message = "Healthcheck disable must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String disable;
 	
 	
@@ -84,12 +93,12 @@ public class Healthcheck {
 	}
 
 
-	public String getRetries() {
+	public int getRetries() {
 		return retries;
 	}
 
 
-	public void setRetries(String retries) {
+	public void setRetries(int retries) {
 		this.retries = retries;
 	}
 
@@ -121,6 +130,7 @@ public class Healthcheck {
 		{
 			testSL  = converter.convertStringList(tTest );
 			testType = "String[]";
+			testFormat = testSL[0];
 		}
 		else 
 		{

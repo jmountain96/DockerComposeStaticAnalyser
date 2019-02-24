@@ -1,6 +1,10 @@
 package com.test.quickstart;
 
+import java.util.ArrayList;
 import java.util.Map;
+
+import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.Dependency;
 
 
 
@@ -12,31 +16,48 @@ public class Service {
 	private Build buildB;
 	private String buildType;
 	private Object configs;
-	private Map<String,Configs> configsMC;
+	private Configs[] configsC;
 	private String[] configsSL;
 	private String configType;
 	private String[] depends_on;
 	private Deploy deploy;
+	private String[] env_file;
 	private Object labels;
 	private Map<String,String> labelsM;
 	private String[] labelsS;
 	private String labelType;
 	private String image;
+	@CheckFileExists(message = "The docker-init file specfied by the service init cannot be found", value = "")
 	private String init;
 	private String[] links;
-	private String logging;
+	private Logging logging;
 	private Object networks;
 	private String[] networksSL;
 	private Map<String,Network> networksM;
-	private String networkType; 
+	private String networkType;
+	private String[] secrets; 
 	private Object ports;
 	private String[] portsSL;
-	private Ports portsP; 
+	private Ports[] portsP; 
 	private String portsType;
 	private Object volumes;
 	private Volume[] volumesVL;
 	private String[] volumesSL;
 	private String volumeType;
+	@Dependency(message = "Service depends on config that isn't present")
+	private Dependencies ConfigDependencies = new Dependencies();;
+	@Dependency(message = "Service depends on another service that isn't present")
+	private Dependencies ServiceDependencies = new Dependencies();
+	@Dependency(message = "Service links another service that isn't present")
+	private Dependencies LinkDependencies = new Dependencies();
+	@Dependency(message = "Service references a network that isn't present")
+	private Dependencies NetworkDependencies = new Dependencies();
+	@Dependency(message = "Service references a sercret that isn't present")
+	private Dependencies SecretDependencies = new Dependencies();
+	@Dependency(message = "Service references a volume that isn't present")
+	private Dependencies VolumeDependencies = new Dependencies();
+	@Dependency(message = "Service references an env_file that isn't present")
+	private Dependencies EnvironmentDependencies = new Dependencies();
 	
 	public TypeConverter getConverter() {
 		return Converter;
@@ -55,7 +76,16 @@ public class Service {
 	}
 	public void setBuild(Object build) {
 		this.build = build;
-		convertBuild();
+		if(Converter.checkString(build) == true)
+		{
+			this.buildS = build.toString();
+			this.buildType = "String";
+		}
+		else 
+		{
+			this.buildB = Converter.convertBuild(build);
+			this.buildType = "Build";
+		}
 	}
 	public String getBuildS() {
 		return buildS;
@@ -79,15 +109,28 @@ public class Service {
 	public Object getConfigs() {
 		return configs;
 	}
+	@SuppressWarnings("unchecked")
 	public void setConfigs(Object configs) {
 		this.configs = configs;
-		convertConfigs();
+		ArrayList<Map<String, Object>> configAL = null;
+		if(Converter.checkStringList(configs) == true)
+		{
+			this.configsSL = Converter.convertStringList(configs);
+			this.configType = "String[]";
+		}
+		else 
+		{
+			configAL = (ArrayList<Map<String, Object>>)configs;
+			configsC = Converter.convertConfigsList(configAL);
+			this.configType = "Configs[]";
+		}
+	
 	}
-	public Map<String, Configs> getConfigsMC() {
-		return configsMC;
+	public Configs[] getConfigsC() {
+		return configsC;
 	}
-	public void setConfigsMC(Map<String, Configs> configsMC) {
-		this.configsMC = configsMC;
+	public void setConfigsC(Configs[] configsC) {
+		this.configsC = configsC;
 	}
 	public String[] getConfigsSL() {
 		return configsSL;
@@ -101,6 +144,25 @@ public class Service {
 	public void setConfigType(String configType) {
 		this.configType = configType;
 	}
+	public Dependencies getConfigDependencies() {
+		return ConfigDependencies;
+	}
+	public void setConfigDependencies(String[] configList) {
+		if(this.configType == "String[]")
+		{
+			this.ConfigDependencies.dependents = this.configsSL;
+		}
+		else 
+		{
+			String[] configSources = new String[configsC.length];
+			for(int i = 0 ; i < configsC.length ; i++)
+			{
+				configSources[i] = configsC[i].getSource();
+			}
+			this.ConfigDependencies.dependents = configSources;
+		}
+		this.ConfigDependencies.target = configList;
+	}
 	public String[] getDepends_on() {
 		return depends_on;
 	}
@@ -112,6 +174,20 @@ public class Service {
 	}
 	public void setDeploy(Deploy deploy) {
 		this.deploy = deploy;
+	}
+	public String[] getEnv_file() {
+		return env_file;
+	}
+	public void setEnv_file(String[] env_file) {
+		this.env_file = env_file;
+	}
+	public Dependencies getEnvironmentDependencies() {
+		return EnvironmentDependencies;
+	}
+	public void setEnvironmentDependencies(String[] environments) {
+		
+		ServiceDependencies.dependents = this.env_file;
+		ServiceDependencies.target = environments;
 	}
 	public Object getLabels() {
 		return labels;
@@ -156,10 +232,17 @@ public class Service {
 	public void setLinks(String[] links) {
 		this.links = links;
 	}
-	public String getLogging() {
+	public Dependencies getLinkDependencies() {
+		return LinkDependencies;
+	}
+	public void setLinkDependencies(String[] services) {
+		this.LinkDependencies.dependents = this.links;
+		this.LinkDependencies.target = services;
+	}
+	public Logging getLogging() {
 		return logging;
 	}
-	public void setLogging(String logging) {
+	public void setLogging(Logging logging) {
 		this.logging = logging;
 	}
 	public Object getNetworks() {
@@ -187,12 +270,63 @@ public class Service {
 	public void setNetworkType(String networkType) {
 		this.networkType = networkType;
 	}
+	public Dependencies getNetworkDependencies() {
+		return NetworkDependencies;
+	}
+	public void setNetworkDependencies(String[] networks) {
+		this.NetworkDependencies.target = networks;
+		if(networkType == "StringList") {
+			this.NetworkDependencies.dependents = this.networksSL;
+		}
+		else {
+			this.NetworkDependencies.dependents = this.networksM.keySet().toArray(new String[networksM.size()] );
+		}
+	}
+	
+	public Dependencies getServiceDependencies() {
+		return ServiceDependencies;
+	}
+	public void setServiceDependenciesD(String[] services) {
+		if(this.depends_on != null)
+		{
+			ServiceDependencies.dependents = this.depends_on;
+		}
+		else 
+		{
+			ServiceDependencies.dependents = null;
+		}
+		ServiceDependencies.target = services;
+	}
+	public String[] getSecrets() {
+		return secrets;
+	}
+	public void setSecrets(String[] secrets) {
+		this.secrets = secrets;
+	}
+	public Dependencies getSecretDependencies() {
+		return SecretDependencies;
+	}
+	public void setSecretDependencies(String[] secrets) {
+		SecretDependencies.dependents = this.secrets;
+		SecretDependencies.target = secrets;
+	}
 	public Object getPorts() {
 		return ports;
 	}
 	public void setPorts(Object ports) {
 		this.ports = ports;
-		convertPorts();
+		ArrayList<Map<String, Object>> portsAL = null;
+		if(Converter.checkStringList(ports) == true)
+		{
+			this.portsSL = Converter.convertStringList(ports);
+			this.portsType = "String[]";
+		}
+		else 
+		{
+			portsAL = (ArrayList<Map<String, Object>>)ports;
+			portsP = Converter.convertPorts(portsAL);
+			this.portsType = "Ports[]";
+		}
 	}
 	public String[] getPortsSL() {
 		return portsSL;
@@ -200,10 +334,10 @@ public class Service {
 	public void setPortsSL(String[] portsSL) {
 		this.portsSL = portsSL;
 	}
-	public Ports getPortsP() {
+	public Ports[] getPortsP() {
 		return portsP;
 	}
-	public void setPortsP(Ports portsP) {
+	public void setPortsP(Ports[] portsP) {
 		this.portsP = portsP;
 	}
 	public String getPortsType() {
@@ -215,9 +349,21 @@ public class Service {
 	public Object getVolumes() {
 		return volumes;
 	}
+	@SuppressWarnings("unchecked")
 	public void setVolumes(Object volumes) {
 		this.volumes = volumes;
-		convertVolumes();
+		ArrayList<Map<String, Object>> volumeAL = null;
+		if(Converter.checkStringList(volumes) == true)
+		{
+			this.volumesSL = Converter.convertStringList(volumes);
+			this.volumeType = "String[]";
+		}
+		else 
+		{
+			volumeAL = (ArrayList<Map<String, Object>>)volumes;
+			volumesVL = Converter.convertVolumes(volumeAL);
+			this.volumeType = "Volume[]";
+		}
 	}
 	public Volume[] getVolumesVL() {
 		return volumesVL;
@@ -237,39 +383,24 @@ public class Service {
 	public void setVolumeType(String volumeType) {
 		this.volumeType = volumeType;
 	}
-	private void convertBuild() 
-	{
-		boolean set = false;
-		try {
-			buildB = (Build)build;
-			buildType = "Build";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				buildS = build.toString();
-				buildType = "String";
-			}
-		}
+	public Dependencies getVolumeDependencies() {
+		return VolumeDependencies;
 	}
-	private void convertConfigs() 
-	{
-		boolean set = false;
-		try {
-			configsMC = Converter.convertMapSC(configs);
-			configType = "Map<String,Configs>";
-			set = true;
+	public void setVolumeDependencies(String[] volumeList) {
+		if(this.volumeType == "String[]")
+		{
+			this.VolumeDependencies.dependents = this.volumesSL;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				configsSL = Converter.convertStringList(configs);
-				configType = "String[]";
+		else 
+		{
+			String[] volumeSources = new String[volumesVL.length];
+			for(int i = 0 ; i < volumesVL.length ; i++)
+			{
+				volumeSources[i] = volumesVL[i].getSource();
 			}
+			this.VolumeDependencies.dependents = volumeSources;
 		}
+		this.ConfigDependencies.target = volumeList;
 	}
 	private void convertLabels() 
 	{
@@ -305,40 +436,7 @@ public class Service {
 			}
 		}
 	}
-	private void convertPorts() 
-	{
-		boolean set = false;
-		try {
-			portsP = (Ports)ports;
-			portsType = "Ports";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				portsSL = Converter.convertStringList(ports);
-				portsType = "String[]";
-				
-			}
-		}
-	}
-	private void convertVolumes() 
-	{
-		boolean set = false;
-		try {
-			volumesVL = (Volume[])volumes;
-			volumeType = "Volume[]>";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				volumesSL = Converter.convertStringList(volumes);
-				volumeType = "String[]";
-			}
-		}
-	}
+	
+
 	
 }

@@ -9,19 +9,19 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.test.quickstart.Validation.CheckFileExistsValidator;
+import com.test.quickstart.Validation.CheckFileListExistsValidator;
 
 @Target( { METHOD, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckFileExistsValidator.class)
+@Constraint(validatedBy = CheckFileListExistsValidator.class)
 @Documented
 
-public @interface CheckFileExists {
-	String message() default "{com.test.quickstart.Validation.CheckFileExists}";
+public @interface CheckFileListExists {
+	String message() default "{com.test.quickstart.Validation.CheckFileListExists}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
    
-    String value();
+    
 }

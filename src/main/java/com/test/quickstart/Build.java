@@ -1,26 +1,31 @@
 package com.test.quickstart;
 
 import java.util.Map;
+import com.test.quickstart.Validation.ValidationEnums;
 
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 
 public class Build {
 	private TypeConverter Converter = new TypeConverter();
 	@CheckFolderExists(message = "Directory doesn't exist")
 	private String context;
 	private String dockerfile;
-	@CheckFileExists(message = "Referenced alternate Docker file doesn't exist")
+	@CheckFileExists(message = "Referenced alternate Docker file doesn't exist", value = "")
 	private String dockerfileContext;
 	private Object args;
 	private Map<String, String> argsM;
 	private String[] argsS;
 	private String argType;
+	@CheckStringListFormat(message = "images in cache_from are in the wrong format", value = ValidationEnums.CheckStringListType.IMAGE)
 	private String[] cache_from;
 	private Object labels;
 	private Map<String,String> labelsM;
 	private String[] labelsS;
 	private String labelType;
+	@CheckStringFormat(message = "memory in shm_size are in the wrong format", value = ValidationEnums.CheckStringType.MEMORY)
 	private String shm_size;
 	private String target;
 	

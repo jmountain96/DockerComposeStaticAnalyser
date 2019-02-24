@@ -1,18 +1,24 @@
 package com.test.quickstart;
 
 import java.util.Map;
-
+import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
 public class Secrets {
 	private TypeConverter converter = new TypeConverter();
 	private String source;
 	private String target;
-	private String uid;
-	private String gid;
+	private int uid;
+	private int gid;
+	@CheckStringFormat(message = "Invalid Secrets permission mode", value = ValidationEnums.CheckStringType.UNIX_PERM)
 	private String mode;
 	private String name;
+	@CheckFileExists(message = "Secrets file doesn't exist", value = "")
 	private String file;
 	private Object external;
 	private Map<String, String> externalM;
+	@ContainsString(message = "External must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String externalS;
 	private String externalType;
 	
@@ -40,19 +46,19 @@ public class Secrets {
 		this.target = target;
 	}
 
-	public String getUid() {
+	public int getUid() {
 		return uid;
 	}
 
-	public void setUid(String uid) {
+	public void setUid(int uid) {
 		this.uid = uid;
 	}
 
-	public String getGid() {
+	public int getGid() {
 		return gid;
 	}
 
-	public void setGid(String gid) {
+	public void setGid(int gid) {
 		this.gid = gid;
 	}
 

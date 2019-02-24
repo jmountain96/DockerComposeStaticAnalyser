@@ -1,5 +1,6 @@
 package com.test.quickstart;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.validation.constraints.AssertTrue;
@@ -9,8 +10,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.CheckFileListExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
+import com.test.quickstart.Validation.Interfaces.Dependency;
+import com.test.quickstart.Validation.Interfaces.ListContainsString;
 import com.test.quickstart.Validation.ValidationEnums;
 import javax.validation.constraints.Email;
 
@@ -22,7 +29,9 @@ public class TopLevel {
 	private String buildS;
 	private Build buildB;
 	private String buildType;
+	@ListContainsString(message = "unknown capability within cap_add", value = ValidationEnums.ListContainsStringType.CAP)
 	private String[] cap_add;
+	@ListContainsString(message = "unknown capability within cap_drop", value = ValidationEnums.ListContainsStringType.CAP)
 	private String[] cap_drop;
 	private String cgroup_parent;
 	private Object command;
@@ -32,18 +41,26 @@ public class TopLevel {
 	private Map<String,Configs> configs;
 	private String container_name;
 	private CredentialSpec credential_spec;
-	private String[] depends_on;
+	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
+	private String[] devices;
+	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
+	private String domainname;
 	private Object dns;
+	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DNS)
 	private String dnsS;
+	@CheckStringListFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringListType.DNS)
 	private String[] dnsSL;
 	private String dnsType;
-	private String domainname;
+	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DOMAIN)
+	private String dns_search;
 	private Object entrypoint;
 	private String[] entrypointSL;
 	private String entrypointS;
 	private String entrypointType;
 	private Object env_file;
+	@CheckFileListExists(message = "One or more files within the env file list cannot be found")
 	private String[] env_fileSL;
+	@CheckFileExists(message = "Specified enviroment file cannot be found", value = "")
 	private String env_fileS;
 	private String env_FileType;
 	private Object environment;
@@ -52,35 +69,47 @@ public class TopLevel {
 	private String environmentType;
 	private String expose;
 	private String[] external_links;
+	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
 	private String[] extra_hosts;
+	private Healthcheck healthcheck;
 	private String hostname;
 	private String image;
 	private String ipc;
+	@ContainsString(message = "Isolation must be default, process or hyperv", value = ValidationEnums.ContainsStringType.ISOLATION) 
 	private String isolation;
 	private Object labels;
 	private Map<String,String> labelsM;
 	private String[] labelsS;
 	private String labelType;
+	@CheckStringFormat(message = "mac_address must be a valid memory format", value = ValidationEnums.CheckStringType.MAC)
 	private String mac_address;
 	private Object networks;
 	private String[] networksSL;
 	private Map<String,Network> networksM;
-	private String networkType; 
+	private String networkType;
+	@ContainsString(message = "Invalid network type", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String network_mode;
+	@ContainsString(message  = "Invalid PID mode", value = ValidationEnums.ContainsStringType.PID)
 	private String pid;
 	private Object ports;
+	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
 	private String[] portsSL;
-	private Ports portsP; 
+	private Ports[] portsP; 
 	private String portsType;
+	@ContainsString(message = "Priveleged must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String privileged;
+	@ContainsString(message = "Read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
 	private Object secrets;
 	private String[] secretsL;
 	private Secrets[] secretsSL;
 	private String secretsType;
-	private String[] security_opt;
+	private String security_opt;
+	@CheckStringFormat(message = "shm_size must be a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
 	private String shm_size;
+	@ContainsString(message = "stdin_open must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String stdin_open;
+	@CheckStringFormat(message = "Invalid time specified for stop grace period", value = ValidationEnums.CheckStringType.TIME)
 	private String stop_grace_period;
 	private String stop_signal;
 	private Object sysctls;
@@ -88,15 +117,20 @@ public class TopLevel {
 	private String[] sysctlsSL;
 	private String sysctlsType;
 	private String[] tmpfs;
+	@ContainsString(message = "tty must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String tty;
 	private Ulimits ulimits;
 	private String user;
 	private String userns_mode;
 	private Map<String, Volume> volumes;
+	@CheckFolderExists(message = "Working directory folder doesn't exist")
 	private String working_dir;
 	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing or Invalid Docker Compose Version")
 	private String version;
 	private Map<String,Service> services;
+	@Dependency(message = "Service references a network mode for a service that isn't present")
+	private Dependencies NetworkModeDependencies = new Dependencies();
+	
 	
 	
 	public TypeConverter getConverter() {
@@ -112,7 +146,6 @@ public class TopLevel {
 		this.build = build;
 		if(converter.checkString(build) == true)
 		{
-			System.out.println("true");
 			this.buildS = build.toString();
 			this.buildType = "String";
 		}
@@ -201,11 +234,11 @@ public class TopLevel {
 	public void setCredential_spec(CredentialSpec credential_spec) {
 		this.credential_spec = credential_spec;
 	}
-	public String[] getDepends_on() {
-		return depends_on;
+	public String[] getDevices() {
+		return devices;
 	}
-	public void setDepends_on(String[] depends_on) {
-		this.depends_on = depends_on;
+	public void setDevices(String[] devices) {
+		this.devices = devices;
 	}
 	public Object getDns() {
 		return dns;
@@ -232,11 +265,23 @@ public class TopLevel {
 	public void setDnsType(String dnsType) {
 		this.dnsType = dnsType;
 	}
-	public String getDomainname() {
-		return domainname;
+	public String getDns_search() {
+		return dns_search;
 	}
-	public void setDomainname(String domainname) {
-		this.domainname = domainname;
+	public void setDns_search(String dns_search) {
+		this.dns_search = dns_search;
+	}
+	public Healthcheck getHealthcheck() {
+		return healthcheck;
+	}
+	public void setHealthcheck(Healthcheck healthcheck) {
+		this.healthcheck = healthcheck;
+	}
+	public String getDomainname() {
+		return dns_search;
+	}
+	public void setDomainname(String dns_search) {
+		this.dns_search = dns_search;
 	}
 	public Object getEntrypoint() {
 		return entrypoint;
@@ -415,7 +460,19 @@ public class TopLevel {
 		return network_mode;
 	}
 	public void setNetwork_mode(String network_mode) {
-		this.network_mode = network_mode;
+		this.network_mode = network_mode.substring(network_mode.lastIndexOf("="));;
+		
+	}
+	public Dependencies getNetworkModeDependencies() {
+		return NetworkModeDependencies;
+	}
+	public void setNetworkModeDependencies() {
+		if(this.network_mode.startsWith("service:") == true)
+		{
+			NetworkModeDependencies.dependents[0] = this.network_mode.substring(this.network_mode.lastIndexOf("="));
+		}
+		NetworkModeDependencies.target = this.services.keySet().toArray(new String[services.size()] );
+		
 	}
 	public String getPid() {
 		return pid;
@@ -428,7 +485,18 @@ public class TopLevel {
 	}
 	public void setPorts(Object ports) {
 		this.ports = ports;
-		convertPorts();
+		ArrayList<Map<String, Object>> portsAL = null;
+		if(converter.checkStringList(ports) == true)
+		{
+			this.portsSL = converter.convertStringList(ports);
+			this.portsType = "String[]";
+		}
+		else 
+		{
+			portsAL = (ArrayList<Map<String, Object>>)ports;
+			portsP = converter.convertPorts(portsAL);
+			this.portsType = "Ports[]";
+		}
 	}
 	public String[] getPortsSL() {
 		return portsSL;
@@ -436,10 +504,10 @@ public class TopLevel {
 	public void setPortsSL(String[] portsSL) {
 		this.portsSL = portsSL;
 	}
-	public Ports getPortsP() {
+	public Ports[] getPortsP() {
 		return portsP;
 	}
-	public void setPortsP(Ports portsP) {
+	public void setPortsP(Ports[] portsP) {
 		this.portsP = portsP;
 	}
 	public String getPortsType() {
@@ -465,7 +533,18 @@ public class TopLevel {
 	}
 	public void setSecrets(Object secrets) {
 		this.secrets = secrets;
-		convertSecrets();
+		Map<String, Map<String,Object>> secretsAL = null;;
+		if(converter.checkStringList(secrets) == true)
+		{
+			this.secretsL = converter.convertStringList(secrets);
+			this.secretsType = "String[]";
+		}
+		else 
+		{
+			secretsAL = (Map<String, Map<String,Object>>)secrets;
+			secretsSL = converter.convertSecrets(secretsAL);
+			this.secretsType = "Secrets[]";
+		}
 	}
 	public String[] getSecretsL() {
 		return secretsL;
@@ -485,10 +564,10 @@ public class TopLevel {
 	public void setSecretsType(String secretsType) {
 		this.secretsType = secretsType;
 	}
-	public String[] getSecurity_opt() {
+	public String getSecurity_opt() {
 		return security_opt;
 	}
-	public void setSecurity_opt(String[] security_opt) {
+	public void setSecurity_opt(String security_opt) {
 		this.security_opt = security_opt;
 	}
 	public String getShm_size() {
@@ -721,24 +800,6 @@ public class TopLevel {
 				{
 				networksSL = converter.convertStringList(networks);
 				networkType = "String[]";
-			}
-		}
-	}
-	private void convertPorts() 
-	{
-		boolean set = false;
-		try {
-			portsP = (Ports)ports;
-			portsType = "Ports";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				portsSL = converter.convertStringList(ports);
-				portsType = "String[]";
-				
 			}
 		}
 	}

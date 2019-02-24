@@ -1,9 +1,16 @@
 package com.test.quickstart;
 
+import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
+
 public class RestartPolicy {
+	@ContainsString(message = "Invalid restart policy condition", value = ValidationEnums.ContainsStringType.RESTART_POLICY_CONDITION)
 	private String condition;
+	@CheckStringFormat(message = "Invalid format for restart policy delay", value = ValidationEnums.CheckStringType.TIME)
 	private String delay;
 	private int max_attempts;
+	@CheckStringFormat(message = "Invalid format for restart policy window", value = ValidationEnums.CheckStringType.TIME)
 	private String window;
 	public String getCondition() {
 		return condition;

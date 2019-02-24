@@ -1,16 +1,22 @@
 package com.test.quickstart;
 
 import java.util.Map;
-
+import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
 public class Volume {
 	private TypeConverter converter = new TypeConverter();
+	@ContainsString(message = "Invalid voume type", value = ValidationEnums.ContainsStringType.VOLUME_TYPE)
 	private String type;
 	private String source;
+	@CheckFolderExists(message = "Volume target folder doesn't exist")
 	private String target;
+	@ContainsString(message = "Volume read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
 	private Map<String,String> bind;
 	private Map<String,String> volume;
 	private Map<String,String> tmpfs;
+	@ContainsString(message = "Invalid voume type", value = ValidationEnums.ContainsStringType.VOLUME_CONSISTENCY)
 	private String consistency;
 	private String driver;
 	private Map<String,String> driver_opts;

@@ -1,14 +1,18 @@
 package com.test.quickstart;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.ValidationEnums;
 
 public class Options {
 	@JsonProperty("syslog-address")
+	@CheckStringFormat(message = "Invalid syslog address specified for Logging Options syslogAddress", value = ValidationEnums.CheckStringType.MEMORY)
 	private String syslogAddress;
 	@JsonProperty("max-size")
+	@CheckStringFormat(message = "Invalid memory size specified for Logging Options maxsize", value = ValidationEnums.CheckStringType.MEMORY)
 	private String maxSize;
 	@JsonProperty("max-file")
-	private String maxFile;
+	private int maxFile;
 	public String getSyslogAddress() {
 		return syslogAddress;
 	}
@@ -21,10 +25,10 @@ public class Options {
 	public void setMaxSize(String maxSize) {
 		this.maxSize = maxSize;
 	}
-	public String getMaxFile() {
+	public int getMaxFile() {
 		return maxFile;
 	}
-	public void setMaxFile(String maxFile) {
+	public void setMaxFile(int maxFile) {
 		this.maxFile = maxFile;
 	}
 }

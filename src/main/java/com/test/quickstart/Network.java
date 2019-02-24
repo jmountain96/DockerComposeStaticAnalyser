@@ -2,19 +2,28 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
+import com.test.quickstart.Validation.Interfaces.ContainsString;
+
 public class Network {
 	private TypeConverter converter = new TypeConverter();
 	private String[] aliases;
+	@CheckStringFormat(message = "Incorrect format for network ipv4_address", value = ValidationEnums.CheckStringType.DNS)
 	private String ipv4_address;
+	@CheckStringFormat(message = "Incorrect format for network ipv4_address", value = ValidationEnums.CheckStringType.IPV6)
 	private String  ipv6_address;
+	@ContainsString(message = "Invalid network driver", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String driver;
 	private Map<String,String> driver_opts;
-	private Object external;
-	private Map<String,String> externalM;
-	private String externalS;
-	private String externalType;
+	@ContainsString(message = "Enable ipv6 field of network must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	private String enable_ipv6;
+	@ContainsString(message = "External of network must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	private String external;
+	@ContainsString(message = "Attachable field of network must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String attachable;
 	private Ipam ipam;
+	@ContainsString(message = "Internal field of network must be a boolean value", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String internal;
 	private Object labels;
 	private Map<String,String> labelsM;
@@ -58,30 +67,11 @@ public class Network {
 	public void setDriver_opts(Map<String, String> driver_opts) {
 		this.driver_opts = driver_opts;
 	}
-	public Object getExternal() {
+	public String getExternal() {
 		return external;
 	}
-	public void setExternal(Object external) {
+	public void setExternal(String external) {
 		this.external = external;
-		convertExternal();
-	}
-	public Map<String, String> getExternalM() {
-		return externalM;
-	}
-	public void setExternalM(Map<String, String> externalM) {
-		this.externalM = externalM;
-	}
-	public String getExternalS() {
-		return externalS;
-	}
-	public void setExternalS(String externalS) {
-		this.externalS = externalS;
-	}
-	public String getExternalType() {
-		return externalType;
-	}
-	public void setExternalType(String externalType) {
-		this.externalType = externalType;
 	}
 	public String getAttachable() {
 		return attachable;
@@ -146,24 +136,6 @@ public class Network {
 				{
 				labelsS = converter.convertStringList(labels);
 				labelType = "String[]";
-			}
-		}
-	}
-	private void convertExternal() 
-	{
-		boolean set = false;
-		String tExternal = external.toString();
-		try {
-			externalM = converter.convertMap(external);
-			externalType = "Map<String,String[]>";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				externalS = tExternal;
-				externalType = "String";
 			}
 		}
 	}
