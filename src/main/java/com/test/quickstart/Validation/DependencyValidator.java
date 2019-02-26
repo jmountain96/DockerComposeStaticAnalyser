@@ -12,7 +12,7 @@ public class DependencyValidator implements ConstraintValidator<Dependency, Depe
 	
 	public boolean isValid(Dependencies value, ConstraintValidatorContext context) {
 		boolean _ret = true;
-		String missingDependencies = null;
+		String missingDependencies = "";
 		if(value.dependents == null || value.target == null)
 		{
 			return true;

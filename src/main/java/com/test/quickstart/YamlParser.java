@@ -3,6 +3,8 @@ package com.test.quickstart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,18 +13,27 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import com.esotericsoftware.yamlbeans.YamlException;
-import com.esotericsoftware.yamlbeans.YamlReader;
+
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.esotericsoftware.yamlbeans.YamlConfig;
+import com.esotericsoftware.yamlbeans.YamlException;
+import com.esotericsoftware.yamlbeans.YamlReader;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 public class YamlParser {
-	 public static void main(String[] args) throws YamlException, FileNotFoundException {
+	 public static void main(String[] args) throws FileNotFoundException {
 	        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+	     
 	        TopLevel level = new TopLevel();
+	      
 	        try {
 	            level = mapper.readValue(new File("test.yaml"), TopLevel.class);
 	            System.out.println(ReflectionToStringBuilder.toString(level,ToStringStyle.MULTI_LINE_STYLE));
@@ -30,8 +41,10 @@ public class YamlParser {
 	            // TODO Auto-generated catch block
 	            e.printStackTrace();
 	        }
+	        checkForDuplicateKeys();
 	        level = setDependencies(level);
 	        Validate(level);
+	        checkUsed(level);
 	    }
 	 /**
 	  * Sets the required values within the input for dependency validation
@@ -329,6 +342,174 @@ public class YamlParser {
 	    	 } 
 	     }
 	 }
+	 private static void checkForDuplicateKeys()
+	 {
+		 
+     	try {
+            YamlConfig yamlConfig = new YamlConfig();
+            yamlConfig.setAllowDuplicates(false); // default value is true
+            YamlReader reader = new YamlReader(new FileReader("test.yaml"), yamlConfig);
+            Object object = reader.read();
+        } catch (YamlException ex) {
+            System.out.println(ex.getMessage());
+        } catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	    
+	        
+	 }
 	 
-	 
+	 private static void checkUsed(TopLevel input) 
+	 {
+		boolean found = false; 
+		if(input.getConfigs() != null) 
+		{
+			Map<String,Configs> configList = input.getConfigs();
+			String[] configs = configList.keySet().toArray(new String[configList.size()]);
+			for(String config : configs)
+			{
+				 found = false;
+				 for(Service s : input.getServices().values())
+				 {
+					 for(String t : s.getConfigDependencies().getDependents())
+						 {
+							 if(config.equals(t))
+							 {
+								 found = true;
+							 }
+						 }
+				 }
+				 if( found == false)
+				 {
+					 System.out.println("Config " + config + " is not required by any service");
+				 }
+			}
+		}
+		if(input.getNetworks() != null) 
+		{
+			String[] networks;
+			if(input.getNetworkType() == "String[]")
+			{
+				networks = input.getNetworksSL();
+			}
+			else
+			{
+				Map<String,Network> networkList = input.getNetworksM();
+				networks = networkList.keySet().toArray(new String[networkList.size()]);
+			}
+			for(String network : networks)
+			{
+				 found = false;
+				 for(Service s : input.getServices().values())
+				 {
+					 for(String t : s.getNetworkDependencies().getDependents())
+						 {
+							 if(network.equals(t))
+							 {
+								 found = true;
+							 }
+						 }
+				 }
+				 if( found == false)
+				 {
+					 System.out.println("Network " + network + " is not required by any service");
+				 }
+			}
+		}
+		if(input.getSecrets() != null)
+		{
+			String[] secrets;
+			if(input.getSecretsType() == "String[]")
+			{
+				secrets = input.getSecretsL();
+			}
+			else
+			{
+				int index2 = 0;
+				Secrets[] secretsList = input.getSecretsSL();
+				secrets = new String[secretsList.length];
+				for(Secrets c : secretsList)
+				{
+					secrets[index2] = c.getSource();
+					index2++;
+				}
+			}
+			for(String secret : secrets)
+			{
+				 found = false;
+				 for(Service s : input.getServices().values())
+				 {
+					 
+					 for(String t : s.getSecretDependencies().getDependents())
+						 {
+						 
+							 if(secret.equals(t))
+							 {
+								 found = true;
+							 }
+						 }
+				 }
+				 if( found == false)
+				 {
+					 System.out.println("Secret " + secret + " is not required by any service");
+				 }
+			}
+		}
+		if(input.getVolumes() != null)
+		{
+			Map<String,Volume> volumesList = input.getVolumes();
+			String[] volumes = volumesList.keySet().toArray(new String[volumesList.size()]);
+			for(String volume : volumes)
+			{
+				 found = false;
+				 for(Service s : input.getServices().values())
+				 {
+					 for(String t : s.getVolumeDependencies().getDependents())
+						 {
+							 if(volume.equals(t))
+							 {
+								 found = true;
+							 }
+						 }
+				 }
+				 if( found == false)
+				 {
+					 System.out.println("Volume " + volume + " is not required by any service");
+				 }
+			}
+		}
+		if(input.getEnv_file() != null)
+		{
+			String[] envList;
+			if(input.getEnv_FileType() == "String") 
+			{
+				envList = new String[0];
+				envList[0] = input.getEnv_fileS();
+			}
+			else 
+			{
+				envList = input.getEnv_fileSL();
+			}
+			for(String env : envList)
+			{
+				 found = false;
+				 for(Service s : input.getServices().values())
+				 {
+					 for(String t : s.getEnvironmentDependencies().getDependents())
+						 {
+							 if(env.equals(t))
+							 {
+								 found = true;
+							 }
+						 }
+				 }
+				 if( found == false)
+				 {
+					 System.out.println("Enviromental variable " + env + " is not required by any service");
+				 }
+			} 
+		} 
+	 } 
 }
+	 
+

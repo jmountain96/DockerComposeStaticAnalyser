@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
+import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.Dependency;
 
 
@@ -12,6 +13,7 @@ public class Service {
 	private TypeConverter Converter = new TypeConverter();
 	private String Name;
 	private Object build;
+	@CheckFolderExists(message = "Directory doesn't exist")
 	private String buildS;
 	private Build buildB;
 	private String buildType;
