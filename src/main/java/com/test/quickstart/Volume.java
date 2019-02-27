@@ -2,6 +2,7 @@ package com.test.quickstart;
 
 import java.util.Map;
 import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 public class Volume {
@@ -26,6 +27,7 @@ public class Volume {
 	private String externalType;
 	private Object labels;
 	private Map<String,String> labelsM;
+	@CheckDuplication(message = "Duplicate volume label detected")
 	private String[] labelsS;
 	private String labelType;
 	private String name;

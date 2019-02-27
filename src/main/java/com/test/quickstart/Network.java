@@ -3,11 +3,13 @@ package com.test.quickstart;
 import java.util.Map;
 
 import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 
 public class Network {
 	private TypeConverter converter = new TypeConverter();
+	@CheckDuplication(message = "Duplicate network alias detected")
 	private String[] aliases;
 	@CheckStringFormat(message = "Incorrect format for network ipv4_address", value = ValidationEnums.CheckStringType.DNS)
 	private String ipv4_address;
@@ -27,6 +29,7 @@ public class Network {
 	private String internal;
 	private Object labels;
 	private Map<String,String> labelsM;
+	@CheckDuplication(message = "Duplicate network lable detected")
 	private String[] labelsS;
 	private String labelType;
 	private String name;

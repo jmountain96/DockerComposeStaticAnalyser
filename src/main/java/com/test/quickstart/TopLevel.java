@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
 import com.test.quickstart.Validation.Interfaces.CheckFileListExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
@@ -30,18 +31,22 @@ public class TopLevel {
 	private Build buildB;
 	private String buildType;
 	@ListContainsString(message = "unknown capability within cap_add", value = ValidationEnums.ListContainsStringType.CAP)
+	@CheckDuplication(message = "Duplicate cap_add capability detected")
 	private String[] cap_add;
 	@ListContainsString(message = "unknown capability within cap_drop", value = ValidationEnums.ListContainsStringType.CAP)
+	@CheckDuplication(message = "Duplicate cap_drop capability detected detected")
 	private String[] cap_drop;
 	private String cgroup_parent;
 	private Object command;
 	private String commandS;
+	@CheckDuplication(message = "Duplicate command detected")
 	private String[] commandSL;
 	private String commandType;
 	private Map<String,Configs> configs;
 	private String container_name;
 	private CredentialSpec credential_spec;
 	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
+	@CheckDuplication(message = "Duplicate device detected")
 	private String[] devices;
 	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String domainname;
@@ -49,27 +54,33 @@ public class TopLevel {
 	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DNS)
 	private String dnsS;
 	@CheckStringListFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringListType.DNS)
+	@CheckDuplication(message = "Duplicate dns detected")
 	private String[] dnsSL;
 	private String dnsType;
 	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String dns_search;
 	private Object entrypoint;
+	@CheckDuplication(message = "Duplicate entrypoint detected")
 	private String[] entrypointSL;
 	private String entrypointS;
 	private String entrypointType;
 	private Object env_file;
 	@CheckFileListExists(message = "One or more files within the env file list cannot be found")
+	@CheckDuplication(message = "Duplicate env_file detected")
 	private String[] env_fileSL;
 	@CheckFileExists(message = "Specified enviroment file cannot be found", value = "")
 	private String env_fileS;
 	private String env_FileType;
 	private Object environment;
 	private Map<String,String> environmentM;
+	@CheckDuplication(message = "Duplicate environment detected")
 	private String[] environmentSL;
 	private String environmentType;
 	private String expose;
+	@CheckDuplication(message = "Duplicate external link detected")
 	private String[] external_links;
 	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
+	@CheckDuplication(message = "Duplicate extra host detected")
 	private String[] extra_hosts;
 	private Healthcheck healthcheck;
 	private String hostname;
@@ -79,11 +90,13 @@ public class TopLevel {
 	private String isolation;
 	private Object labels;
 	private Map<String,String> labelsM;
+	@CheckDuplication(message = "Duplicate label detected")
 	private String[] labelsS;
 	private String labelType;
 	@CheckStringFormat(message = "mac_address must be a valid memory format", value = ValidationEnums.CheckStringType.MAC)
 	private String mac_address;
 	private Object networks;
+	@CheckDuplication(message = "Duplicate network detected")
 	private String[] networksSL;
 	private Map<String,Network> networksM;
 	private String networkType;
@@ -93,6 +106,7 @@ public class TopLevel {
 	private String pid;
 	private Object ports;
 	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
+	@CheckDuplication(message = "Duplicate port detected")
 	private String[] portsSL;
 	private Ports[] portsP; 
 	private String portsType;
@@ -101,6 +115,7 @@ public class TopLevel {
 	@ContainsString(message = "Read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
 	private Object secrets;
+	@CheckDuplication(message = "Duplicate secret detected")
 	private String[] secretsL;
 	private Secrets[] secretsSL;
 	private String secretsType;
@@ -114,8 +129,10 @@ public class TopLevel {
 	private String stop_signal;
 	private Object sysctls;
 	private Map<String, String> sysctlsM;
+	@CheckDuplication(message = "Duplicate sysctls detected")
 	private String[] sysctlsSL;
 	private String sysctlsType;
+	@CheckDuplication(message = "Duplicate tmpfs detected")
 	private String[] tmpfs;
 	@ContainsString(message = "tty must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String tty;

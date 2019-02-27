@@ -3,6 +3,7 @@ package com.test.quickstart;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.Dependency;
@@ -19,31 +20,39 @@ public class Service {
 	private String buildType;
 	private Object configs;
 	private Configs[] configsC;
+	@CheckDuplication(message = "Duplicate service config detected")
 	private String[] configsSL;
 	private String configType;
 	private String[] depends_on;
 	private Deploy deploy;
+	@CheckDuplication(message = "Duplicate service env_file detected")
 	private String[] env_file;
 	private Object labels;
 	private Map<String,String> labelsM;
+	@CheckDuplication(message = "Duplicate service lable detected")
 	private String[] labelsS;
 	private String labelType;
 	private String image;
 	@CheckFileExists(message = "The docker-init file specfied by the service init cannot be found", value = "")
 	private String init;
+	@CheckDuplication(message = "Duplicate service link detected")
 	private String[] links;
 	private Logging logging;
 	private Object networks;
+	@CheckDuplication(message = "Duplicate service network detected")
 	private String[] networksSL;
 	private Map<String,Network> networksM;
 	private String networkType;
+	@CheckDuplication(message = "Duplicate service secret detected")
 	private String[] secrets; 
 	private Object ports;
+	@CheckDuplication(message = "Duplicate service port detected")
 	private String[] portsSL;
 	private Ports[] portsP; 
 	private String portsType;
 	private Object volumes;
 	private Volume[] volumesVL;
+	@CheckDuplication(message = "Duplicate service volume detected")
 	private String[] volumesSL;
 	private String volumeType;
 	@Dependency(message = "Service depends on config that isn't present")
