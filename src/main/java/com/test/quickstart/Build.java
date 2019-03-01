@@ -2,7 +2,7 @@ package com.test.quickstart;
 
 import java.util.Map;
 import com.test.quickstart.Validation.ValidationEnums;
-
+import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
@@ -17,12 +17,15 @@ public class Build {
 	private String dockerfileContext;
 	private Object args;
 	private Map<String, String> argsM;
+	@CheckDuplication(message = "Duplicate arg detected")
 	private String[] argsS;
 	private String argType;
 	@CheckStringListFormat(message = "images in cache_from are in the wrong format", value = ValidationEnums.CheckStringListType.IMAGE)
+	@CheckDuplication(message = "Duplicate cache_from detected in build")
 	private String[] cache_from;
 	private Object labels;
 	private Map<String,String> labelsM;
+	@CheckDuplication(message = "Duplicate label detected in build")
 	private String[] labelsS;
 	private String labelType;
 	@CheckStringFormat(message = "memory in shm_size are in the wrong format", value = ValidationEnums.CheckStringType.MEMORY)

@@ -1,11 +1,13 @@
 package com.test.quickstart;
 
+import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.ValidationEnums;
 public class Healthcheck {
 	private TypeConverter converter = new TypeConverter();;
 	private Object test;
+	@CheckDuplication(message = "Duplicate healthcare test detected")
 	private String[] testSL;
 	private String testS;
 	private String testType;
