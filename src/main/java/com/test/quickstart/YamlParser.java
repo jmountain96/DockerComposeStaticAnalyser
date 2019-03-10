@@ -37,7 +37,12 @@ public class YamlParser {
 	        try {
 	            level = mapper.readValue(new File("test.yaml"), TopLevel.class);
 	            System.out.println(ReflectionToStringBuilder.toString(level,ToStringStyle.MULTI_LINE_STYLE));
-	        } catch (Exception e) {
+	        }
+	        catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
+	        {
+	        	System.out.println(UPE.getMessage());
+	        }
+	        catch (Exception e) {
 	            // TODO Auto-generated catch block
 	            e.printStackTrace();
 	        }
@@ -53,90 +58,44 @@ public class YamlParser {
 	  */
 	 public static TopLevel setDependencies(TopLevel input) 
 	 {
+		 YamlParserVisitor visitor = new YamlParserVisitorImpl();
+		 TopLevelReturn r = input.accept(visitor);
 		 if(input.getNetwork_mode() != null)
 		 {
 			 input.setNetworkModeDependencies();
 		 }
 		 if(input.getServices() != null)
 	     {
-			int index = 0;
-			Service[] retServices = new Service[input.getServices().size()];
+			
 			for(Service s : input.getServices().values()) 
 			{
-				Map<String, Service> serviceList = input.getServices();
-				String[] services = serviceList.keySet().toArray(new String[serviceList.size()]);
-				if(s.getDepends_on() != null)
+				if(r.getConfigs() != null)
 				{
-					s.setServiceDependenciesD(services);
+					s.setConfigDependencies(r.getConfigs());
 				}
-				if(s.getLinks() != null)
+				if(r.getEnvList() != null)
 				{
-					s.setLinkDependencies(services);
+					s.setEnvironmentDependencies(r.getEnvList());
 				}
-				if(input.getConfigs() != null && s.getConfigs() != null) 
+				if(r.getNetworks() != null)
 				{
-					Map<String,Configs> configList = input.getConfigs();
-					String[] configs = configList.keySet().toArray(new String[configList.size()]);
-					s.setConfigDependencies(configs);
+					s.setNetworkDependencies(r.getNetworks());
 				}
-				if(input.getNetworks() != null && s.getNetworks() != null)
+				if(r.getSecrets() != null)
 				{
-					String[] networks;
-					if(input.getNetworkType() == "String[]")
-					{
-						networks = input.getNetworksSL();
-					}
-					else
-					{
-						Map<String,Network> networkList = input.getNetworksM();
-						networks = networkList.keySet().toArray(new String[networkList.size()]);
-					}
-					s.setNetworkDependencies(networks);
+					s.setSecretDependencies(r.getSecrets());
 				}
-				if(input.getSecrets() != null && s.getSecrets() != null)
+				if(r.getServices() != null)
 				{
-					String[] secrets;
-					if(input.getNetworkType() == "String[]")
-					{
-						secrets = input.getSecretsL();
-						s.setSecretDependencies(secrets);
-					}
-					else
-					{
-						int index2 = 0;
-						Secrets[] secretsList = input.getSecretsSL();
-						secrets = new String[secretsList.length];
-						for(Secrets c : secretsList)
-						{
-							secrets[index2] = c.getSource();
-							index2++;
-						}
-						s.setSecretDependencies(secrets);
-					}
+					s.setServiceDependenciesD(r.getServices());
 				}
-				if(input.getVolumes() != null && s.getVolumes() != null) 
+				if(r.getVolumes() != null)
 				{
-					Map<String,Volume> volumesList = input.getVolumes();
-					String[] volumes = volumesList.keySet().toArray(new String[volumesList.size()]);
-					s.setVolumeDependencies(volumes);
+					s.setVolumeDependencies(r.getVolumes());
 				}
-				if(input.getEnv_file() != null && s.getEnv_file() != null)
-				{
-					if(input.getEnv_FileType() == "String") 
-					{
-						String[] envList = new String[0];
-						envList[0] = input.getEnv_fileS();
-						s.setEnvironmentDependencies(envList);
-					}
-					else 
-					{
-						String[] envList = input.getEnv_fileSL();
-						s.setEnvironmentDependencies(envList);
-					}
-				}
-				retServices[index] = s;
-				index++;
+				
 			}
+				
 		}
 		 return input;
 	 }
@@ -362,10 +321,12 @@ public class YamlParser {
 	 private static void checkUsed(TopLevel input) 
 	 {
 		boolean found = false; 
-		if(input.getConfigs() != null) 
+		YamlParserVisitor visitor = new YamlParserVisitorImpl();
+		TopLevelReturn r = input.accept(visitor);
+		if(r.getConfigs() != null) 
 		{
-			Map<String,Configs> configList = input.getConfigs();
-			String[] configs = configList.keySet().toArray(new String[configList.size()]);
+			
+			String[] configs = r.getConfigs();
 			for(String config : configs)
 			{
 				 found = false;
@@ -385,18 +346,10 @@ public class YamlParser {
 				 }
 			}
 		}
-		if(input.getNetworks() != null) 
+		if(r.getNetworks() != null) 
 		{
-			String[] networks;
-			if(input.getNetworkType() == "String[]")
-			{
-				networks = input.getNetworksSL();
-			}
-			else
-			{
-				Map<String,Network> networkList = input.getNetworksM();
-				networks = networkList.keySet().toArray(new String[networkList.size()]);
-			}
+			String[] networks = r.getNetworks();
+			
 			for(String network : networks)
 			{
 				 found = false;
@@ -416,24 +369,10 @@ public class YamlParser {
 				 }
 			}
 		}
-		if(input.getSecrets() != null)
+		if(r.getSecrets() != null)
 		{
-			String[] secrets;
-			if(input.getSecretsType() == "String[]")
-			{
-				secrets = input.getSecretsL();
-			}
-			else
-			{
-				int index2 = 0;
-				Secrets[] secretsList = input.getSecretsSL();
-				secrets = new String[secretsList.length];
-				for(Secrets c : secretsList)
-				{
-					secrets[index2] = c.getSource();
-					index2++;
-				}
-			}
+			String[] secrets = r.getSecrets();
+			
 			for(String secret : secrets)
 			{
 				 found = false;
@@ -455,10 +394,10 @@ public class YamlParser {
 				 }
 			}
 		}
-		if(input.getVolumes() != null)
+		if(r.getVolumes() != null)
 		{
-			Map<String,Volume> volumesList = input.getVolumes();
-			String[] volumes = volumesList.keySet().toArray(new String[volumesList.size()]);
+			
+			String[] volumes = r.getVolumes();
 			for(String volume : volumes)
 			{
 				 found = false;
@@ -478,18 +417,10 @@ public class YamlParser {
 				 }
 			}
 		}
-		if(input.getEnv_file() != null)
+		if(r.getEnvList() != null)
 		{
-			String[] envList;
-			if(input.getEnv_FileType() == "String") 
-			{
-				envList = new String[0];
-				envList[0] = input.getEnv_fileS();
-			}
-			else 
-			{
-				envList = input.getEnv_fileSL();
-			}
+			String[] envList = r.getEnvList();
+			
 			for(String env : envList)
 			{
 				 found = false;

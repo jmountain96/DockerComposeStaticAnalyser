@@ -854,5 +854,9 @@ public class TopLevel {
 			}
 		}
 	}
+	public TopLevelReturn accept(YamlParserVisitor parser)
+	{
+		return parser.visit(this);
+	}
 	
 }
