@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +33,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 
 public class YamlParser {
-	 public static void main(String[] args) throws FileNotFoundException {
+	 public static void main(String[] args) throws IOException {
 	        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 	     
 	        TopLevel level = new TopLevel();
@@ -50,6 +54,8 @@ public class YamlParser {
 	        level = setDependencies(level);
 	        Validate(level);
 	        checkUsed(level);
+	    
+	        
 	    }
 	 /**
 	  * Sets the required values within the input for dependency validation

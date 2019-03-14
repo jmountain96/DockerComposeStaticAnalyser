@@ -61,6 +61,14 @@ public class CheckStringListFormatValidator implements ConstraintValidator<Check
 						}
 				}
 				return true;
+			case ENV:
+				for(String x: value) {
+					if(x.matches("\\w+(.env)") == false)
+						{
+							return false;
+						}
+				}
+				return true;
 			default:
 				return false;
 		}

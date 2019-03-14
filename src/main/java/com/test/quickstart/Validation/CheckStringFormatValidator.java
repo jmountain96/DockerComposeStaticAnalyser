@@ -119,6 +119,14 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				{
 					return false;
 				}
+			case ENV:
+				
+				if(value.matches("\\w+(.env)") == false)
+					{
+						return false;
+					}
+			
+				return true;
 			default:
 				return false;
 		}
