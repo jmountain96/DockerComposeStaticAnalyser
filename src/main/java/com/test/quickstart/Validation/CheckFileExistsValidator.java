@@ -29,7 +29,8 @@ public class CheckFileExistsValidator implements ConstraintValidator<CheckFileEx
 		}
 		else 
 		{
-			System.out.println(value);
+			
+            context.buildConstraintViolationWithTemplate( "The following file cannot be found " + prefix + value).addConstraintViolation();
 			return false;
 		}
 	}
