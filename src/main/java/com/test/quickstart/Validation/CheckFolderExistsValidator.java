@@ -24,6 +24,7 @@ public class CheckFolderExistsValidator implements ConstraintValidator<CheckFold
 		}
 		else 
 		{
+			context.buildConstraintViolationWithTemplate( "The following folder cannot be found - " + value).addConstraintViolation();
 			return false;
 		}
 	}

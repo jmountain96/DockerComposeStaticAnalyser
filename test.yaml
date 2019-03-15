@@ -6,10 +6,13 @@ services:
       replicas: 1
     secrets:
       - my_secret
+      - my_secret
       - my_other_secret
 secrets:
   my_secret:
     file: ./my_secret.txt
+  my_other_secret:
+    external: true
   my_other_secret:
     external: true
   my_othder_secret:

@@ -65,9 +65,11 @@ public class TopLevel {
 	private String entrypointS;
 	private String entrypointType;
 	private Object env_file;
+	@CheckStringListFormat(message = "Invalid format for env file within env file list", value = ValidationEnums.CheckStringListType.ENV)
 	@CheckFileListExists(message = "One or more files within the env file list cannot be found")
 	@CheckDuplication(message = "Duplicate env_file detected")
 	private String[] env_fileSL;
+	@CheckStringFormat(message = "Invalid format for env file ", value = ValidationEnums.CheckStringType.ENV)
 	@CheckFileExists(message = "Specified enviroment file cannot be found", value = "")
 	private String env_fileS;
 	private String env_FileType;
@@ -142,7 +144,7 @@ public class TopLevel {
 	private Map<String, Volume> volumes;
 	@CheckFolderExists(message = "Working directory folder doesn't exist")
 	private String working_dir;
-	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing or Invalid Docker Compose Version")
+	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing Docker Compose Version, compiler will assume version 1 of Compose is being used")
 	private String version;
 	private Map<String,Service> services;
 	@Dependency(message = "Service references a network mode for a service that isn't present")
