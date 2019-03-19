@@ -2,6 +2,7 @@ package com.test.quickstart;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;;
@@ -57,11 +58,34 @@ public class TypeConverter {
 		return _ret;
 	}
 	@SuppressWarnings("unchecked")
-	public Map<String,Network> convertMapSN(Object input)
+	public Map<String, Network> convertNetworks(Map<String, Map<String,Object>> input)
 	{
-		Map<String,Network> _ret;
-		_ret = (Map<String,Network>)input;
-		return _ret;
+		Map<String,Network> ret = new HashMap<>();
+		for(String key : input.keySet()) 
+		{
+			Map<String,Object> s = input.get(key);
+			Ipam I = null;
+			BeanWrapper newWrappedNetwork = new BeanWrapperImpl(new Network());
+			for (Map.Entry<String, Object> property : s.entrySet())
+			{
+				System.out.println(property.getKey());
+				if(property.getKey().equals("ipam")) 
+				{
+					I = convertIpam(property.getValue());
+				}
+				else 
+				{
+					newWrappedNetwork.setPropertyValue(property.getKey(), property.getValue());
+				}
+			}
+			Network newNetwork = (Network)newWrappedNetwork.getWrappedInstance();
+			if(I != null)
+			{
+				newNetwork.setIpam(I);
+			}
+			ret.put(key, newNetwork);
+		}
+		return ret;
 	}
 	@SuppressWarnings("unchecked")
 	public Map<String,Configs> convertMapSC(Object input)
@@ -87,7 +111,6 @@ public class TypeConverter {
 		
 		
 	}
-	@SuppressWarnings("unchecked")
 	public Configs[] convertConfigsList(ArrayList<Map<String, Object>> input)
 	{
 		Configs[] ret = new Configs[input.size()];
@@ -158,5 +181,17 @@ public class TypeConverter {
 			index++;
 		}
 		return ret;
+	}
+	public Ipam convertIpam(Object input)
+	{
+		BeanWrapper ret = new BeanWrapperImpl(new Ipam());
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		Ipam b = (Ipam) ret.getWrappedInstance();
+		
+		return b;
 	}
 }

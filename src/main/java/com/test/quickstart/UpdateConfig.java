@@ -12,7 +12,7 @@ public class UpdateConfig {
 	private String failure_action;
 	@CheckStringFormat(message = "Invalid format for rollback config delay", value = ValidationEnums.CheckStringType.TIME)
 	private String monitor;
-	private String max_failure_ration;
+	private String max_failure_ratio;
 	@ContainsString(message = "Invalid order for update config", value = ValidationEnums.ContainsStringType.CONFIGORDER)
 	private String order;
 	public int getParallelism() {
@@ -39,11 +39,11 @@ public class UpdateConfig {
 	public void setMonitor(String monitor) {
 		this.monitor = monitor;
 	}
-	public String getMax_failure_ration() {
-		return max_failure_ration;
+	public String getMax_failure_ratio() {
+		return max_failure_ratio;
 	}
-	public void setMax_failure_ration(String max_failure_ration) {
-		this.max_failure_ration = max_failure_ration;
+	public void setMax_failure_ratio(String max_failure_ration) {
+		this.max_failure_ratio = max_failure_ration;
 	}
 	public String getOrder() {
 		return order;

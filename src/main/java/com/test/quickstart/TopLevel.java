@@ -78,7 +78,9 @@ public class TopLevel {
 	@CheckDuplication(message = "Duplicate environment detected")
 	private String[] environmentSL;
 	private String environmentType;
-	private String expose;
+	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
+	@CheckDuplication(message = "Duplicate port detected")
+	private String[] expose;
 	@CheckDuplication(message = "Duplicate external link detected")
 	private String[] external_links;
 	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
@@ -100,7 +102,7 @@ public class TopLevel {
 	private Object networks;
 	@CheckDuplication(message = "Duplicate network detected")
 	private String[] networksSL;
-	private Map<String,Network> networksM;
+	private Map<String, Network> networksN;
 	private String networkType;
 	@ContainsString(message = "Invalid network type", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String network_mode;
@@ -116,12 +118,13 @@ public class TopLevel {
 	private String privileged;
 	@ContainsString(message = "Read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
+	private String restart;
 	private Object secrets;
 	@CheckDuplication(message = "Duplicate secret detected")
 	private String[] secretsL;
 	private Secrets[] secretsSL;
 	private String secretsType;
-	private String security_opt;
+	private String[] security_opt;
 	@CheckStringFormat(message = "shm_size must be a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
 	private String shm_size;
 	@ContainsString(message = "stdin_open must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
@@ -134,8 +137,11 @@ public class TopLevel {
 	@CheckDuplication(message = "Duplicate sysctls detected")
 	private String[] sysctlsSL;
 	private String sysctlsType;
+	private Object tmpfs;
 	@CheckDuplication(message = "Duplicate tmpfs detected")
-	private String[] tmpfs;
+	private String[] tmpfsSL;
+	private String tmpfsS;
+	private String tmpfsType;
 	@ContainsString(message = "tty must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String tty;
 	private Ulimits ulimits;
@@ -377,10 +383,10 @@ public class TopLevel {
 	public void setEnvironmentType(String environmentType) {
 		this.environmentType = environmentType;
 	}
-	public String getExpose() {
+	public String[] getExpose() {
 		return expose;
 	}
-	public void setExpose(String expose) {
+	public void setExpose(String[] expose) {
 		this.expose = expose;
 	}
 	public String[] getExternal_links() {
@@ -463,11 +469,11 @@ public class TopLevel {
 	public void setNetworksSL(String[] networksSL) {
 		this.networksSL = networksSL;
 	}
-	public Map<String, Network> getNetworksM() {
-		return networksM;
+	public Map<String, Network> getNetworksN() {
+		return networksN;
 	}
-	public void setNetworksM(Map<String, Network> networksM) {
-		this.networksM = networksM;
+	public void setNetworksN(Map<String, Network> networksN) {
+		this.networksN = networksN;
 	}
 	public String getNetworkType() {
 		return networkType;
@@ -479,7 +485,7 @@ public class TopLevel {
 		return network_mode;
 	}
 	public void setNetwork_mode(String network_mode) {
-		this.network_mode = network_mode.substring(network_mode.lastIndexOf("="));;
+		this.network_mode = network_mode;
 		
 	}
 	public Dependencies getNetworkModeDependencies() {
@@ -547,6 +553,12 @@ public class TopLevel {
 	public void setRead_only(String read_only) {
 		this.read_only = read_only;
 	}
+	public String getRestart() {
+		return restart;
+	}
+	public void setRestart(String restart) {
+		this.restart = restart;
+	}
 	public Object getSecrets() {
 		return secrets;
 	}
@@ -583,10 +595,10 @@ public class TopLevel {
 	public void setSecretsType(String secretsType) {
 		this.secretsType = secretsType;
 	}
-	public String getSecurity_opt() {
+	public String[] getSecurity_opt() {
 		return security_opt;
 	}
-	public void setSecurity_opt(String security_opt) {
+	public void setSecurity_opt(String[] security_opt) {
 		this.security_opt = security_opt;
 	}
 	public String getShm_size() {
@@ -638,11 +650,30 @@ public class TopLevel {
 	public void setSysctlsType(String sysctlsType) {
 		this.sysctlsType = sysctlsType;
 	}
-	public String[] getTmpfs() {
-		return tmpfs;
+	public String[] getTmpfsSL() {
+		return tmpfsSL;
 	}
-	public void setTmpfs(String[] tmpfs) {
+	public void setTmpfsSL(String[] tmpfsSL) {
+		this.tmpfsSL = tmpfsSL;
+	}
+	public String getTmpfsS() {
+		return tmpfsS;
+	}
+	public void setTmpfsS(String tmpfsS) {
+		this.tmpfsS = tmpfsS;
+	}
+	public String getTmpfsType() {
+		return tmpfsType;
+	}
+	public void setTmpfsType(String tmpfsType) {
+		this.tmpfsType = tmpfsType;
+	}
+	public void setTmpfs(Object tmpfs) {
 		this.tmpfs = tmpfs;
+		convertTmpfs();
+	}
+	public Object getTmpfs() {
+		return tmpfs;
 	}
 	public String getTty() {
 		return tty;
@@ -709,11 +740,12 @@ public class TopLevel {
 		else 
 			
 		{
-			if(set == false){
-			commandS = tCommand;
-			commandType = "String";
-		}
+			if(set == false)
+			{
+				commandS = tCommand;
+				commandType = "String";
 			}
+		}	
 	}
 	private void convertDNS()
 	{
@@ -807,36 +839,17 @@ public class TopLevel {
 	}
 	private void convertNetworks() 
 	{
-		boolean set = false;
-		try {
-			networksM = converter.convertMapSN(networks);
-			networkType = "Map<String,Network>";
-			set = true;
+		Map<String, Map<String,Object>> networksAL = null;;
+		if(converter.checkStringList(networks) == true)
+		{
+			this.networksSL = converter.convertStringList(networks);
+			this.secretsType = "String[]";
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				networksSL = converter.convertStringList(networks);
-				networkType = "String[]";
-			}
-		}
-	}
-	private void convertSecrets()
-	{
-		boolean set = false;
-		try {
-			secretsSL = (Secrets[])secrets;
-			secretsType = "Secrets[]";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				secretsL = converter.convertStringList(secrets);
-				secretsType = "String[]";
-			}
+		else 
+		{
+			networksAL = (Map<String, Map<String,Object>>)networks;
+			networksN = converter.convertNetworks(networksAL);
+			this.secretsType = "Map<String,Network>";
 		}
 	}
 	private void convertSysctls()
@@ -855,6 +868,26 @@ public class TopLevel {
 				sysctlsType = "String[]";
 			}
 		}
+	}
+	private void convertTmpfs() 
+	{
+		boolean set = false;
+		String tTmpfs = tmpfs.toString();
+		if(tTmpfs.charAt(0) == '[')
+		{
+			tmpfsSL = converter.convertStringList(tmpfs);
+			tmpfsType = "String[]";
+			set = true;
+		}
+		else 
+			
+		{
+			if(set == false)
+			{
+				tmpfsS = tTmpfs;
+				tmpfsType = "String";
+			}
+		}	
 	}
 	public TopLevelReturn accept(YamlParserVisitor parser)
 	{

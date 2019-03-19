@@ -34,6 +34,7 @@ public class Network {
 	private String labelType;
 	private String name;
 	
+	
 	public TypeConverter getConverter() {
 		return converter;
 	}
@@ -69,6 +70,12 @@ public class Network {
 	}
 	public void setDriver_opts(Map<String, String> driver_opts) {
 		this.driver_opts = driver_opts;
+	}
+	public String getEnable_ipv6() {
+		return enable_ipv6;
+	}
+	public void setEnable_ipv6(String enable_ipv6) {
+		this.enable_ipv6 = enable_ipv6;
 	}
 	public String getExternal() {
 		return external;

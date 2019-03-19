@@ -41,10 +41,13 @@ public class Service {
 	private Object networks;
 	@CheckDuplication(message = "Duplicate service network detected")
 	private String[] networksSL;
-	private Map<String,Network> networksM;
+	private Map<String,Network> networksN;
 	private String networkType;
-	@CheckDuplication(message = "Duplicate service secret detected")
-	private String[] secrets; 
+	private Object secrets;
+	@CheckDuplication(message = "Duplicate secret detected")
+	private String[] secretsL;
+	private Secrets[] secretsSL;
+	private String secretsType;
 	private Object ports;
 	@CheckDuplication(message = "Duplicate service port detected")
 	private String[] portsSL;
@@ -270,10 +273,10 @@ public class Service {
 		this.networksSL = networksSL;
 	}
 	public Map<String, Network> getNetworksM() {
-		return networksM;
+		return networksN;
 	}
-	public void setNetworksM(Map<String, Network> networksM) {
-		this.networksM = networksM;
+	public void setNetworksM(Map<String, Network> networksN) {
+		this.networksN = networksN;
 	}
 	public String getNetworkType() {
 		return networkType;
@@ -290,7 +293,7 @@ public class Service {
 			this.NetworkDependencies.dependents = this.networksSL;
 		}
 		else {
-			this.NetworkDependencies.dependents = this.networksM.keySet().toArray(new String[networksM.size()] );
+			this.NetworkDependencies.dependents = this.networksN.keySet().toArray(new String[networksN.size()] );
 		}
 	}
 	
@@ -308,17 +311,60 @@ public class Service {
 		}
 		ServiceDependencies.target = services;
 	}
-	public String[] getSecrets() {
+	public Object getSecrets() {
 		return secrets;
 	}
-	public void setSecrets(String[] secrets) {
+	@SuppressWarnings("unchecked")
+	public void setSecrets(Object secrets) {
 		this.secrets = secrets;
+		Map<String, Map<String,Object>> secretsAL = null;;
+		if(Converter.checkStringList(secrets) == true)
+		{
+			this.secretsL = Converter.convertStringList(secrets);
+			this.secretsType = "String[]";
+		}
+		else 
+		{
+			secretsAL = (Map<String, Map<String,Object>>)secrets;
+			secretsSL = Converter.convertSecrets(secretsAL);
+			this.secretsType = "Secrets[]";
+		}
+	}
+	public String[] getSecretsL() {
+		return secretsL;
+	}
+	public void setSecretsL(String[] secretsL) {
+		this.secretsL = secretsL;
+	}
+	public Secrets[] getSecretsSL() {
+		return secretsSL;
+	}
+	public void setSecretsSL(Secrets[] secretsSL) {
+		this.secretsSL = secretsSL;
+	}
+	public String getSecretsType() {
+		return secretsType;
+	}
+	public void setSecretsType(String secretsType) {
+		this.secretsType = secretsType;
 	}
 	public Dependencies getSecretDependencies() {
 		return SecretDependencies;
 	}
 	public void setSecretDependencies(String[] secrets) {
-		SecretDependencies.dependents = this.secrets;
+		if(this.secretsType == "String[]")
+		{
+			this.SecretDependencies.dependents = this.secretsL;
+		}
+		else 
+		{
+			String[] secretSources = new String[secretsSL.length];
+			for(int i = 0 ; i < configsC.length ; i++)
+			{
+				secretSources[i] = secretsSL[i].getSource();
+			}
+			this.SecretDependencies.dependents = secretSources;
+		}
 		SecretDependencies.target = secrets;
 	}
 	public Object getPorts() {
@@ -432,19 +478,17 @@ public class Service {
 	}
 	private void convertNetworks() 
 	{
-		boolean set = false;
-		try {
-			networksM = Converter.convertMapSN(networks);
-			networkType = "Map<String,Network>";
-			set = true;
+		Map<String, Map<String,Object>> networksAL = null;;
+		if(Converter.checkStringList(networks) == true)
+		{
+			this.networksSL = Converter.convertStringList(networks);
+			this.secretsType = "String[]";
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				networksSL = Converter.convertStringList(networks);
-				networkType = "String[]";
-			}
+		else 
+		{
+			networksAL = (Map<String, Map<String,Object>>)networks;
+			networksN = Converter.convertNetworks(networksAL);
+			this.secretsType = "Map<String,Network>";
 		}
 	}
 	

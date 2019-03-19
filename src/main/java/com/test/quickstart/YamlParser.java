@@ -34,12 +34,22 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 
 public class YamlParser {
 	 public static void main(String[] args) throws IOException {
-	        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+	        TopLevel level = ParseFile("testConfigs/test1.yaml");
+	        checkForDuplicateKeys();
+	        level = setDependencies(level);
+	        Validate(level);
+	        checkUsed(level);
+	    
+	        
+	    }
+	 public static TopLevel ParseFile(String file)
+	 {
+		 	ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 	     
 	        TopLevel level = new TopLevel();
 	      
 	        try {
-	            level = mapper.readValue(new File("test.yaml"), TopLevel.class);
+	            level = mapper.readValue(new File(file), TopLevel.class);
 	            System.out.println(ReflectionToStringBuilder.toString(level,ToStringStyle.MULTI_LINE_STYLE));
 	        }
 	        catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
@@ -50,13 +60,9 @@ public class YamlParser {
 	            // TODO Auto-generated catch block
 	            e.printStackTrace();
 	        }
-	        checkForDuplicateKeys();
-	        level = setDependencies(level);
-	        Validate(level);
-	        checkUsed(level);
-	    
 	        
-	    }
+	        return level;
+	 }
 	 /**
 	  * Sets the required values within the input for dependency validation
 	  * @param input The input to be validated
@@ -105,6 +111,8 @@ public class YamlParser {
 		}
 		 return input;
 	 }
+	 
+	 
 	 /**
 	  * Validates all objects that exist within the input
 	  * @param level
@@ -140,10 +148,11 @@ public class YamlParser {
 	    		 System.out.println(violation.getMessage());
 	    	 } 
 	     }
-	     if(level.getNetworksM() != null)
+	     if(level.getNetworksN() != null)
 	     {
-	    	 for(Network n : level.getNetworksM().values())
+	    	 for(String net : level.getNetworksN().keySet())
     		 {
+	    		 Network n = level.getNetworksN().get(net);
     			 Set<ConstraintViolation<Network>> constraintViolationsN = validator.validate(n);
     			 for (ConstraintViolation<Network> violation : constraintViolationsN) 
     			 {
@@ -432,13 +441,16 @@ public class YamlParser {
 				 found = false;
 				 for(Service s : input.getServices().values())
 				 {
-					 for(String t : s.getEnvironmentDependencies().getDependents())
-						 {
-							 if(env.equals(t))
+					 if(s.getEnvironmentDependencies().getDependents() != null)
+					 {
+						 for(String t : s.getEnvironmentDependencies().getDependents())
 							 {
-								 found = true;
+								 if(env.equals(t))
+								 {
+									 found = true;
+								 }
 							 }
-						 }
+					 }
 				 }
 				 if( found == false)
 				 {
