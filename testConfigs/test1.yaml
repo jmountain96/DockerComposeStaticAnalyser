@@ -19,15 +19,12 @@ services:
       - source: my_config
         target: /redis_config
         uid: '103'
-        gid: '103'
+        gid: '104'
         mode: 0440
     depends_on:
       - db
     deploy:
       replicas: 6
-      update_config:
-        parallelism: 2
-        delay: 10s
       restart_policy:
         condition: on-failure
       endpoint_mode: vip
@@ -47,13 +44,20 @@ services:
         reservations:
           cpus: '0.25'
           memory: 20M
-      update_config:
+      rollback_config:
         parallelism: 2
         delay: 10s
         order: stop-first
         failure_action: pause
         monitor: 2s
         max_failure_ratio: 3
+      update_config:
+        parallelism: 1
+        delay: 11s
+        order: start-first
+        failure_action: rollback
+        monitor: 5s
+        max_failure_ratio: 4
     init: true
     links:
       - db
