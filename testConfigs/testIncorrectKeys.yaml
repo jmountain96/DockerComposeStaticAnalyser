@@ -1,4 +1,5 @@
-version: "3.1"
+version: "3.2"
+foo: 2e2r
 services:
   webapp:
     build:

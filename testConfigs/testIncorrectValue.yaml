@@ -24,7 +24,10 @@ services:
     depends_on:
       - db
     deploy:
-      replicas: 6
+      replicas: 
+        - "com.example.description=Accounting webapp"
+        - "com.example.department=Finance"
+        - "com.example.label-with-empty-value"
       restart_policy:
         condition: on-failure
         delay: 5s
