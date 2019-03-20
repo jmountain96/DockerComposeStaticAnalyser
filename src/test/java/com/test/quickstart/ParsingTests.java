@@ -3,7 +3,10 @@ package com.test.quickstart;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,13 +15,53 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+
 public class ParsingTests {
 	YamlParser y = new YamlParser();
-	
 	@Test
-	public void testFullCompose() 
+	public void testIncorrectKeys() 
 	{
-		TopLevel level = YamlParser.ParseFile("testConfigs/testFullCompose.yaml");
+		try {
+			YamlParser.ParseFile("testConfigs/testIncorrectKeys.yaml");
+			fail("Expected an UnrecognizedPropertyException to be thrown");
+		} 
+		catch(UnrecognizedPropertyException UPE)
+		{
+			assertTrue(UPE.getMessage().startsWith("Unrecognized field \"foo\""));
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void testIncorrectValue()
+	{
+		try {
+			YamlParser.ParseFile("testConfigs/testIncorrectValue.yaml");
+			fail("Expected an UnrecognizedPropertyException to be thrown");
+		} 
+		catch(MismatchedInputException MIE)
+		{
+			assertTrue(MIE.getMessage().startsWith("Cannot deserialize instance of `int` out of START_ARRAY token"));
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void testFullComposeTrue() 
+	{
+		TopLevel level = new TopLevel();
+		try {
+			level = YamlParser.ParseFile("testConfigs/testFullCompose.yaml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertEquals(level.getVersion(), "3.1");
 		assertNotNull(level.getServices().get("webapp"));
 		assertNotNull(level.getServices().get("webapp").getBuildB());
@@ -27,11 +70,11 @@ public class ParsingTests {
 		Map<String,Object> args = new LinkedHashMap<>();;
 		args.put("buildno", 1);
 		assertEquals(level.getServices().get("webapp").getBuildB().getArgsM().get("buildno"), args.get("buildno"));
-		//String[] labels = {"com.example.description=Accounting webapp", "com.example.department=Finance","com.example.label-with-empty-value" };
+		String[] labels = {"com.example.description=Accounting webapp", "com.example.department=Finance","com.example.label-with-empty-value" };
 		System.out.println(ReflectionToStringBuilder.toString(level.getServices().get("webapp"),ToStringStyle.MULTI_LINE_STYLE));
-		//assertArrayEquals(level.getServices().get("webapp").getBuildB().getLabelsS(), labels);
-		//assertEquals(level.getServices().get("webapp").getBuildB().getTarget(), "prod");
-		//assertEquals(level.getServices().get("webapp").getBuildB().getShm_size(), "2gb");
+		assertArrayEquals(level.getServices().get("webapp").getBuildB().getLabelsS(), labels);
+		assertEquals(level.getServices().get("webapp").getBuildB().getTarget(), "prod");
+		assertEquals(level.getServices().get("webapp").getBuildB().getShm_size(), "2gb");
 		assertNotNull(level.getServices().get("webapp").getConfigsC());
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getSource(), "my_config");
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getTarget(), "/redis_config");
@@ -83,21 +126,21 @@ public class ParsingTests {
 		assertArrayEquals(level.getServices().get("webapp").getNetworksM().get("some-network").getAliases(), alias);
 		assertEquals(level.getServices().get("webapp").getNetworksM().get("app_net").getIpv4_address(), "172.16.238.10");
 		assertEquals(level.getServices().get("webapp").getNetworksM().get("app_net").getIpv6_address(), "2001:3984:3989::1");
-		//assertNotNull(level.getServices().get("webapp").getSecretsSL());
-		//assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getSource(), "my_secret");
-		//assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getTarget(), "redis_secret");
-		//assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getUid(), 103);
-		//assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getGid(), 104);
-		//assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getMode(), "0440");
-		//assertNotNull(level.getServices().get("webapp").getVolumesVL());
-		//assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getType(), "volume");
-		//assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getSource(), "mydata");
-		//assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getTarget(), "/data");
-		//assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getVolume().get("nocopy"), "true");
-		//assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getRead_only(), "true");
-		//assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getBind().get("propagation"), "1");
-		//assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getTmpfs().get("size"), "3gb");
-		//assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getConsistency(), "cached");
+		assertNotNull(level.getServices().get("webapp").getSecretsSL());
+		assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getSource(), "my_secret");
+		assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getTarget(), "redis_secret");
+		assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getUid(), 103);
+		assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getGid(), 104);
+		assertEquals(level.getServices().get("webapp").getSecretsSL()[0].getMode(), "0440");
+		assertNotNull(level.getServices().get("webapp").getVolumesVL());
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getType(), "volume");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getSource(), "mydata");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getTarget(), "/data");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getVolume().get("nocopy"), "true");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getRead_only(), "true");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getBind().get("propagation"), "1");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getTmpfs().get("size"), "3gb");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getConsistency(), "cached");
 		assertNotNull(level.getBuildB());
 		assertEquals(level.getBuildB().getContext(), "./dir");
 		assertEquals(level.getBuildB().getDockerfile(), "Dockerfile-alternate");
@@ -153,10 +196,10 @@ public class ParsingTests {
 		String[] ipam_config = {"subnet 172.16.238.0/24","subnet 2001:3984:3989::/64"};
 		assertArrayEquals(level.getNetworksN().get("app_net").getIpam().getConfig(), ipam_config);
 		assertEquals(level.getPid(), "host");
-		//assertEquals(level.getPortsP()[0].getTarget(), 80);
-		//assertEquals(level.getPortsP()[0].getPublished(), 8080);
-		//assertEquals(level.getPortsP()[0].getProtocol(), "tcp");
-		//assertEquals(level.getPortsP()[0].getMode(), "host");
+		assertEquals(level.getPortsP()[0].getTarget(), 80);
+		assertEquals(level.getPortsP()[0].getPublished(), 8080);
+		assertEquals(level.getPortsP()[0].getProtocol(), "tcp");
+		assertEquals(level.getPortsP()[0].getMode(), "host");
 		assertEquals(level.getRestart(), "no");
 		assertEquals(level.getSecretsSL()[0].getFile(), "./secret_data");
 		assertEquals(level.getSecretsSL()[0].getSource(), "my_first_secret");
@@ -175,7 +218,7 @@ public class ParsingTests {
 		assertEquals(level.getUlimits().getNofile().getHard(), 40000);
 		assertEquals(level.getUserns_mode(), "host");
 		assertNotNull(level.getVolumes().get("example"));
-		Map<String,String> driver_opts = new HashMap<>();;
+		Map<String,String> driver_opts = new HashMap<>();
 		driver_opts.put("type", "nfs");
 		driver_opts.put("o", "addr=10.40.0.199,nolock,soft,rw");
 		driver_opts.put("device", ":/docker/example");
@@ -195,4 +238,6 @@ public class ParsingTests {
 		assertEquals(level.getStdin_open(), "true");
 		assertEquals(level.getTty(), "true");
 	}
+	
+	
 }

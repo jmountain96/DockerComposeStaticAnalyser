@@ -31,10 +31,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class YamlParser {
 	 public static void main(String[] args) throws IOException {
-	        TopLevel level = ParseFile("testConfigs/test1.yaml");
+		 TopLevel level = new TopLevel();
+		 try 
+		 {
+	       level = ParseFile("testConfigs/test1.yaml");
+		 }
+		 catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
+	        {
+	        	System.out.println(UPE.getMessage());
+	        	UPE.printStackTrace();
+	        }
+         catch (Exception e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
 	        checkForDuplicateKeys();
 	        level = setDependencies(level);
 	        Validate(level);
@@ -42,24 +56,18 @@ public class YamlParser {
 	    
 	        
 	    }
-	 public static TopLevel ParseFile(String file)
+	 public static TopLevel ParseFile(String file) throws JsonParseException, JsonMappingException, IOException
 	 {
 		 	ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 	     
 	        TopLevel level = new TopLevel();
 	      
-	        try {
-	            level = mapper.readValue(new File(file), TopLevel.class);
-	            System.out.println(ReflectionToStringBuilder.toString(level,ToStringStyle.MULTI_LINE_STYLE));
-	        }
-	        catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
-	        {
-	        	System.out.println(UPE.getMessage());
-	        }
-	        catch (Exception e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
-	        }
+	        
+            level = mapper.readValue(new File(file), TopLevel.class);
+            System.out.println(ReflectionToStringBuilder.toString(level,ToStringStyle.MULTI_LINE_STYLE));
+	        
+	        
+	        	
 	        
 	        return level;
 	 }

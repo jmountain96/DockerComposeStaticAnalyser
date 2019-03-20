@@ -511,7 +511,7 @@ public class TopLevel {
 	public void setPorts(Object ports) {
 		this.ports = ports;
 		ArrayList<Map<String, Object>> portsAL = null;
-		if(converter.checkStringList(ports) == true)
+		if(converter.checkStringList(ports) == false)
 		{
 			this.portsSL = converter.convertStringList(ports);
 			this.portsType = "String[]";

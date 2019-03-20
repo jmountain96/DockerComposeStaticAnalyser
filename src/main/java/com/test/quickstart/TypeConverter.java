@@ -3,6 +3,7 @@ package com.test.quickstart;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;;
@@ -26,7 +27,6 @@ public class TypeConverter {
 	
 	public boolean checkStringList(Object input) {
 		String value = input.toString();
-		System.out.println(value);
 		if(value.startsWith("[") == false) 
 		{
 			return false;
@@ -42,6 +42,19 @@ public class TypeConverter {
 		Map<String,String> _ret;
 		_ret = (Map<String,String>)input;
 		return _ret;
+	}
+	@SuppressWarnings("unchecked")
+	public Map<String, Object>[] convertMapList(ArrayList input)
+	{
+		Map<String, Object>[] listOfMaps = (Map<String, Object>[]) new Map[input.size()];
+		for(int i = 0; i < input.size(); i++)
+		{
+			Map<String, Object> map;
+			map = (Map<String, Object>)input.get(i);
+			listOfMaps[i] = map;
+		}
+		
+		return listOfMaps;
 	}
 	public String[] convertStringList(Object input)
 	{
@@ -193,5 +206,22 @@ public class TypeConverter {
 		Ipam b = (Ipam) ret.getWrappedInstance();
 		
 		return b;
+	}
+	public Secrets[] convertSecretList(Map<String,Object>[] input)
+	{
+		Secrets[] ret = new Secrets[input.length];
+		int index = 0;
+		for(Map<String,Object> sec : input)
+		{
+			BeanWrapper newWrappedSecrets = new BeanWrapperImpl(new Secrets());
+			for (Map.Entry<String, Object> property : sec.entrySet())
+			{
+				newWrappedSecrets.setPropertyValue(property.getKey(), property.getValue());
+			}
+			Secrets newSecrets = (Secrets)newWrappedSecrets.getWrappedInstance();
+			ret[index] = newSecrets;
+			index++;
+		}
+		return ret;
 	}
 }

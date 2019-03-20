@@ -317,16 +317,18 @@ public class Service {
 	@SuppressWarnings("unchecked")
 	public void setSecrets(Object secrets) {
 		this.secrets = secrets;
-		Map<String, Map<String,Object>> secretsAL = null;;
+		
 		if(Converter.checkStringList(secrets) == true)
 		{
-			this.secretsL = Converter.convertStringList(secrets);
-			this.secretsType = "String[]";
+			System.out.println(secrets.getClass());
+			Map<String,Object>[] secretsSO = Converter.convertMapList((ArrayList)secrets);
+			this.secretsSL = Converter.convertSecretList(secretsSO);
+			this.secretsType = "Secrets[]";
 		}
 		else 
 		{
-			secretsAL = (Map<String, Map<String,Object>>)secrets;
-			secretsSL = Converter.convertSecrets(secretsAL);
+			Map<String, Map<String,Object>> secretsSSO = (Map<String, Map<String,Object>>)secrets;
+			secretsSL = Converter.convertSecrets(secretsSSO);
 			this.secretsType = "Secrets[]";
 		}
 	}
@@ -410,7 +412,7 @@ public class Service {
 	public void setVolumes(Object volumes) {
 		this.volumes = volumes;
 		ArrayList<Map<String, Object>> volumeAL = null;
-		if(Converter.checkStringList(volumes) == true)
+		if(Converter.checkStringList(volumes) == false)
 		{
 			this.volumesSL = Converter.convertStringList(volumes);
 			this.volumeType = "String[]";
