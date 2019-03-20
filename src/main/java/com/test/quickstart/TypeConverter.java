@@ -26,6 +26,7 @@ public class TypeConverter {
 	
 	public boolean checkStringList(Object input) {
 		String value = input.toString();
+		System.out.println(value);
 		if(value.startsWith("[") == false) 
 		{
 			return false;
@@ -68,7 +69,6 @@ public class TypeConverter {
 			BeanWrapper newWrappedNetwork = new BeanWrapperImpl(new Network());
 			for (Map.Entry<String, Object> property : s.entrySet())
 			{
-				System.out.println(property.getKey());
 				if(property.getKey().equals("ipam")) 
 				{
 					I = convertIpam(property.getValue());

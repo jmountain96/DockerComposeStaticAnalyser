@@ -127,7 +127,7 @@ public class Service {
 	public void setConfigs(Object configs) {
 		this.configs = configs;
 		ArrayList<Map<String, Object>> configAL = null;
-		if(Converter.checkStringList(configs) == true)
+		if(Converter.checkStringList(configs) == false)
 		{
 			this.configsSL = Converter.convertStringList(configs);
 			this.configType = "String[]";
@@ -373,7 +373,7 @@ public class Service {
 	public void setPorts(Object ports) {
 		this.ports = ports;
 		ArrayList<Map<String, Object>> portsAL = null;
-		if(Converter.checkStringList(ports) == true)
+		if(Converter.checkStringList(ports) == false)
 		{
 			this.portsSL = Converter.convertStringList(ports);
 			this.portsType = "String[]";

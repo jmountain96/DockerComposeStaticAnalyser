@@ -79,7 +79,7 @@ public class Build {
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object  labels) {
+	public void setLabels(Object labels) {
 		this.labels = labels;
 		convertLabels();
 	}
