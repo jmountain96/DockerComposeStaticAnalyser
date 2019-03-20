@@ -7,7 +7,7 @@ import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 public class Volume {
 	private TypeConverter converter = new TypeConverter();
-	@ContainsString(message = "Invalid voume type", value = ValidationEnums.ContainsStringType.VOLUME_TYPE)
+	@ContainsString(message = "Invalid volume type", value = ValidationEnums.ContainsStringType.VOLUME_TYPE)
 	private String type;
 	private String source;
 	@CheckFolderExists(message = "Volume target folder doesn't exist")

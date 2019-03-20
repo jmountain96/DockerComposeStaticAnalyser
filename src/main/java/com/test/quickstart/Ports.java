@@ -5,23 +5,23 @@ import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.ValidationEnums;
 public class Ports {
 	@CheckStringFormat(message = "Invalid port target", value = ValidationEnums.CheckStringType.PORT)
-	private int target;
+	private String target;
 	@CheckStringFormat(message = "Invalid port published", value = ValidationEnums.CheckStringType.PORT)
-	private int published;
+	private String published;
 	@ContainsString(message = "Invalid port protocol", value = ValidationEnums.ContainsStringType.PORT_PROTOCOL)
 	private String protocol;
 	@ContainsString(message = "Invalid port mode", value = ValidationEnums.ContainsStringType.PORT_MODE)
 	private String mode;
-	public int getTarget() {
+	public String getTarget() {
 		return target;
 	}
-	public void setTarget(int target) {
+	public void setTarget(String target) {
 		this.target = target;
 	}
-	public int getPublished() {
+	public String getPublished() {
 		return published;
 	}
-	public void setPublished(int published) {
+	public void setPublished(String published) {
 		this.published = published;
 	}
 	public String getProtocol() {

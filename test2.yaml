@@ -1,0 +1,227 @@
+version: "3.1"
+services:
+  webapp:
+    build:
+      context: ./dir
+      dockerfile: Dockerfile-alternate
+      args:
+        buildno: 1
+      cache_from:
+        - alpine:latest
+        - corp/web_app:3.14
+      labels:
+        - "com.example.description=Accounting webapp"
+        - "com.example.department=Finance"
+        - "com.example.label-with-empty-value"
+      target: prod
+      shm_size: '2gb'
+    configs:
+      - source: my_config
+        target: /redis_config
+        uid: '103'
+        gid: '104'
+        mode: '0440'
+    depends_on:
+      - db
+    deploy:
+      replicas: 6
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      endpoint_mode: vip
+      labels:
+        com.example.description: "This label will appear on the web service"
+      mode: global
+      placement:
+        constraints:
+          - node.role == manager
+          - engine.labels.operatingsystem == ubuntu 14.04
+        preferences:
+          - spread == node.labels.zone
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 50M
+        reservations:
+          cpus: '0.25'
+          memory: 20M
+      rollback_config:
+        parallelism: 2
+        delay: 10s
+        order: stop-first
+        failure_action: pause
+        monitor: 2s
+        max_failure_ratio: 3
+      update_config:
+        parallelism: 1
+        delay: 11s
+        order: start-first
+        failure_action: rollback
+        monitor: 5s
+        max_failure_ratio: 4
+    init: true
+    links:
+      - db
+      - db:database
+      - redis
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://192.168.0.42:123"
+        max-size: "200k"
+        max-file: "10"
+    networks:
+       some-network:
+         aliases:
+          - alias1
+          - alias3
+       other-network:
+         aliases:
+          - alias2
+       app_net:
+         ipv4_address: 172.16.238.10
+         ipv6_address: 2001:3984:3989::1
+    secrets:
+       - source: my_secret
+         target: redis_secret
+         uid: '103'
+         gid: '104'
+         mode: '0440'
+    volumes:
+       - type: volume
+         source: mydata
+         target: /data
+         volume:
+           nocopy: true
+         read_only: true
+         bind:
+           propagation: 1
+         tmpfs:
+           size: '3gb'
+         consistency: cached
+
+build:
+  context: ./dir
+  cache_from:
+    - alpine:latest
+    - corp/web_app:3.14
+  dockerfile: Dockerfile-alternate
+  args:
+    buildno: 1
+    gitcommithash: cdc3b19
+  labels:
+    - "com.example.description=Accounting webapp"
+    - "com.example.department=Finance"
+    - "com.example.label-with-empty-value"
+  shm_size: '2gb'
+  target: prod
+cap_add:
+  - ALL
+cap_drop:
+  - NET_ADMIN
+  - SYS_ADMIN
+cgroup_parent: m-executor-abcd
+command: bundle exec thin -p 3000
+container_name: my-web-container
+configs:
+  my_first_config:
+    file: ./config_data
+  my_second_config:
+    external:
+      name: redis_config
+credential_spec:
+  file: my-credential-spec.json
+  registry: my-credential-spec
+devices:
+  - "/dev/ttyUSB0:/dev/ttyUSB0"
+dns: 8.8.8.8
+dns_search: example.com
+entrypoint: /code/entrypoint.sh
+env_file: f.env
+environment:
+  - RACK_ENV=development
+  - SHOW=true
+  - SESSION_SECRET
+expose:
+ - "3000"
+ - "8000"
+external_links:
+ - redis_1
+ - project_db_1:mysql
+ - project_db_1:postgresql
+extra_hosts:
+ - "somehost:162.242.195.82"
+ - "otherhost:50.31.209.229"
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost"]
+  interval: 1m30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s
+isolation: default
+network_mode: bridge
+networks:
+  app_net:
+    external: true
+    name: host
+    attachable: true
+    driver: bridge
+    enable_ipv6: true
+    internal: true
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+pid: "host"
+ports:
+  - target: 80
+    published: 8080
+    protocol: tcp
+    mode: host
+restart: "no"
+secrets:
+  my_first_secret:
+    file: ./secret_data
+  my_second_secret:
+    external: true
+    name: redis_secret
+security_opt:
+  - label:user:USER
+  - label:role:ROLE
+stop_grace_period: 1s
+stop_signal: SIGUSR1
+sysctls:
+  - net.core.somaxconn=1024
+  - net.ipv4.tcp_syncookies=0
+tmpfs: /run
+ulimits:
+  nproc: 65535
+  nofile:
+    soft: 20000
+    hard: 40000
+userns_mode: "host"
+volumes:
+  example:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.40.0.199,nolock,soft,rw"
+      device: ":/docker/example"
+    external: true
+    labels:
+      - "com.example.description=Database volume"
+      - "com.example.department=IT/Ops"
+      - "com.example.label-with-empty-value"
+    name: my-app-data
+user: postgresql
+working_dir: /code
+domainname: foo.com
+hostname: foo
+ipc: host
+mac_address: 02:42:ac:11:65:43
+privileged: true
+read_only: true
+shm_size: 64M
+stdin_open: true
+tty: true

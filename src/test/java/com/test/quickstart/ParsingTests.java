@@ -196,8 +196,8 @@ public class ParsingTests {
 		String[] ipam_config = {"subnet 172.16.238.0/24","subnet 2001:3984:3989::/64"};
 		assertArrayEquals(level.getNetworksN().get("app_net").getIpam().getConfig(), ipam_config);
 		assertEquals(level.getPid(), "host");
-		assertEquals(level.getPortsP()[0].getTarget(), 80);
-		assertEquals(level.getPortsP()[0].getPublished(), 8080);
+		assertEquals(level.getPortsP()[0].getTarget(), "80");
+		assertEquals(level.getPortsP()[0].getPublished(), "8080");
 		assertEquals(level.getPortsP()[0].getProtocol(), "tcp");
 		assertEquals(level.getPortsP()[0].getMode(), "host");
 		assertEquals(level.getRestart(), "no");

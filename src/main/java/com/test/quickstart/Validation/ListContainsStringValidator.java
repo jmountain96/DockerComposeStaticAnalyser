@@ -42,7 +42,8 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 				boolean matches = false;
 				for(String n : constraints)
 				{
-					if(x.matches("(" + n + ")( == )\\w+") == true)
+					
+					if(x.matches("(" + n + "){1}.*( == ){1}.+") == true)
 					{
 						matches = true;
 					}
@@ -61,7 +62,7 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 				boolean matches = false;
 				for(String n : constraints)
 				{
-					if(x.matches("(spread=)(" + n + ")( == )\\w+") == true)
+					if(x.contains("spread == " + n)== true)
 					{
 						matches = true;
 					}

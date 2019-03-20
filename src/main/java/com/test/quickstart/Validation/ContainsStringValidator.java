@@ -12,20 +12,20 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 	private ContainsStringType type;
 	private List<String> endpoint_mode = Arrays.asList("VIP", "DNSRR");
 	private List<String> deploy_mode= Arrays.asList("GLOBAL", "REPLICATED");
-	private List<String> restart_policy = Arrays.asList("NONE", "ON-FALIURE", "ANY");
+	private List<String> restart_policy = Arrays.asList("NONE", "ON-FAILURE", "ANY");
 	private List<String> rb_failure_action = Arrays.asList("CONTINUE", "PAUSE");
 	private List<String> uc_failure_action = Arrays.asList("CONTINUE", "PAUSE", "ROLLBACK");
 	private List<String> configOrder = Arrays.asList("STOP-FIRST", "START-FIRST");
 	private List<String> booleanString= Arrays.asList("TRUE","FALSE","YES","NO");
 	private List<String> isolation = Arrays.asList("DEFAULT","PROCESS","HYPERV");
 	private List<String> healthCheckTest= Arrays.asList("NONE", "CMD", "CMDSHELL");
-	private List<String> networkMode = Arrays.asList("bridge", "host", "overlay", "macvlan", "none");
+	private List<String> networkMode = Arrays.asList("BRIDGE", "HOST", "OVERLAY", "MACVLAN", "NONE");
 	private List<String> versions = Arrays.asList("1","1.0", "2","2.0", "2.1", "2.2", "2.3", "2.4", "3","3.0", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7");
 	private String pid = "host";
-	private List<String> portProtocol = Arrays.asList("tcp", "udp");
-	private List<String> portMode = Arrays.asList("host", "ingress");
-	private List<String> volumeType = Arrays.asList("volumes", "bind","tmpfs");
-	private List<String> volumeConsistency = Arrays.asList("consistent", "cached", "delegated");
+	private List<String> portProtocol = Arrays.asList("TCP", "UDP");
+	private List<String> portMode = Arrays.asList("HOST", "INGRESS");
+	private List<String> volumeType = Arrays.asList("VOLUME", "BIND","TMPFS");
+	private List<String> volumeConsistency = Arrays.asList("CONSISTENT", "CACHED", "DELEGATED");
 	private List<String> loggingDriver = Arrays.asList("none", "json-file", "local", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "gcplogs", "logentries" );
 	public void initialize(ContainsString constraintAnnotation) {
         this.type = constraintAnnotation.value();
@@ -147,13 +147,13 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 				return false;
 			}
 		case PID:
-			if(value == pid )
+			if(value.equals(pid) )
 			{
 				return true;
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following PID is invalid " + value + "/n it must be one of the following " + pid.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following PID is invalid " + value + "\n it must be one of the following " + pid.toString()).addConstraintViolation();
 				return false;
 			}
 		case PORT_PROTOCOL:
@@ -203,7 +203,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following logging driver is invalid " + value + "/n it must be one of the following " + loggingDriver.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following logging driver is invalid " + value + "it must be one of the following " + loggingDriver.toString()).addConstraintViolation();
 				return false;
 			}
 		default:

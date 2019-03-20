@@ -38,7 +38,7 @@ public class YamlParser {
 		 TopLevel level = new TopLevel();
 		 try 
 		 {
-	       level = ParseFile("testConfigs/test1.yaml");
+	       level = ParseFile("testConfigs/testValidationPass.yaml");
 		 }
 		 catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
 	        {
