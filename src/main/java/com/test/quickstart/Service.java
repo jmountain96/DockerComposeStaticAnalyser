@@ -200,8 +200,8 @@ public class Service {
 	}
 	public void setEnvironmentDependencies(String[] environments) {
 		
-		ServiceDependencies.dependents = this.env_file;
-		ServiceDependencies.target = environments;
+		EnvironmentDependencies.dependents = this.env_file;
+		EnvironmentDependencies.target = environments;
 	}
 	public Object getLabels() {
 		return labels;
@@ -459,7 +459,7 @@ public class Service {
 			}
 			this.VolumeDependencies.dependents = volumeSources;
 		}
-		this.ConfigDependencies.target = volumeList;
+		this.VolumeDependencies.target = volumeList;
 	}
 	private void convertLabels() 
 	{

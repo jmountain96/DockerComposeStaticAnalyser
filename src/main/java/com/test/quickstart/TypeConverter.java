@@ -44,7 +44,7 @@ public class TypeConverter {
 		return _ret;
 	}
 	@SuppressWarnings("unchecked")
-	public Map<String, Object>[] convertMapList(ArrayList input)
+	public Map<String, Object>[] convertMapList(List<Map<String, Object>> input)
 	{
 		Map<String, Object>[] listOfMaps = (Map<String, Object>[]) new Map[input.size()];
 		for(int i = 0; i < input.size(); i++)
@@ -61,6 +61,7 @@ public class TypeConverter {
 		String[] _ret;
 		String stringLabels = input.toString();
 		stringLabels = stringLabels.substring(1, stringLabels.length()-1);
+		System.out.println(stringLabels);
 		_ret = Arrays.asList(stringLabels.split("\\s*,\\s*")).toArray(new String[0]);
 		return _ret;
 	}
@@ -124,7 +125,7 @@ public class TypeConverter {
 		
 		
 	}
-	public Configs[] convertConfigsList(ArrayList<Map<String, Object>> input)
+	public Configs[] convertConfigsList(List<Map<String, Object>> input)
 	{
 		Configs[] ret = new Configs[input.size()];
 		
@@ -141,7 +142,7 @@ public class TypeConverter {
 		}
 		return ret;
 	}
-	public Ports[] convertPorts(ArrayList<Map<String, Object>> input)
+	public Ports[] convertPorts(List<Map<String, Object>> input)
 	{
 		Ports[] ret = new Ports[input.size()];
 		
@@ -159,7 +160,7 @@ public class TypeConverter {
 		return ret;
 	}
 	
-	public Volume[] convertVolumes(ArrayList<Map<String, Object>> input)
+	public Volume[] convertVolumes(List<Map<String, Object>> input)
 	{
 		Volume[] ret = new Volume[input.size()];
 		

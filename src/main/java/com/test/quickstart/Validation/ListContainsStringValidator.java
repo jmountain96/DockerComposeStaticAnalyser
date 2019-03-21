@@ -74,7 +74,7 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 					
 				}
 			}
-		
+			return true;
 		default:
 			context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate( "Unknown type"  ).addConstraintViolation();

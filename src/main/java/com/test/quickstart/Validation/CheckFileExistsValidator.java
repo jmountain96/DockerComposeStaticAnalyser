@@ -18,7 +18,7 @@ public class CheckFileExistsValidator implements ConstraintValidator<CheckFileEx
         this.prefix = constraintAnnotation.value();
     }
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if(value == null || value == "true")
+		if(value == null || value.equals("true"))
 		{
 			return true;
 		}
@@ -29,7 +29,6 @@ public class CheckFileExistsValidator implements ConstraintValidator<CheckFileEx
 		}
 		else 
 		{
-			
             context.buildConstraintViolationWithTemplate( "The following file cannot be found " + prefix + value).addConstraintViolation();
 			return false;
 		}

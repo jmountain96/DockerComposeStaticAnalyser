@@ -90,7 +90,7 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getDeploy().getRestart_policy().getMax_attempts(), 3);
 		assertEquals(level.getServices().get("webapp").getDeploy().getRestart_policy().getWindow(), "120s");
 		assertEquals(level.getServices().get("webapp").getDeploy().getEndpoint_mode(), "vip");
-		Map<String,String> dlabels = new HashMap<>();;
+		Map<String,String> dlabels = new HashMap<>();
 		dlabels.put("com.example.description", "This label will appear on the web service");
 		assertEquals(level.getServices().get("webapp").getDeploy().getLabelsM(), dlabels);
 		assertEquals(level.getServices().get("webapp").getDeploy().getMode(), "global");
@@ -193,8 +193,8 @@ public class ParsingTests {
 		assertEquals(level.getNetworksN().get("app_net").getDriver(), "bridge");
 		assertEquals(level.getNetworksN().get("app_net").getEnable_ipv6(), "true");
 		assertEquals(level.getNetworksN().get("app_net").getIpam().getDriver(), "default");
-		String[] ipam_config = {"subnet 172.16.238.0/24","subnet 2001:3984:3989::/64"};
-		assertArrayEquals(level.getNetworksN().get("app_net").getIpam().getConfig(), ipam_config);
+		String subnet = "172.16.238.0/24";
+		assertEquals(level.getNetworksN().get("app_net").getIpam().getSubnet(), subnet);
 		assertEquals(level.getPid(), "host");
 		assertEquals(level.getPortsP()[0].getTarget(), "80");
 		assertEquals(level.getPortsP()[0].getPublished(), "8080");

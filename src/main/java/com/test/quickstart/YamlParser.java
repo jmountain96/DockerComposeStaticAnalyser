@@ -53,6 +53,7 @@ public class YamlParser {
 	        level = setDependencies(level);
 	        Validate(level);
 	        checkUsed(level);
+	        
 	    
 	        
 	    }
@@ -64,7 +65,7 @@ public class YamlParser {
 	      
 	        
             level = mapper.readValue(new File(file), TopLevel.class);
-            System.out.println(ReflectionToStringBuilder.toString(level,ToStringStyle.MULTI_LINE_STYLE));
+            
 	        
 	        
 	        	
@@ -89,19 +90,19 @@ public class YamlParser {
 			
 			for(Service s : input.getServices().values()) 
 			{
-				if(r.getConfigs() != null)
+				if(r.getConfigs() != null && s.getConfigs() != null)
 				{
 					s.setConfigDependencies(r.getConfigs());
 				}
-				if(r.getEnvList() != null)
+				if(r.getEnvList() != null && s.getEnv_file() != null)
 				{
 					s.setEnvironmentDependencies(r.getEnvList());
 				}
-				if(r.getNetworks() != null)
+				if(r.getNetworks() != null && s.getNetworks() != null)
 				{
 					s.setNetworkDependencies(r.getNetworks());
 				}
-				if(r.getSecrets() != null)
+				if(r.getSecrets() != null && s.getSecrets() != null)
 				{
 					s.setSecretDependencies(r.getSecrets());
 				}
@@ -109,7 +110,7 @@ public class YamlParser {
 				{
 					s.setServiceDependenciesD(r.getServices());
 				}
-				if(r.getVolumes() != null)
+				if(r.getVolumes() != null && s.getVolumes() != null)
 				{
 					s.setVolumeDependencies(r.getVolumes());
 				}
@@ -125,20 +126,23 @@ public class YamlParser {
 	  * Validates all objects that exist within the input
 	  * @param level
 	  */
-	 public static void Validate(TopLevel level)
+	 public static int Validate(TopLevel level)
 	 {
+		 int totalViolations = 0;
 	     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	     Validator validator = factory.getValidator();
 	     Set<ConstraintViolation<TopLevel>> constraintViolations = validator.validate(level);
 	     for (ConstraintViolation<TopLevel> violation : constraintViolations) 
 	     {
 	          System.out.println(violation.getMessage());
+	          totalViolations += 1;
 	     }
 	     if(level.getBuildB() != null) {
 	    	 Set<ConstraintViolation<Build>> constraintViolationsB = validator.validate(level.getBuildB());
 	    	 for (ConstraintViolation<Build> violation : constraintViolationsB) 
 	    	 {
 	    		 System.out.println(violation.getMessage());
+	    		 totalViolations += 1;
 	    	 }
 	     }
 	     if(level.getCredential_spec() != null) {
@@ -146,6 +150,7 @@ public class YamlParser {
 	    	 for (ConstraintViolation<CredentialSpec> violation : constraintViolationsC) 
 	    	 {
 	    		 System.out.println(violation.getMessage());
+	    		 totalViolations += 1;
 	    	 }
 	     }
 	     if(level.getHealthcheck()!= null)
@@ -154,6 +159,7 @@ public class YamlParser {
 	    	 for (ConstraintViolation<Healthcheck> violation : constraintViolationsH) 
 	    	 {
 	    		 System.out.println(violation.getMessage());
+	    		 totalViolations += 1;
 	    	 } 
 	     }
 	     if(level.getNetworksN() != null)
@@ -165,6 +171,7 @@ public class YamlParser {
     			 for (ConstraintViolation<Network> violation : constraintViolationsN) 
     			 {
     				 System.out.println(violation.getMessage());
+    				 totalViolations += 1;
     			 }
     			 if(n.getIpam() != null)
     			 {
@@ -172,6 +179,7 @@ public class YamlParser {
         			 for (ConstraintViolation<Ipam> violation : constraintViolationsNI) 
         			 {
         				 System.out.println(violation.getMessage());
+        				 totalViolations += 1;
         			 }
     			 }
     		 }
@@ -184,6 +192,7 @@ public class YamlParser {
 		    	 for (ConstraintViolation<Ports> violation : constraintViolationsP) 
 		    	 {
 		    		 System.out.println(violation.getMessage());
+		    		 totalViolations += 1;
 		    	 }
 	    	 }
 	     }
@@ -195,6 +204,7 @@ public class YamlParser {
 		    	 for (ConstraintViolation<Secrets> violation : constraintViolationsS) 
 		    	 {
 		    		 System.out.println(violation.getMessage());
+		    		 totalViolations += 1;
 		    	 }
 	    	 }
 	     }
@@ -204,6 +214,7 @@ public class YamlParser {
 	    	 for (ConstraintViolation<Ulimits> violation : constraintViolationsH) 
 	    	 {
 	    		 System.out.println(violation.getMessage());
+	    		 totalViolations += 1;
 	    	 }
 	    	 if(level.getUlimits().getNofile() != null)
 	    	 {
@@ -211,6 +222,7 @@ public class YamlParser {
 		    	 for (ConstraintViolation<Nofile> violation : constraintViolationsUNF) 
 		    	 {
 		    		 System.out.println(violation.getMessage());
+		    		 totalViolations += 1;
 		    	 } 
 	    	 }
 	     }
@@ -222,6 +234,7 @@ public class YamlParser {
 		    	 for (ConstraintViolation<Service> violation : constraintViolationsSE) 
 		    	 {
 		    		 System.out.println(violation.getMessage());
+		    		 totalViolations += 1;
 		    	 }
 		    	 if(s.getBuildB() != null)
 		    	 {
@@ -229,6 +242,7 @@ public class YamlParser {
 			    	 for (ConstraintViolation<Build> violation : constraintViolationsSB) 
 			    	 {
 			    		 System.out.println(violation.getMessage());
+			    		 totalViolations += 1;
 			    	 } 
 		    	 }
 		    	 if(s.getDeploy() != null)
@@ -237,6 +251,7 @@ public class YamlParser {
 			    	 for (ConstraintViolation<Deploy> violation : constraintViolationsSD) 
 			    	 {
 			    		 System.out.println(violation.getMessage());
+			    		 totalViolations += 1;
 			    	 }
 			    	 if(s.getDeploy().getPlacement() != null)
 			    	 {
@@ -244,6 +259,7 @@ public class YamlParser {
 				    	 for (ConstraintViolation<Placement> violation : constraintViolationsSDP) 
 				    	 {
 				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
 				    	 } 
 			    	 }
 			    	 if(s.getDeploy().getResources() != null)
@@ -252,6 +268,7 @@ public class YamlParser {
 				    	 for (ConstraintViolation<Resources> violation : constraintViolationsSDR) 
 				    	 {
 				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
 				    	 } 
 			    	 }
 			    	 if(s.getDeploy().getRestart_policy() != null)
@@ -260,6 +277,7 @@ public class YamlParser {
 				    	 for (ConstraintViolation<RestartPolicy> violation : constraintViolationsSDRP) 
 				    	 {
 				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
 				    	 } 
 			    	 }
 			    	 if(s.getDeploy().getRollback_config() != null)
@@ -268,6 +286,7 @@ public class YamlParser {
 				    	 for (ConstraintViolation<RollbackConfig> violation : constraintViolationsSDRC) 
 				    	 {
 				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
 				    	 } 
 			    	 }
 			    	 if(s.getDeploy().getUpdate_config() != null)
@@ -276,6 +295,7 @@ public class YamlParser {
 				    	 for (ConstraintViolation<UpdateConfig> violation : constraintViolationsSDUC) 
 				    	 {
 				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
 				    	 } 
 			    	 }
 			    	 
@@ -286,6 +306,7 @@ public class YamlParser {
 			    	 for (ConstraintViolation<Logging> violation : constraintViolationsSL) 
 			    	 {
 			    		 System.out.println(violation.getMessage());
+			    		 totalViolations += 1;
 			    	 } 
 		    	 }
 		    	 if(s.getNetworksM() != null)
@@ -296,6 +317,7 @@ public class YamlParser {
 		    			 for (ConstraintViolation<Network> violation : constraintViolationsSN) 
 		    			 {
 		    				 System.out.println(violation.getMessage());
+		    				 totalViolations += 1;
 		    			 } 
 		    		 }
 		    	 }
@@ -307,6 +329,7 @@ public class YamlParser {
 		    			 for (ConstraintViolation<Ports> violation : constraintViolationsSP) 
 		    			 {
 		    				 System.out.println(violation.getMessage());
+		    				 totalViolations += 1;
 		    			 } 
 		    		 }
 		    	 }
@@ -318,11 +341,13 @@ public class YamlParser {
 		    			 for (ConstraintViolation<Volume> violation : constraintViolationsSV) 
 		    			 {
 		    				 System.out.println(violation.getMessage());
+		    				 totalViolations += 1;
 		    			 } 
 		    		 }
 		    	 }
 	    	 } 
 	     }
+	     return totalViolations;
 	 }
 	 private static void checkForDuplicateKeys()
 	 {
@@ -355,13 +380,16 @@ public class YamlParser {
 				 found = false;
 				 for(Service s : input.getServices().values())
 				 {
-					 for(String t : s.getConfigDependencies().getDependents())
-						 {
-							 if(config.equals(t))
+					 if(s.getConfigDependencies().getDependents() != null)
+					 {
+						 for(String t : s.getConfigDependencies().getDependents())
 							 {
-								 found = true;
+								 if(config.equals(t))
+								 {
+									 found = true;
+								 }
 							 }
-						 }
+					 }
 				 }
 				 if( found == false)
 				 {
@@ -378,13 +406,16 @@ public class YamlParser {
 				 found = false;
 				 for(Service s : input.getServices().values())
 				 {
-					 for(String t : s.getNetworkDependencies().getDependents())
-						 {
-							 if(network.equals(t))
+					 if(s.getNetworkDependencies().getDependents() != null)
+					 {
+						 for(String t : s.getNetworkDependencies().getDependents())
 							 {
-								 found = true;
+								 if(network.equals(t))
+								 {
+									 found = true;
+								 }
 							 }
-						 }
+					 }
 				 }
 				 if( found == false)
 				 {
@@ -401,15 +432,17 @@ public class YamlParser {
 				 found = false;
 				 for(Service s : input.getServices().values())
 				 {
-					 
-					 for(String t : s.getSecretDependencies().getDependents())
-						 {
-						 
-							 if(secret.equals(t))
+					 if(s.getSecretDependencies().getDependents() != null)
+					 {
+						 for(String t : s.getSecretDependencies().getDependents())
 							 {
-								 found = true;
+							 
+								 if(secret.equals(t))
+								 {
+									 found = true;
+								 }
 							 }
-						 }
+					 }
 				 }
 				 if( found == false)
 				 {
@@ -426,13 +459,16 @@ public class YamlParser {
 				 found = false;
 				 for(Service s : input.getServices().values())
 				 {
-					 for(String t : s.getVolumeDependencies().getDependents())
-						 {
-							 if(volume.equals(t))
+					 if(s.getVolumeDependencies().getDependents() != null)
+					 {
+						 for(String t : s.getVolumeDependencies().getDependents())
 							 {
-								 found = true;
+								 if(volume.equals(t))
+								 {
+									 found = true;
+								 }
 							 }
-						 }
+					 }
 				 }
 				 if( found == false)
 				 {
