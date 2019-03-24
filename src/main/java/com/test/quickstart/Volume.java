@@ -14,10 +14,10 @@ public class Volume {
 	private String target;
 	@ContainsString(message = "Volume read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
-	private Map<String,String> bind;
-	private Map<String,String> volume;
-	private Map<String,String> tmpfs;
-	@ContainsString(message = "Invalid voume type", value = ValidationEnums.ContainsStringType.VOLUME_CONSISTENCY)
+	private Bind bind;
+	private VolumeV volume;
+	private TMPFS tmpfs;
+	@ContainsString(message = "Invalid volume consistency", value = ValidationEnums.ContainsStringType.VOLUME_CONSISTENCY)
 	private String consistency;
 	private String driver;
 	private Map<String,String> driver_opts;
@@ -64,23 +64,23 @@ public class Volume {
 	public void setRead_only(String read_only) {
 		this.read_only = read_only;
 	}
-	public Map<String, String> getBind() {
+	public Bind getBind() {
 		return bind;
 	}
-	public void setBind(Map<String, String> bind) {
+	public void setBind(Bind bind) {
 		this.bind = bind;
 	}
-	public Map<String, String> getVolume() {
+	public VolumeV getVolume() {
 		return volume;
 	}
-	public void setVolume(Map<String, String> volume) {
+	public void setVolume(VolumeV volume) {
 		this.volume = volume;
 	}
-	public Map<String, String> getTmpfs() {
+	public TMPFS getTmpfs() {
 		return tmpfs;
 	}
-	public void setTmpfs(Map<String, String> tmpfs) {
-		this.tmpfs = tmpfs;
+	public void setTmpfs(TMPFS b) {
+		this.tmpfs = b;
 	}
 	public String getConsistency() {
 		return consistency;

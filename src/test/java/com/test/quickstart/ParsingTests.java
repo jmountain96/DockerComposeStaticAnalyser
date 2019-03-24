@@ -136,10 +136,10 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getType(), "volume");
 		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getSource(), "mydata");
 		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getTarget(), "/data");
-		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getVolume().get("nocopy"), "true");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getVolume().getNocopy(), "true");
 		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getRead_only(), "true");
-		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getBind().get("propagation"), "1");
-		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getTmpfs().get("size"), "3gb");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getBind().getPropagation(), "1");
+		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getTmpfs().getSize(), "3gb");
 		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getConsistency(), "cached");
 		assertNotNull(level.getBuildB());
 		assertEquals(level.getBuildB().getContext(), "./dir");

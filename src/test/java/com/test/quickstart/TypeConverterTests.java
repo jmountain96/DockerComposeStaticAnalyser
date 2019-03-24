@@ -118,5 +118,45 @@ public class TypeConverterTests {
 		List<Map<String, Object>> testMapArrayList = Arrays.asList(testMapList);
 		assertEquals(t.convertVolumes(testMapArrayList)[0].getDriver(), testVolumesList[0].getDriver());
 	}
-	
+	@Test 
+	public void convertSecretsTest()
+	{
+		Map<String,Map<String,Object>> testMap = new HashMap<>();
+		Map<String,Object> testMap2 = new HashMap<>();
+		testMap2.put("source", "foo");
+		testMap.put("foo", testMap2);
+		Secrets testSecrets = new Secrets();
+		testSecrets.setSource("foo");
+		Map<String,Secrets> testMap3 = new HashMap<>();
+		testMap3.put("foo", testSecrets);
+		assertEquals(t.convertSecrets(testMap)[0].getSource(), testMap3.get("foo").getSource());
+	}
+	@Test
+	public void convertIpamTest()
+	{
+		Map<String,Object> testMap = new HashMap<>();
+		testMap.put("driver", "bar");
+		assertEquals(t.convertIpam(testMap).getDriver(), "bar");
+	}
+	@Test
+	public void convertSecretsListTest()
+	{
+		Map<String, Object>[] testMapList = (Map<String, Object>[]) new Map[1];
+		testMapList[0] = new HashMap<>();
+		testMapList[0].put("source", "bar");
+		Secrets[] testSecretsList = new Secrets[1];
+		Secrets testSecrets = new Secrets();
+		testSecrets.setSource("bar");
+		testSecretsList[0] = testSecrets;
+		assertEquals(t.convertSecretList(testMapList)[0].getSource(), testSecretsList[0].getSource());
+	}
+	@Test
+	public void convertMapSCTest()
+	{
+		Map<String,Configs> testMap = new HashMap<>();
+		Configs testConfig = new Configs();
+		testConfig.setName("bar");
+		testMap.put("foo", testConfig);
+		assertEquals(t.convertMapSC((Object)testMap).get("foo").getName(), "bar" );
+	}
 }

@@ -61,7 +61,6 @@ public class TypeConverter {
 		String[] _ret;
 		String stringLabels = input.toString();
 		stringLabels = stringLabels.substring(1, stringLabels.length()-1);
-		System.out.println(stringLabels);
 		_ret = Arrays.asList(stringLabels.split("\\s*,\\s*")).toArray(new String[0]);
 		return _ret;
 	}
@@ -167,13 +166,43 @@ public class TypeConverter {
 		
 		for(int i = 0 ;  i < input.size(); i++) 
 		{
+			Bind B = null;
+			TMPFS T = null;
+			VolumeV V = null;
 			BeanWrapper newWrappedConfig = new BeanWrapperImpl(new Volume());
 			for (Map.Entry<String, Object> property : input.get(i).entrySet())
 			{
-				newWrappedConfig.setPropertyValue(property.getKey(), property.getValue());
+				if(property.getKey().equals("bind"))
+				{
+					B = convertBind(property.getValue());
+				}
+				else if(property.getKey().equals("tmpfs"))
+				{
+					T = convertTmpfs(property.getValue());
+				}
+				else if(property.getKey().equals("volume"))
+				{
+					V = convertVolumeV(property.getValue());
+				}
+				else
+				{
+					newWrappedConfig.setPropertyValue(property.getKey(), property.getValue());
+				}
 			}
 			Volume newConfig = (Volume)newWrappedConfig.getWrappedInstance();
 			ret[i] = newConfig;
+			if(B != null)
+			{
+				ret[i].setBind(B);
+			}
+			if(T != null)
+			{
+				ret[i].setTmpfs(T);
+			}
+			if(V != null)
+			{
+				ret[i].setVolume(V);
+			}
 		}
 		return ret;
 	}
@@ -224,5 +253,41 @@ public class TypeConverter {
 			index++;
 		}
 		return ret;
+	}
+	public Bind convertBind(Object input)
+	{
+		BeanWrapper ret = new BeanWrapperImpl(new Bind());
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		Bind b = (Bind) ret.getWrappedInstance();
+		
+		return b;
+	}
+	public TMPFS convertTmpfs(Object input)
+	{
+		BeanWrapper ret = new BeanWrapperImpl(new TMPFS());
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		TMPFS b = (TMPFS) ret.getWrappedInstance();
+		
+		return b;
+	}
+	public VolumeV convertVolumeV(Object input)
+	{
+		BeanWrapper ret = new BeanWrapperImpl(new VolumeV());
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		VolumeV b = (VolumeV) ret.getWrappedInstance();
+		
+		return b;
 	}
 }
