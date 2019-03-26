@@ -38,7 +38,7 @@ public class YamlParser {
 		 TopLevel level = new TopLevel();
 		 try 
 		 {
-	       level = ParseFile("testConfigs/testValidationPass.yaml");
+	       level = ParseFile("testConfigs/a.docker-compose.yml.txt");
 		 }
 		 catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
 	        {
@@ -67,9 +67,7 @@ public class YamlParser {
             level = mapper.readValue(new File(file), TopLevel.class);
             
 	        
-	        
-	        	
-	        
+	
 	        return level;
 	 }
 	 /**
@@ -463,7 +461,7 @@ public class YamlParser {
 					 {
 						 for(String t : s.getVolumeDependencies().getDependents())
 							 {
-								 if(volume.equals(t))
+								 if(volume.equals(t) || t.startsWith(volume))
 								 {
 									 found = true;
 								 }

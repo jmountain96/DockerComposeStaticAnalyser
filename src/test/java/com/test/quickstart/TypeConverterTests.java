@@ -16,18 +16,6 @@ import org.junit.Test;
 public class TypeConverterTests {
 	TypeConverter t = new TypeConverter();
 	@Test
-	public void checkStringTest()
-	{
-		assertTrue(t.checkString("foo"));
-		assertFalse(t.checkString("{bar}"));
-	}
-	@Test
-	public void checkListTest()
-	{
-		assertTrue(t.checkStringList("[foo, bar]"));
-		assertFalse(t.checkStringList("bar"));
-	}
-	@Test
 	public void convertMapTest()
 	{
 		Map<String,String> testMap = new HashMap<>();

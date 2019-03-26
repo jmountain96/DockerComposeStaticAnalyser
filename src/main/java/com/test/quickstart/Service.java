@@ -12,17 +12,25 @@ import com.test.quickstart.Validation.Interfaces.Dependency;
 
 public class Service {
 	private TypeConverter Converter = new TypeConverter();
+	private TypeResolver resolver = new TypeResolver();
 	private String Name;
 	private Object build;
 	@CheckFolderExists(message = "Directory doesn't exist")
 	private String buildS;
 	private Build buildB;
 	private String buildType;
+	private String container_name;
 	private Object configs;
 	private Configs[] configsC;
 	@CheckDuplication(message = "Duplicate service config detected")
 	private String[] configsSL;
 	private String configType;
+	private String cpu_shares;
+	private String cpu_quota;
+	private String cpuset;
+	private String mem_limit;
+	private String memswap_limit;
+	private String mem_swappiness;
 	private String[] depends_on;
 	private Deploy deploy;
 	@CheckDuplication(message = "Duplicate service env_file detected")
@@ -90,7 +98,7 @@ public class Service {
 	}
 	public void setBuild(Object build) {
 		this.build = build;
-		if(Converter.checkString(build) == true)
+		if(resolver.checkString(build) == true)
 		{
 			this.buildS = build.toString();
 			this.buildType = "String";
@@ -120,6 +128,12 @@ public class Service {
 	public void setBuildType(String buildType) {
 		this.buildType = buildType;
 	}
+	public String getContainer_name() {
+		return container_name;
+	}
+	public void setContainer_name(String container_name) {
+		this.container_name = container_name;
+	}
 	public Object getConfigs() {
 		return configs;
 	}
@@ -127,7 +141,7 @@ public class Service {
 	public void setConfigs(Object configs) {
 		this.configs = configs;
 		ArrayList<Map<String, Object>> configAL = null;
-		if(Converter.checkStringList(configs) == false)
+		if(resolver.checkStringList(configs) == true)
 		{
 			this.configsSL = Converter.convertStringList(configs);
 			this.configType = "String[]";
@@ -176,6 +190,24 @@ public class Service {
 			this.ConfigDependencies.dependents = configSources;
 		}
 		this.ConfigDependencies.target = configList;
+	}
+	public String getCpu_shares() {
+		return cpu_shares;
+	}
+	public void setCpu_shares(String cpu_shares) {
+		this.cpu_shares = cpu_shares;
+	}
+	public String getCpu_quota() {
+		return cpu_quota;
+	}
+	public void setCpu_quota(String cpu_quota) {
+		this.cpu_quota = cpu_quota;
+	}
+	public String getCpuset() {
+		return cpuset;
+	}
+	public void setCpuset(String cpuset) {
+		this.cpuset = cpuset;
 	}
 	public String[] getDepends_on() {
 		return depends_on;
@@ -259,6 +291,24 @@ public class Service {
 	public void setLogging(Logging logging) {
 		this.logging = logging;
 	}
+	public String getMem_limit() {
+		return mem_limit;
+	}
+	public void setMem_limit(String mem_limit) {
+		this.mem_limit = mem_limit;
+	}
+	public String getMemswap_limit() {
+		return memswap_limit;
+	}
+	public void setMemswap_limit(String memswap_limit) {
+		this.memswap_limit = memswap_limit;
+	}
+	public String getMem_swappiness() {
+		return mem_swappiness;
+	}
+	public void setMem_swappiness(String mem_swappiness) {
+		this.mem_swappiness = mem_swappiness;
+	}
 	public Object getNetworks() {
 		return networks;
 	}
@@ -289,7 +339,7 @@ public class Service {
 	}
 	public void setNetworkDependencies(String[] networks) {
 		this.NetworkDependencies.target = networks;
-		if(networkType == "StringList") {
+		if(networkType == "String[]") {
 			this.NetworkDependencies.dependents = this.networksSL;
 		}
 		else {
@@ -318,7 +368,7 @@ public class Service {
 	public void setSecrets(Object secrets) {
 		this.secrets = secrets;
 		
-		if(Converter.checkStringList(secrets) == true)
+		if(resolver.checkStringList(secrets) == true)
 		{
 			System.out.println(secrets.getClass());
 			Map<String,Object>[] secretsSO = Converter.convertMapList((ArrayList)secrets);
@@ -375,8 +425,9 @@ public class Service {
 	public void setPorts(Object ports) {
 		this.ports = ports;
 		ArrayList<Map<String, Object>> portsAL = null;
-		if(Converter.checkStringList(ports) == false)
+		if(resolver.checkStringList(ports) == true)
 		{
+			
 			this.portsSL = Converter.convertStringList(ports);
 			this.portsType = "String[]";
 		}
@@ -412,7 +463,7 @@ public class Service {
 	public void setVolumes(Object volumes) {
 		this.volumes = volumes;
 		ArrayList<Map<String, Object>> volumeAL = null;
-		if(Converter.checkStringList(volumes) == false)
+		if(resolver.checkStringList(volumes) == true)
 		{
 			this.volumesSL = Converter.convertStringList(volumes);
 			this.volumeType = "String[]";
@@ -480,18 +531,19 @@ public class Service {
 	}
 	private void convertNetworks() 
 	{
-		Map<String, Map<String,Object>> networksAL = null;;
-		if(Converter.checkStringList(networks) == true)
+		Map<String, Map<String,Object>> networksAL = null;
+		if(resolver.checkStringList(networks) == true)
 		{
 			this.networksSL = Converter.convertStringList(networks);
-			this.secretsType = "String[]";
+			this.networkType = "String[]";
 		}
 		else 
 		{
 			networksAL = (Map<String, Map<String,Object>>)networks;
 			networksN = Converter.convertNetworks(networksAL);
-			this.secretsType = "Map<String,Network>";
+			this.networkType = "Map<String,Network>";
 		}
+		
 	}
 	
 

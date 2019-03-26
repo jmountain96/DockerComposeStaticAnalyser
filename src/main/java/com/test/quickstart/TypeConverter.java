@@ -12,30 +12,7 @@ public class TypeConverter {
 	
 	
 	
-	public boolean checkString(Object input)
-	{
-		String value = input.toString();
-		if(value.startsWith("{") == false)
-		{
-			return true;
-		}
-		else 
-		{
-			return false;
-		}
-	}
 	
-	public boolean checkStringList(Object input) {
-		String value = input.toString();
-		if(value.startsWith("[") == false) 
-		{
-			return false;
-		}
-		else 
-		{
-			return true;
-		}
-	}
 	@SuppressWarnings("unchecked")
 	public Map<String,String> convertMap(Object input)
 	{

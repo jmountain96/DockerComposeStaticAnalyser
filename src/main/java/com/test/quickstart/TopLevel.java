@@ -24,6 +24,7 @@ import javax.validation.constraints.Email;
 
 public class TopLevel {
 	private TypeConverter converter = new TypeConverter();
+	private TypeResolver resolver = new TypeResolver();
 	
 	private Object build;
 	@CheckFolderExists(message = "Directory doesn't exist")
@@ -51,7 +52,7 @@ public class TopLevel {
 	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String domainname;
 	private Object dns;
-	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DNS)
+	@CheckStringFormat(message = "Invalid format of dns field specified within the top level", value = ValidationEnums.CheckStringType.DNS)
 	private String dnsS;
 	@CheckStringListFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringListType.DNS)
 	@CheckDuplication(message = "Duplicate dns detected")
@@ -169,7 +170,7 @@ public class TopLevel {
 	}
 	public void setBuild(Object build) {
 		this.build = build;
-		if(converter.checkString(build) == true)
+		if(resolver.checkString(build) == true)
 		{
 			this.buildS = build.toString();
 			this.buildType = "String";
@@ -361,7 +362,7 @@ public class TopLevel {
 	public Object getEnvironment() {
 		return environment;
 	}
-	public void setEnvironment(Object environment) {
+	public void setEnvironment(Object environment) throws Exception {
 		this.environment = environment;
 		convertEnvironment();
 	}
@@ -428,7 +429,7 @@ public class TopLevel {
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -459,7 +460,7 @@ public class TopLevel {
 	public Object getNetworks() {
 		return networks;
 	}
-	public void setNetworks(Object networks) {
+	public void setNetworks(Object networks) throws Exception {
 		this.networks = networks;
 		convertNetworks();
 	}
@@ -511,7 +512,7 @@ public class TopLevel {
 	public void setPorts(Object ports) {
 		this.ports = ports;
 		ArrayList<Map<String, Object>> portsAL = null;
-		if(converter.checkStringList(ports) == false)
+		if(resolver.checkStringList(ports) == false)
 		{
 			this.portsSL = converter.convertStringList(ports);
 			this.portsType = "String[]";
@@ -565,7 +566,7 @@ public class TopLevel {
 	public void setSecrets(Object secrets) {
 		this.secrets = secrets;
 		Map<String, Map<String,Object>> secretsAL = null;;
-		if(converter.checkStringList(secrets) == true)
+		if(resolver.checkStringList(secrets) == true)
 		{
 			this.secretsL = converter.convertStringList(secrets);
 			this.secretsType = "String[]";
@@ -628,7 +629,7 @@ public class TopLevel {
 	public Object getSysctls() {
 		return sysctls;
 	}
-	public void setSysctls(Object sysctls) {
+	public void setSysctls(Object sysctls) throws Exception {
 		this.sysctls = sysctls;
 		convertSysctls();
 	}
@@ -731,7 +732,7 @@ public class TopLevel {
 	{
 		boolean set = false;
 		String tCommand = command.toString();
-		if(tCommand.charAt(0) == '[')
+		if(resolver.checkStringList(command))
 		{
 			commandSL = converter.convertStringList(tCommand);
 			commandType = "String[]";
@@ -751,7 +752,7 @@ public class TopLevel {
 	{
 		boolean set = false;
 		String tDNS = dns.toString();
-		if(tDNS.charAt(0) == '[')
+		if(resolver.checkStringList(dns))
 		{
 			dnsSL = converter.convertStringList(tDNS);
 			dnsType = "String[]";
@@ -771,7 +772,7 @@ public class TopLevel {
 	{
 		boolean set = false;
 		String tEntrypoint = entrypoint.toString();
-		if(tEntrypoint .charAt(0) == '[')
+		if(resolver.checkStringList(entrypoint))
 		{
 			entrypointSL  = converter.convertStringList(tEntrypoint );
 			entrypointType = "String[]";
@@ -787,93 +788,94 @@ public class TopLevel {
 	}
 	private void convertEnv_file()
 	{
-		boolean set = false;
 		String tEnv_file = env_file.toString();
-		if(tEnv_file .charAt(0) == '[')
+		if(resolver.checkStringList(env_file))
 		{
 			env_fileSL  = converter.convertStringList(tEnv_file );
 			env_FileType = "String[]";
-			set = true;
 		}
 		else 
 		{
-			if(set == false){
 			env_fileS = tEnv_file ;
 			env_FileType = "String";
-		}
+		
 		}
 	}
-	private void convertEnvironment() 
+	private void convertEnvironment() throws Exception
 	{
-		boolean set = false;
-		try {
+		if(resolver.checkMap(environment) == true)
+		{
 			environmentM = converter.convertMap(environment);
 			environmentType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				environmentSL = converter.convertStringList(environment);
-				environmentType = "String[]";
-			}
+		else if(resolver.checkStringList(environment) == true)
+		{
+			environmentSL = converter.convertStringList(environment);
+			environmentType = "String[]";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Environment");
 		}
 	}
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(resolver.checkMap(labels) == true)
+		{
 			labelsM = converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		else if(resolver.checkStringList(labels) == true)
+		{
+			labelsS = converter.convertStringList(labels);
+			labelType = "String[]";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Top Level Labels");
 		}
 	}
-	private void convertNetworks() 
+	private void convertNetworks() throws Exception 
 	{
 		Map<String, Map<String,Object>> networksAL = null;;
-		if(converter.checkStringList(networks) == true)
+		if(resolver.checkStringList(networks) == true)
 		{
 			this.networksSL = converter.convertStringList(networks);
-			this.secretsType = "String[]";
+			this.networkType = "String[]";
 		}
-		else 
+		else if(resolver.checkNestedMap(networks) == true)
 		{
 			networksAL = (Map<String, Map<String,Object>>)networks;
 			networksN = converter.convertNetworks(networksAL);
-			this.secretsType = "Map<String,Network>";
+			this.networkType = "Map<String,Network>";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Top Level Network");
 		}
 	}
-	private void convertSysctls()
+	private void convertSysctls() throws Exception
 	{
-		boolean set = false;
-		try {
+		if(resolver.checkMap(sysctls) == true)
+		{
 			sysctlsM = converter.convertMap(sysctls);
 			sysctlsType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				sysctlsSL = converter.convertStringList(sysctls);
-				sysctlsType = "String[]";
-			}
+		else if(resolver.checkStringList(sysctls) == true)
+		{
+			sysctlsSL = converter.convertStringList(sysctls);
+			sysctlsType = "String[]";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Top Level sysctls");
 		}
 	}
 	private void convertTmpfs() 
 	{
 		boolean set = false;
 		String tTmpfs = tmpfs.toString();
-		if(tTmpfs.charAt(0) == '[')
+		if(resolver.checkStringList(tmpfs))
 		{
 			tmpfsSL = converter.convertStringList(tmpfs);
 			tmpfsType = "String[]";
