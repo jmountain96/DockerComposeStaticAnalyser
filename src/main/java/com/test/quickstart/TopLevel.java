@@ -47,9 +47,17 @@ public class TopLevel {
 	private Map<String,Configs> configs;
 	private String container_name;
 	private CredentialSpec credential_spec;
+	private String cpu_shares;
+	private String cpu_quota;
+	private String cpu_rt_runtime;
+	private String cpu_rt_period;
+	private String cpuset;
+	private String cpu_period;
+	private String oom_kill_disable;
 	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
 	@CheckDuplication(message = "Duplicate device detected")
 	private String[] devices;
+	private String device_cgroup_rules;
 	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String domainname;
 	private Object dns;
@@ -83,6 +91,8 @@ public class TopLevel {
 	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
 	@CheckDuplication(message = "Duplicate port detected")
 	private String[] expose;
+	@JsonProperty("extends")
+	private String Extends;
 	@CheckDuplication(message = "Duplicate external link detected")
 	private String[] external_links;
 	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
@@ -94,6 +104,8 @@ public class TopLevel {
 	private String ipc;
 	@ContainsString(message = "Isolation must be default, process or hyperv", value = ValidationEnums.ContainsStringType.ISOLATION) 
 	private String isolation;
+	private String init;
+	private String[] group_add;
 	private Object labels;
 	private Map<String,String> labelsM;
 	@CheckDuplication(message = "Duplicate label detected")
@@ -101,6 +113,8 @@ public class TopLevel {
 	private String labelType;
 	@CheckStringFormat(message = "mac_address must be a valid memory format", value = ValidationEnums.CheckStringType.MAC)
 	private String mac_address;
+	private String mem_limit;
+	private String memswap_limit;
 	private Object networks;
 	@CheckDuplication(message = "Duplicate network detected")
 	private String[] networksSL;
@@ -110,6 +124,9 @@ public class TopLevel {
 	private String network_mode;
 	@ContainsString(message  = "Invalid PID mode", value = ValidationEnums.ContainsStringType.PID)
 	private String pid;
+	private String pids_limit;
+	private String platform;
+	private String scale;
 	private Object ports;
 	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
 	@CheckDuplication(message = "Duplicate port detected")
@@ -150,6 +167,8 @@ public class TopLevel {
 	private String user;
 	private String userns_mode;
 	private Map<String, Volume> volumes;
+	private String volume_driver;
+	private String volumes_from;
 	@CheckFolderExists(message = "Working directory folder doesn't exist")
 	private String working_dir;
 	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing Docker Compose Version, compiler will assume version 1 of Compose is being used")
@@ -728,6 +747,66 @@ public class TopLevel {
 	public void setVersion(String version) {
 		this.version = version;
 	}
+	public String getCpu_shares() {
+		return cpu_shares;
+	}
+	public void setCpu_shares(String cpu_shares) {
+		this.cpu_shares = cpu_shares;
+	}
+	public String getCpu_quota() {
+		return cpu_quota;
+	}
+	public void setCpu_quota(String cpu_quota) {
+		this.cpu_quota = cpu_quota;
+	}
+	public String getCpuset() {
+		return cpuset;
+	}
+	public void setCpuset(String cpuset) {
+		this.cpuset = cpuset;
+	}
+	public String getExtends() {
+		return Extends;
+	}
+	public void setExtends(String extends1) {
+		Extends = extends1;
+	}
+	public String[] getGroup_add() {
+		return group_add;
+	}
+	public void setGroup_add(String[] group_add) {
+		this.group_add = group_add;
+	}
+	public String getMem_limit() {
+		return mem_limit;
+	}
+	public void setMem_limit(String mem_limit) {
+		this.mem_limit = mem_limit;
+	}
+	public String getMemswap_limit() {
+		return memswap_limit;
+	}
+	public void setMemswap_limit(String memswap_limit) {
+		this.memswap_limit = memswap_limit;
+	}
+	public String getPids_limit() {
+		return pids_limit;
+	}
+	public void setPids_limit(String pids_limit) {
+		this.pids_limit = pids_limit;
+	}
+	public String getVolume_driver() {
+		return volume_driver;
+	}
+	public void setVolume_driver(String volume_driver) {
+		this.volume_driver = volume_driver;
+	}
+	public String getVolumes_from() {
+		return volumes_from;
+	}
+	public void setVolumes_from(String volumes_from) {
+		this.volumes_from = volumes_from;
+	}
 	public Map<String,Service> getServices() {
 		return services;
 	}
@@ -971,6 +1050,54 @@ public class TopLevel {
 	public TopLevelReturn accept(YamlParserVisitor parser)
 	{
 		return parser.visit(this);
+	}
+	public String getPlatform() {
+		return platform;
+	}
+	public void setPlatform(String platform) {
+		this.platform = platform;
+	}
+	public String getCpu_rt_runtime() {
+		return cpu_rt_runtime;
+	}
+	public void setCpu_rt_runtime(String cpu_rt_runtime) {
+		this.cpu_rt_runtime = cpu_rt_runtime;
+	}
+	public String getCpu_rt_period() {
+		return cpu_rt_period;
+	}
+	public void setCpu_rt_period(String cpu_rt_period) {
+		this.cpu_rt_period = cpu_rt_period;
+	}
+	public String getCpu_period() {
+		return cpu_period;
+	}
+	public void setCpu_period(String cpu_period) {
+		this.cpu_period = cpu_period;
+	}
+	public String getOom_kill_disable() {
+		return oom_kill_disable;
+	}
+	public void setOom_kill_disable(String oom_kill_disable) {
+		this.oom_kill_disable = oom_kill_disable;
+	}
+	public String getInit() {
+		return init;
+	}
+	public void setInit(String init) {
+		this.init = init;
+	}
+	public String getScale() {
+		return scale;
+	}
+	public void setScale(String scale) {
+		this.scale = scale;
+	}
+	public String getDevice_cgroup_rules() {
+		return device_cgroup_rules;
+	}
+	public void setDevice_cgroup_rules(String device_cgroup_rules) {
+		this.device_cgroup_rules = device_cgroup_rules;
 	}
 	
 }

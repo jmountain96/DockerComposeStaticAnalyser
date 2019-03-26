@@ -15,6 +15,9 @@ public class Build {
 	private String dockerfile;
 	@CheckFileExists(message = "Referenced alternate Docker file doesn't exist", value = "")
 	private String dockerfileContext;
+	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
+	@CheckDuplication(message = "Duplicate extra host detected")
+	private String[] extra_hosts;
 	private Object args;
 	private Map<String, String> argsM;
 	@CheckDuplication(message = "Duplicate arg detected")
@@ -31,6 +34,7 @@ public class Build {
 	@CheckStringFormat(message = "memory in shm_size are in the wrong format", value = ValidationEnums.CheckStringType.MEMORY)
 	private String shm_size;
 	private String target;
+	private String network;
 	
 	public String getContext() {
 		return context;
@@ -76,6 +80,12 @@ public class Build {
 	public void setCache_from(String[] cache_from) {
 		this.cache_from = cache_from;
 	}
+	public String[] getExtra_hosts() {
+		return extra_hosts;
+	}
+	public void setExtra_hosts(String[] extra_hosts) {
+		this.extra_hosts = extra_hosts;
+	}
 	public Object getLabels() {
 		return labels;
 	}
@@ -100,6 +110,12 @@ public class Build {
 	}
 	public void setLabelType(String labelType) {
 		this.labelType = labelType;
+	}
+	public String getNetwork() {
+		return network;
+	}
+	public void setNetwork(String network) {
+		this.network = network;
 	}
 	public String getShm_size() {
 		return shm_size;

@@ -32,6 +32,7 @@ public class Network {
 	@CheckDuplication(message = "Duplicate network lable detected")
 	private String[] labelsS;
 	private String labelType;
+	private String[] link_local_ips;
 	private String name;
 	
 	
@@ -125,6 +126,12 @@ public class Network {
 	}
 	public void setLabelType(String labelType) {
 		this.labelType = labelType;
+	}
+	public String[] getLink_local_ips() {
+		return link_local_ips;
+	}
+	public void setLink_local_ips(String[] link_local_ips) {
+		this.link_local_ips = link_local_ips;
 	}
 	public String getName() {
 		return name;

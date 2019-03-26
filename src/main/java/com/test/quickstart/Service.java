@@ -51,6 +51,7 @@ public class Service {
 	private String[] networksSL;
 	private Map<String,Network> networksN;
 	private String networkType;
+	private String runtime;
 	private Object secrets;
 	@CheckDuplication(message = "Duplicate secret detected")
 	private String[] secretsL;
@@ -351,6 +352,12 @@ public class Service {
 		}
 	}
 	
+	public String getRuntime() {
+		return runtime;
+	}
+	public void setRuntime(String runtime) {
+		this.runtime = runtime;
+	}
 	public Dependencies getServiceDependencies() {
 		return ServiceDependencies;
 	}
