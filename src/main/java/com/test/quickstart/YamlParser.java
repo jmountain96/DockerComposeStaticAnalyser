@@ -17,8 +17,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-
-
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -36,9 +35,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class YamlParser {
 	 public static void main(String[] args) throws IOException {
 		 TopLevel level = new TopLevel();
+		 String File = "testConfigs/testValidationPass.yaml";
 		 try 
 		 {
-	       level = ParseFile("testConfigs/a.docker-compose.yml.txt");
+	       level = ParseFile(File);
 		 }
 		 catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
 	        {
@@ -49,25 +49,15 @@ public class YamlParser {
 	            // TODO Auto-generated catch block
 	            e.printStackTrace();
 	        }
-	        checkForDuplicateKeys();
+	        checkForDuplicateKeys(File);
 	        level = setDependencies(level);
 	        Validate(level);
-	        checkUsed(level);
-	        
-	    
-	        
 	    }
 	 public static TopLevel ParseFile(String file) throws JsonParseException, JsonMappingException, IOException
 	 {
 		 	ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-	     
 	        TopLevel level = new TopLevel();
-	      
-	        
             level = mapper.readValue(new File(file), TopLevel.class);
-            
-	        
-	
 	        return level;
 	 }
 	 /**
@@ -83,6 +73,11 @@ public class YamlParser {
 		 {
 			 input.setNetworkModeDependencies();
 		 }
+		 String[] Configs = null;
+		 String[] EnvList = null;
+		 String[] Networks = null;
+		 String[] Secrets = null;
+		 String[] Volumes = null;
 		 if(input.getServices() != null)
 	     {
 			
@@ -91,18 +86,53 @@ public class YamlParser {
 				if(r.getConfigs() != null && s.getConfigs() != null)
 				{
 					s.setConfigDependencies(r.getConfigs());
+					if(s.getConfigType() == "String[]")
+					{
+						Configs = (String[])ArrayUtils.addAll(Configs, s.getConfigsSL());
+					}
+					else 
+					{
+						String[] configSources = new String[s.getConfigsC().length];
+						for(int i = 0 ; i < configSources.length ; i++)
+						{
+							configSources[i] = s.getConfigsC()[i].getSource();
+							Configs = (String[])ArrayUtils.addAll(Configs, configSources);
+						}
+				}
 				}
 				if(r.getEnvList() != null && s.getEnv_file() != null)
 				{
 					s.setEnvironmentDependencies(r.getEnvList());
+					EnvList = (String[])ArrayUtils.addAll(EnvList, s.getEnv_file());
 				}
 				if(r.getNetworks() != null && s.getNetworks() != null)
 				{
 					s.setNetworkDependencies(r.getNetworks());
+					if(s.getNetworkType()== "String[]") {
+						Networks = (String[])ArrayUtils.addAll(Networks, s.getNetworksSL());
+					}
+					else {
+						Networks = (String[])ArrayUtils.addAll(Networks, s.getNetworksM().keySet().toArray(new String[s.getNetworksM().size()] ));
+					}
+					
 				}
 				if(r.getSecrets() != null && s.getSecrets() != null)
 				{
 					s.setSecretDependencies(r.getSecrets());
+					
+					if(s.getSecretsType() == "String[]")
+					{
+						Secrets = (String[])ArrayUtils.addAll(Secrets, s.getSecretsL());
+					}
+					else 
+					{
+						String[] secretSources = new String[s.getSecretsSL().length];
+						for(int i = 0 ; i < secretSources.length ; i++)
+						{
+							secretSources[i] = s.getSecretsSL()[i].getSource();
+						}
+						Secrets = (String[])ArrayUtils.addAll(Secrets, secretSources);
+					}
 				}
 				if(r.getServices() != null)
 				{
@@ -111,11 +141,45 @@ public class YamlParser {
 				if(r.getVolumes() != null && s.getVolumes() != null)
 				{
 					s.setVolumeDependencies(r.getVolumes());
+					
+					if(s.getVolumeType()== "String[]")
+					{
+						Volumes = (String[])ArrayUtils.addAll(Volumes, s.getVolumesSL());
+					}
+					else 
+					{
+						String[] volumeSources = new String[s.getVolumesVL().length];
+						for(int i = 0 ; i < volumeSources.length ; i++)
+						{
+							volumeSources[i] = s.getVolumesVL()[i].getSource();
+						}
+						Volumes = (String[])ArrayUtils.addAll(Volumes, volumeSources);
+					}
 				}
 				
 			}
 				
 		}
+		 if(Configs != null)
+		 {
+			 input.setConfigCheckUsed(Configs);
+		 }
+		 if(EnvList != null)
+		 {
+			 input.setEnvCheckUsed(EnvList);
+		 }
+		 if(Networks != null)
+		 {
+			 input.setNetworkCheckUsed(Networks);
+		 }
+		 if(Secrets != null)
+		 {
+			 input.setSecretCheckUsed(Secrets);
+		 }
+		 if(Volumes != null)
+		 {
+			 input.setVolumeCheckUsed(Volumes);
+		 }
 		 return input;
 	 }
 	 
@@ -347,13 +411,13 @@ public class YamlParser {
 	     }
 	     return totalViolations;
 	 }
-	 private static void checkForDuplicateKeys()
+	 private static void checkForDuplicateKeys(String File)
 	 {
 		 
      	try {
             YamlConfig yamlConfig = new YamlConfig();
             yamlConfig.setAllowDuplicates(false); // default value is true
-            YamlReader reader = new YamlReader(new FileReader("test.yaml"), yamlConfig);
+            YamlReader reader = new YamlReader(new FileReader(File), yamlConfig);
             Object object = reader.read();
         } catch (YamlException ex) {
             System.out.println(ex.getMessage());
@@ -364,143 +428,6 @@ public class YamlParser {
 	        
 	 }
 	 
-	 private static void checkUsed(TopLevel input) 
-	 {
-		boolean found = false; 
-		YamlParserVisitor visitor = new YamlParserVisitorImpl();
-		TopLevelReturn r = input.accept(visitor);
-		if(r.getConfigs() != null) 
-		{
-			
-			String[] configs = r.getConfigs();
-			for(String config : configs)
-			{
-				 found = false;
-				 for(Service s : input.getServices().values())
-				 {
-					 if(s.getConfigDependencies().getDependents() != null)
-					 {
-						 for(String t : s.getConfigDependencies().getDependents())
-							 {
-								 if(config.equals(t))
-								 {
-									 found = true;
-								 }
-							 }
-					 }
-				 }
-				 if( found == false)
-				 {
-					 System.out.println("Config " + config + " is not required by any service");
-				 }
-			}
-		}
-		if(r.getNetworks() != null) 
-		{
-			String[] networks = r.getNetworks();
-			
-			for(String network : networks)
-			{
-				 found = false;
-				 for(Service s : input.getServices().values())
-				 {
-					 if(s.getNetworkDependencies().getDependents() != null)
-					 {
-						 for(String t : s.getNetworkDependencies().getDependents())
-							 {
-								 if(network.equals(t))
-								 {
-									 found = true;
-								 }
-							 }
-					 }
-				 }
-				 if( found == false)
-				 {
-					 System.out.println("Network " + network + " is not required by any service");
-				 }
-			}
-		}
-		if(r.getSecrets() != null)
-		{
-			String[] secrets = r.getSecrets();
-			
-			for(String secret : secrets)
-			{
-				 found = false;
-				 for(Service s : input.getServices().values())
-				 {
-					 if(s.getSecretDependencies().getDependents() != null)
-					 {
-						 for(String t : s.getSecretDependencies().getDependents())
-							 {
-							 
-								 if(secret.equals(t))
-								 {
-									 found = true;
-								 }
-							 }
-					 }
-				 }
-				 if( found == false)
-				 {
-					 System.out.println("Secret " + secret + " is not required by any service");
-				 }
-			}
-		}
-		if(r.getVolumes() != null)
-		{
-			
-			String[] volumes = r.getVolumes();
-			for(String volume : volumes)
-			{
-				 found = false;
-				 for(Service s : input.getServices().values())
-				 {
-					 if(s.getVolumeDependencies().getDependents() != null)
-					 {
-						 for(String t : s.getVolumeDependencies().getDependents())
-							 {
-								 if(volume.equals(t) || t.startsWith(volume))
-								 {
-									 found = true;
-								 }
-							 }
-					 }
-				 }
-				 if( found == false)
-				 {
-					 System.out.println("Volume " + volume + " is not required by any service");
-				 }
-			}
-		}
-		if(r.getEnvList() != null)
-		{
-			String[] envList = r.getEnvList();
-			
-			for(String env : envList)
-			{
-				 found = false;
-				 for(Service s : input.getServices().values())
-				 {
-					 if(s.getEnvironmentDependencies().getDependents() != null)
-					 {
-						 for(String t : s.getEnvironmentDependencies().getDependents())
-							 {
-								 if(env.equals(t))
-								 {
-									 found = true;
-								 }
-							 }
-					 }
-				 }
-				 if( found == false)
-				 {
-					 System.out.println("Enviromental variable " + env + " is not required by any service");
-				 }
-			} 
-		} 
-	 } 
 }
 	 
 

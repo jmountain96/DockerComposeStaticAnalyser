@@ -50,4 +50,17 @@ public class TypeResolver
 			return false;
 		}
 	}
+	
+	public boolean checkMapList(Object input)
+	{
+		String value = input.toString();
+		if(value.startsWith("[{") == true) 
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
 }

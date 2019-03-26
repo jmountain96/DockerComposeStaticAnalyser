@@ -138,19 +138,23 @@ public class Service {
 		return configs;
 	}
 	@SuppressWarnings("unchecked")
-	public void setConfigs(Object configs) {
+	public void setConfigs(Object configs) throws Exception {
 		this.configs = configs;
 		ArrayList<Map<String, Object>> configAL = null;
-		if(resolver.checkStringList(configs) == true)
+		if(resolver.checkMapList(configs) == true)
+		{
+			configAL = (ArrayList<Map<String, Object>>)configs;
+			configsC = Converter.convertConfigsList(configAL);
+			this.configType = "Configs[]";
+		}
+		else if(resolver.checkStringList(configs) == true)
 		{
 			this.configsSL = Converter.convertStringList(configs);
 			this.configType = "String[]";
 		}
 		else 
 		{
-			configAL = (ArrayList<Map<String, Object>>)configs;
-			configsC = Converter.convertConfigsList(configAL);
-			this.configType = "Configs[]";
+			throw new Exception("Unknown type for service config");
 		}
 	
 	}
@@ -238,7 +242,7 @@ public class Service {
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -312,7 +316,7 @@ public class Service {
 	public Object getNetworks() {
 		return networks;
 	}
-	public void setNetworks(Object networks) {
+	public void setNetworks(Object networks) throws Exception {
 		this.networks = networks;
 		convertNetworks();
 	}
@@ -368,9 +372,8 @@ public class Service {
 	public void setSecrets(Object secrets) {
 		this.secrets = secrets;
 		
-		if(resolver.checkStringList(secrets) == true)
+		if(resolver.checkMapList(secrets) == true)
 		{
-			System.out.println(secrets.getClass());
 			Map<String,Object>[] secretsSO = Converter.convertMapList((ArrayList)secrets);
 			this.secretsSL = Converter.convertSecretList(secretsSO);
 			this.secretsType = "Secrets[]";
@@ -411,7 +414,7 @@ public class Service {
 		else 
 		{
 			String[] secretSources = new String[secretsSL.length];
-			for(int i = 0 ; i < configsC.length ; i++)
+			for(int i = 0 ; i < secretSources.length ; i++)
 			{
 				secretSources[i] = secretsSL[i].getSource();
 			}
@@ -460,19 +463,23 @@ public class Service {
 		return volumes;
 	}
 	@SuppressWarnings("unchecked")
-	public void setVolumes(Object volumes) {
+	public void setVolumes(Object volumes) throws Exception {
 		this.volumes = volumes;
 		ArrayList<Map<String, Object>> volumeAL = null;
-		if(resolver.checkStringList(volumes) == true)
+		if(resolver.checkMapList(volumes) == true)
+		{
+			volumeAL = (ArrayList<Map<String, Object>>)volumes;
+			volumesVL = Converter.convertVolumes(volumeAL);
+			this.volumeType = "Volume[]";
+		}
+		else if(resolver.checkStringList(volumes))
 		{
 			this.volumesSL = Converter.convertStringList(volumes);
 			this.volumeType = "String[]";
 		}
 		else 
 		{
-			volumeAL = (ArrayList<Map<String, Object>>)volumes;
-			volumesVL = Converter.convertVolumes(volumeAL);
-			this.volumeType = "Volume[]";
+			throw new Exception("Unkown type for service volume");
 		}
 	}
 	public Volume[] getVolumesVL() {
@@ -512,36 +519,40 @@ public class Service {
 		}
 		this.VolumeDependencies.target = volumeList;
 	}
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(resolver.checkMap(labels) == true)
+		{
 			labelsM = Converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = Converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		else if(resolver.checkStringList(labels) == true)
+		{
+			labelsS = Converter.convertStringList(labels);
+			labelType = "String[]";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Top Level Labels");
 		}
 	}
-	private void convertNetworks() 
+	private void convertNetworks() throws Exception 
 	{
-		Map<String, Map<String,Object>> networksAL = null;
+		Map<String, Map<String,Object>> networksAL = null;;
 		if(resolver.checkStringList(networks) == true)
 		{
 			this.networksSL = Converter.convertStringList(networks);
 			this.networkType = "String[]";
 		}
-		else 
+		else if(resolver.checkNestedMap(networks) == true)
 		{
 			networksAL = (Map<String, Map<String,Object>>)networks;
 			networksN = Converter.convertNetworks(networksAL);
 			this.networkType = "Map<String,Network>";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Top Level Network");
 		}
 		
 	}

@@ -16,6 +16,7 @@ import com.test.quickstart.Validation.Interfaces.CheckFileListExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
+import com.test.quickstart.Validation.Interfaces.CheckUsed;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.Interfaces.Dependency;
 import com.test.quickstart.Validation.Interfaces.ListContainsString;
@@ -156,7 +157,16 @@ public class TopLevel {
 	private Map<String,Service> services;
 	@Dependency(message = "Service references a network mode for a service that isn't present")
 	private Dependencies NetworkModeDependencies = new Dependencies();
-	
+	@CheckUsed(message = "Unused Secret")
+	private Dependencies SecretCheckUsed = new Dependencies();
+	@CheckUsed(message = "Unused Config")
+	private Dependencies ConfigCheckUsed = new Dependencies();
+	@CheckUsed(message = "Unused Volume")
+	private Dependencies VolumeCheckUsed = new Dependencies();
+	@CheckUsed(message = "Unused Env")
+	private Dependencies EnvCheckUsed = new Dependencies();
+	@CheckUsed(message = "Unused Network")
+	private Dependencies NetworkCheckUsed = new Dependencies();
 	
 	
 	public TypeConverter getConverter() {
@@ -727,6 +737,73 @@ public class TopLevel {
 		{
 			service.getValue().setName(service.getKey());
 		}
+	}
+	public Dependencies getSecretCheckUsed() {
+		return SecretCheckUsed;
+	}
+	public void setSecretCheckUsed(String[] secretCheckUsed) {
+		SecretCheckUsed.target = secretCheckUsed;
+		if(this.secretsType == "String[]")
+		{
+			SecretCheckUsed.dependents = this.secretsL;
+		}
+		else 
+		{
+			String[] secretSources = new String[secretsSL.length];
+			for(int i = 0 ; i < secretSources.length ; i++)
+			{
+				secretSources[i] = secretsSL[i].getSource();
+			}
+			this.SecretCheckUsed.dependents = secretSources;
+		}
+	}
+	public Dependencies getConfigCheckUsed() {
+		return ConfigCheckUsed;
+	}
+	public void setConfigCheckUsed(String[] configCheckUsed) {
+		this.ConfigCheckUsed.target = configCheckUsed;
+		this.ConfigCheckUsed.dependents = this.configs.keySet().toArray(new String[this.configs.size()]);
+	}
+	public Dependencies getVolumeCheckUsed() {
+		return VolumeCheckUsed;
+	}
+	public void setVolumeCheckUsed(String[]  volumeCheckUsed) {
+		VolumeCheckUsed.target = volumeCheckUsed;
+		this.VolumeCheckUsed.dependents = this.volumes.keySet().toArray(new String[this.volumes.size()]);
+	}
+	public Dependencies getEnvCheckUsed() {
+		return EnvCheckUsed;
+	}
+	public void setEnvCheckUsed(String[]  envCheckUsed) {
+		EnvCheckUsed.target = envCheckUsed;
+		String[] envList = null;
+		if(getEnv_FileType() == "String") 
+		{
+			envList = new String[1];
+			envList[0] = getEnv_fileS();
+		}
+		else 
+		{
+			envList = getEnv_fileSL();
+		}
+		EnvCheckUsed.dependents = envList;
+	}
+	public Dependencies getNetworkCheckUsed() {
+		return NetworkCheckUsed;
+	}
+	public void setNetworkCheckUsed(String[]  networkCheckUsed) {
+		NetworkCheckUsed.target = networkCheckUsed;
+		String[] networks;
+		if(getNetworkType() == "String[]")
+		{
+			networks = getNetworksSL();
+		}
+		else
+		{
+			Map<String,Network> networkList = getNetworksN();
+			networks = networkList.keySet().toArray(new String[networkList.size()]);
+		}
+		NetworkCheckUsed.dependents = networks;
 	}
 	private void convertCommand() 
 	{
