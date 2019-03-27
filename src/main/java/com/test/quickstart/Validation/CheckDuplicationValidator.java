@@ -1,5 +1,4 @@
 package com.test.quickstart.Validation;
-import java.io.File;
 
 
 import javax.validation.ConstraintValidator;

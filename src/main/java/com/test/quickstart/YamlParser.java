@@ -4,12 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -18,22 +12,21 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class YamlParser {
 	 public static void main(String[] args) throws IOException {
+		 //String File = args[0];
 		 TopLevel level = new TopLevel();
 		 String File = "testConfigs/testValidationPass.yaml";
 		 try 
@@ -52,6 +45,13 @@ public class YamlParser {
 	        checkForDuplicateKeys(File);
 	        level = setDependencies(level);
 	        Validate(level);
+	        VersionValidator v = new VersionValidator(level);
+	        try {
+				v.Validate();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 	 public static TopLevel ParseFile(String file) throws JsonParseException, JsonMappingException, IOException
 	 {
@@ -298,6 +298,60 @@ public class YamlParser {
 		    		 System.out.println(violation.getMessage());
 		    		 totalViolations += 1;
 		    	 }
+		    	 if(s.getBlkio_config() != null)
+		    	 {
+		    		 Set<ConstraintViolation<Blkio_config>> constraintViolationsSBB = validator.validate(s.getBlkio_config());
+			    	 for (ConstraintViolation<Blkio_config> violation : constraintViolationsSBB) 
+			    	 {
+			    		 System.out.println(violation.getMessage());
+			    		 totalViolations += 1;
+			    	 } 
+			    	 if(s.getBlkio_config().getDevice_read_bps() != null)
+			    	 {
+			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBB = validator.validate(s.getBlkio_config().getDevice_read_bps());
+				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBB) 
+				    	 {
+				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
+				    	 } 
+			    	 }
+			    	 if(s.getBlkio_config().getDevice_read_iops() != null)
+			    	 {
+			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBI = validator.validate(s.getBlkio_config().getDevice_read_iops());
+				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBI) 
+				    	 {
+				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
+				    	 } 
+			    	 }
+			    	 if(s.getBlkio_config().getDevice_write_bps() != null)
+			    	 {
+			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBW = validator.validate(s.getBlkio_config().getDevice_write_bps());
+				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBW) 
+				    	 {
+				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
+				    	 } 
+			    	 }
+			    	 if(s.getBlkio_config().getDevice_write_iops() != null)
+			    	 {
+			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBWI = validator.validate(s.getBlkio_config().getDevice_write_iops());
+				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBWI) 
+				    	 {
+				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
+				    	 } 
+			    	 }
+			    	 if(s.getBlkio_config().getWeight_device()!= null)
+			    	 {
+			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBW = validator.validate(s.getBlkio_config().getWeight_device());
+				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBW) 
+				    	 {
+				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
+				    	 } 
+			    	 }
+		    	 }
 		    	 if(s.getBuildB() != null)
 		    	 {
 		    		 Set<ConstraintViolation<Build>> constraintViolationsSB = validator.validate(s.getBuildB());
@@ -404,7 +458,34 @@ public class YamlParser {
 		    			 {
 		    				 System.out.println(violation.getMessage());
 		    				 totalViolations += 1;
-		    			 } 
+		    			 }
+		    			 if(v.getBind() != null)
+		    			 {
+		    				 Set<ConstraintViolation<Bind>> constraintViolationsSVB = validator.validate(v.getBind());
+			    			 for (ConstraintViolation<Bind> violation : constraintViolationsSVB) 
+			    			 {
+			    				 System.out.println(violation.getMessage());
+			    				 totalViolations += 1;
+			    			 } 
+		    			 }
+		    			 if(v.getTmpfs() != null)
+		    			 {
+		    				 Set<ConstraintViolation<TMPFS>> constraintViolationsSVT = validator.validate(v.getTmpfs());
+			    			 for (ConstraintViolation<TMPFS> violation : constraintViolationsSVT) 
+			    			 {
+			    				 System.out.println(violation.getMessage());
+			    				 totalViolations += 1;
+			    			 } 
+		    			 }
+		    			 if(v.getVolume() != null)
+		    			 {
+		    				 Set<ConstraintViolation<VolumeV>> constraintViolationsSVV = validator.validate(v.getVolume());
+			    			 for (ConstraintViolation<VolumeV> violation : constraintViolationsSVV) 
+			    			 {
+			    				 System.out.println(violation.getMessage());
+			    				 totalViolations += 1;
+			    			 } 
+		    			 }
 		    		 }
 		    	 }
 	    	 } 
@@ -418,7 +499,7 @@ public class YamlParser {
             YamlConfig yamlConfig = new YamlConfig();
             yamlConfig.setAllowDuplicates(false); // default value is true
             YamlReader reader = new YamlReader(new FileReader(File), yamlConfig);
-            Object object = reader.read();
+            reader.read();
         } catch (YamlException ex) {
             System.out.println(ex.getMessage());
         } catch (FileNotFoundException e) {

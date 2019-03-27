@@ -5,7 +5,8 @@ import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.ValidationEnums;
 public class Healthcheck {
-	private TypeConverter converter = new TypeConverter();;
+	private TypeConverter converter = new TypeConverter();
+	private TypeResolver resolver = new TypeResolver();
 	private Object test;
 	@CheckDuplication(message = "Duplicate healthcare test detected")
 	private String[] testSL;
@@ -39,7 +40,7 @@ public class Healthcheck {
 	}
 
 
-	public void setTest(Object test) {
+	public void setTest(Object test) throws Exception {
 		this.test = test;
 		convertTest();
 	}
@@ -125,19 +126,22 @@ public class Healthcheck {
 	}
 
 
-	private void convertTest()
+	private void convertTest() throws Exception
 	{
-		String tTest = test.toString();
-		if(tTest .charAt(0) == '[')
+		if(resolver.checkStringList(test))
 		{
-			testSL  = converter.convertStringList(tTest );
+			testSL  = converter.convertStringList(test );
 			testType = "String[]";
 			testFormat = testSL[0];
 		}
+		else if(resolver.checkString(test))
+		{
+			testS = test.toString() ;
+			testType = "String";
+		}
 		else 
 		{
-			testS = tTest ;
-			testType = "String";
+			throw new Exception("Unknown type for Healthcheck test");
 		}
 	}
 }

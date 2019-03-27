@@ -1,6 +1,6 @@
 package com.test.quickstart;
 
-import java.util.Map;
+
 
 public class Ulimits {
 	private String nproc;

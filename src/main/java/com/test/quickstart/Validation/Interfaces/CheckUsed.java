@@ -2,7 +2,6 @@ package com.test.quickstart.Validation.Interfaces;
 import static java.lang.annotation.ElementType.*;
 
 import com.test.quickstart.Validation.CheckUsedValidator;
-import com.test.quickstart.Validation.DependencyValidator;
 import static java.lang.annotation.RetentionPolicy.*;
 
 import java.lang.annotation.Documented;

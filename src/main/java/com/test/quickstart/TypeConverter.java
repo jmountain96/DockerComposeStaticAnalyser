@@ -1,6 +1,6 @@
 package com.test.quickstart;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +48,6 @@ public class TypeConverter {
 		_ret = (Map<String,String[]>)input;
 		return _ret;
 	}
-	@SuppressWarnings("unchecked")
 	public Map<String, Network> convertNetworks(Map<String, Map<String,Object>> input)
 	{
 		Map<String,Network> ret = new HashMap<>();
@@ -104,8 +103,6 @@ public class TypeConverter {
 	public Configs[] convertConfigsList(List<Map<String, Object>> input)
 	{
 		Configs[] ret = new Configs[input.size()];
-		
-		
 		for(int i = 0 ;  i < input.size(); i++) 
 		{
 			BeanWrapper newWrappedConfig = new BeanWrapperImpl(new Configs());
@@ -121,8 +118,6 @@ public class TypeConverter {
 	public Ports[] convertPorts(List<Map<String, Object>> input)
 	{
 		Ports[] ret = new Ports[input.size()];
-		
-		
 		for(int i = 0 ;  i < input.size(); i++) 
 		{
 			BeanWrapper newWrappedConfig = new BeanWrapperImpl(new Ports());
@@ -139,8 +134,6 @@ public class TypeConverter {
 	public Volume[] convertVolumes(List<Map<String, Object>> input)
 	{
 		Volume[] ret = new Volume[input.size()];
-		
-		
 		for(int i = 0 ;  i < input.size(); i++) 
 		{
 			Bind B = null;
@@ -205,6 +198,7 @@ public class TypeConverter {
 	public Ipam convertIpam(Object input)
 	{
 		BeanWrapper ret = new BeanWrapperImpl(new Ipam());
+		@SuppressWarnings("unchecked")
 		Map<String, Object> input2 = (Map<String, Object>)input;
 		for (Map.Entry<String, Object> property : input2.entrySet())
 		{
@@ -234,6 +228,7 @@ public class TypeConverter {
 	public Bind convertBind(Object input)
 	{
 		BeanWrapper ret = new BeanWrapperImpl(new Bind());
+		@SuppressWarnings("unchecked")
 		Map<String, Object> input2 = (Map<String, Object>)input;
 		for (Map.Entry<String, Object> property : input2.entrySet())
 		{
@@ -246,6 +241,7 @@ public class TypeConverter {
 	public TMPFS convertTmpfs(Object input)
 	{
 		BeanWrapper ret = new BeanWrapperImpl(new TMPFS());
+		@SuppressWarnings("unchecked")
 		Map<String, Object> input2 = (Map<String, Object>)input;
 		for (Map.Entry<String, Object> property : input2.entrySet())
 		{
@@ -258,6 +254,7 @@ public class TypeConverter {
 	public VolumeV convertVolumeV(Object input)
 	{
 		BeanWrapper ret = new BeanWrapperImpl(new VolumeV());
+		@SuppressWarnings("unchecked")
 		Map<String, Object> input2 = (Map<String, Object>)input;
 		for (Map.Entry<String, Object> property : input2.entrySet())
 		{

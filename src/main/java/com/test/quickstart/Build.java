@@ -10,6 +10,7 @@ import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 
 public class Build {
 	private TypeConverter Converter = new TypeConverter();
+	private TypeResolver Resolver = new TypeResolver();
 	@CheckFolderExists(message = "Directory doesn't exist")
 	private String context;
 	private String dockerfile;
@@ -52,7 +53,7 @@ public class Build {
 	public Object getArgs() {
 		return args;
 	}
-	public void setArgs(Object args) {
+	public void setArgs(Object args) throws Exception {
 		this.args = args;
 		convertArgs();
 	}
@@ -89,7 +90,7 @@ public class Build {
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -129,38 +130,40 @@ public class Build {
 	public void setTarget(String target) {
 		this.target = target;
 	}
-	private void convertArgs() 
+	private void convertArgs() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(Resolver.checkMap(args) == true)
+		{
 			argsM = Converter.convertMap(args);
 			argType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				argsS = Converter.convertStringList(args);
-				argType = "String[]";
-			}
+		
+		else if(Resolver.checkStringList(args) == true)
+		{
+			argsS = Converter.convertStringList(args);
+			argType = "String[]";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Build Args");
 		}
 	}
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(Resolver.checkMap(labels) == true)
+		{
 			labelsM = Converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = Converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		
+		else if(Resolver.checkStringList(labels) == true)
+		{
+			labelsS = Converter.convertStringList(labels);
+			labelType = "String[]";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Build Labels");
 		}
 	}
 }

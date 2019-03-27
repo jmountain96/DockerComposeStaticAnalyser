@@ -9,6 +9,7 @@ import com.test.quickstart.Validation.Interfaces.ContainsString;
 
 public class Network {
 	private TypeConverter converter = new TypeConverter();
+	private TypeResolver resolver = new TypeResolver();
 	@CheckDuplication(message = "Duplicate network alias detected")
 	private String[] aliases;
 	@CheckStringFormat(message = "Incorrect format for network ipv4_address", value = ValidationEnums.CheckStringType.DNS)
@@ -33,6 +34,7 @@ public class Network {
 	private String[] labelsS;
 	private String labelType;
 	private String[] link_local_ips;
+	private String priority;
 	private String name;
 	
 	
@@ -105,7 +107,7 @@ public class Network {
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -133,27 +135,35 @@ public class Network {
 	public void setLink_local_ips(String[] link_local_ips) {
 		this.link_local_ips = link_local_ips;
 	}
+	public String getPriority() {
+		return priority;
+	}
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(resolver.checkMap(labels) == true)
+		{
 			labelsM = converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		
+		if(resolver.checkStringList(labels) == true)
+		{
+			labelsS = converter.convertStringList(labels);
+			labelType = "String[]";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Network Labels");
 		}
 	}
+	
 }

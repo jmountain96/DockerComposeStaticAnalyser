@@ -7,6 +7,7 @@ import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 public class Volume {
 	private TypeConverter converter = new TypeConverter();
+	private TypeResolver Resolver = new TypeResolver();
 	@ContainsString(message = "Invalid volume type", value = ValidationEnums.ContainsStringType.VOLUME_TYPE)
 	private String type;
 	private String source;
@@ -103,7 +104,7 @@ public class Volume {
 	public Object getExternal() {
 		return external;
 	}
-	public void setExternal(Object external) {
+	public void setExternal(Object external) throws Exception {
 		this.external = external;
 		convertExternal();
 	}
@@ -128,7 +129,7 @@ public class Volume {
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -156,39 +157,39 @@ public class Volume {
 	public void setName(String name) {
 		this.name = name;
 	}
-	private void convertExternal() 
+	private void convertExternal() throws Exception 
 	{
-		boolean set = false;
-		String tExternal = external.toString();
-		try {
+		if(Resolver.checkMap(external) == true)
+		{
 			externalM = converter.convertMap(external);
-			externalType = "Map<String,String[]>";
-			set = true;
+			externalType = "Map<String,String>";
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				externalS = tExternal;
-				externalType = "String";
-			}
+		else if(Resolver.checkString(external) == true)
+		{
+			externalS = external.toString();
+			externalType = "String";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Config External");
 		}
 	}
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(Resolver.checkMap(labels) == true)
+		{
 			labelsM = converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		
+		else if(Resolver.checkStringList(labels) == true)
+		{
+			labelsS = converter.convertStringList(labels);
+			labelType = "String[]";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Build Labels");
 		}
 	}
 }

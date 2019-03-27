@@ -6,7 +6,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import com.test.quickstart.Validation.ValidationEnums.*;
-import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.Interfaces.ListContainsString;
 public class ListContainsStringValidator implements ConstraintValidator<ListContainsString, String[]> {
 	

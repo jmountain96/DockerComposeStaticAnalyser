@@ -14,6 +14,7 @@ public class Service {
 	private TypeConverter Converter = new TypeConverter();
 	private TypeResolver resolver = new TypeResolver();
 	private String Name;
+	private Blkio_config blkio_config;
 	private Object build;
 	@CheckFolderExists(message = "Directory doesn't exist")
 	private String buildS;
@@ -46,12 +47,14 @@ public class Service {
 	@CheckDuplication(message = "Duplicate service link detected")
 	private String[] links;
 	private Logging logging;
+	private String[] group_add;
 	private Object networks;
 	@CheckDuplication(message = "Duplicate service network detected")
 	private String[] networksSL;
 	private Map<String,Network> networksN;
 	private String networkType;
 	private String runtime;
+	private String scale;
 	private Object secrets;
 	@CheckDuplication(message = "Duplicate secret detected")
 	private String[] secretsL;
@@ -93,6 +96,12 @@ public class Service {
 	}
 	public void setName(String name) {
 		Name = name;
+	}
+	public Blkio_config getBlkio_config() {
+		return blkio_config;
+	}
+	public void setBlkio_config(Blkio_config blkio_config) {
+		this.blkio_config = blkio_config;
 	}
 	public Object getBuild() {
 		return build;
@@ -265,6 +274,12 @@ public class Service {
 	public void setLabelType(String labelType) {
 		this.labelType = labelType;
 	}
+	public String[] getGroup_add() {
+		return group_add;
+	}
+	public void setGroup_add(String[] group_add) {
+		this.group_add = group_add;
+	}
 	public String getImage() {
 		return image;
 	}
@@ -358,6 +373,12 @@ public class Service {
 	public void setRuntime(String runtime) {
 		this.runtime = runtime;
 	}
+	public String getScale() {
+		return scale;
+	}
+	public void setScale(String scale) {
+		this.scale = scale;
+	}
 	public Dependencies getServiceDependencies() {
 		return ServiceDependencies;
 	}
@@ -381,7 +402,7 @@ public class Service {
 		
 		if(resolver.checkMapList(secrets) == true)
 		{
-			Map<String,Object>[] secretsSO = Converter.convertMapList((ArrayList)secrets);
+			Map<String,Object>[] secretsSO = Converter.convertMapList((ArrayList<Map<String, Object>>)secrets);
 			this.secretsSL = Converter.convertSecretList(secretsSO);
 			this.secretsType = "Secrets[]";
 		}
@@ -432,6 +453,7 @@ public class Service {
 	public Object getPorts() {
 		return ports;
 	}
+	@SuppressWarnings("unchecked")
 	public void setPorts(Object ports) {
 		this.ports = ports;
 		ArrayList<Map<String, Object>> portsAL = null;
@@ -543,6 +565,7 @@ public class Service {
 			throw new Exception ("Unknown type entered for Top Level Labels");
 		}
 	}
+	@SuppressWarnings("unchecked")
 	private void convertNetworks() throws Exception 
 	{
 		Map<String, Map<String,Object>> networksAL = null;;

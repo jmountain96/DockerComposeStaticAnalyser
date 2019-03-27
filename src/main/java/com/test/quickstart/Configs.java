@@ -7,6 +7,7 @@ import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.ValidationEnums;
 public class Configs {
 	private TypeConverter converter = new TypeConverter();
+	private TypeResolver resolver = new TypeResolver();
 	private String name;
 	@CheckFileExists(message = "Cannot find path to config file", value = "")
 	private String file;
@@ -49,7 +50,7 @@ public class Configs {
 		return external;
 	}
 
-	public void setExternal(Object external) {
+	public void setExternal(Object external) throws Exception {
 		this.external = external;
 		convertExternal();
 	}
@@ -117,22 +118,21 @@ public class Configs {
 		this.mode = mode;
 	}
 
-	private void convertExternal() 
+	private void convertExternal() throws Exception 
 	{
-		boolean set = false;
-		String tExternal = external.toString();
-		try {
+		if(resolver.checkMap(external) == true)
+		{
 			externalM = converter.convertMap(external);
-			externalType = "Map<String,String[]>";
-			set = true;
+			externalType = "Map<String,String>";
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				externalS = tExternal;
-				externalType = "String";
-			}
+		else if(resolver.checkString(external) == true)
+		{
+			externalS = external.toString();
+			externalType = "String";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Config External");
 		}
 	}
 }

@@ -28,7 +28,7 @@ public class TopLevel {
 	private TypeResolver resolver = new TypeResolver();
 	
 	private Object build;
-	@CheckFolderExists(message = "Directory doesn't exist")
+	@CheckFolderExists(message = "Build directory doesn't exist")
 	private String buildS;
 	private Build buildB;
 	private String buildType;
@@ -50,10 +50,13 @@ public class TopLevel {
 	private String cpu_shares;
 	private String cpu_quota;
 	private String cpu_rt_runtime;
+	@CheckStringFormat(message = "Invalid time format for cpu rt period", value = ValidationEnums.CheckStringType.TIME)
 	private String cpu_rt_period;
 	private String cpuset;
+	@CheckStringFormat(message = "Invalid time format for cpu period", value = ValidationEnums.CheckStringType.TIME)
 	private String cpu_period;
 	private String oom_kill_disable;
+	private String oom_score_adj;
 	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
 	@CheckDuplication(message = "Duplicate device detected")
 	private String[] devices;
@@ -69,6 +72,7 @@ public class TopLevel {
 	private String dnsType;
 	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String dns_search;
+	private String[] dns_opt;
 	private Object entrypoint;
 	@CheckDuplication(message = "Duplicate entrypoint detected")
 	private String[] entrypointSL;
@@ -115,6 +119,9 @@ public class TopLevel {
 	private String mac_address;
 	private String mem_limit;
 	private String memswap_limit;
+	private String mem_swappiness;
+	@CheckStringFormat(message = "mem reservation isn't a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
+	private String mem_reservation;
 	private Object networks;
 	@CheckDuplication(message = "Duplicate network detected")
 	private String[] networksSL;
@@ -137,6 +144,7 @@ public class TopLevel {
 	private String privileged;
 	@ContainsString(message = "Read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
+	@ContainsString(message = "Invalid restart condition", value = ValidationEnums.ContainsStringType.RESTART_POLICY_CONDITION)
 	private String restart;
 	private Object secrets;
 	@CheckDuplication(message = "Duplicate secret detected")
@@ -325,6 +333,12 @@ public class TopLevel {
 	}
 	public void setDns_search(String dns_search) {
 		this.dns_search = dns_search;
+	}
+	public String[] getDns_opt() {
+		return dns_opt;
+	}
+	public void setDns_opt(String[] dns_opt) {
+		this.dns_opt = dns_opt;
 	}
 	public Healthcheck getHealthcheck() {
 		return healthcheck;
@@ -788,6 +802,12 @@ public class TopLevel {
 	}
 	public void setMemswap_limit(String memswap_limit) {
 		this.memswap_limit = memswap_limit;
+	}
+	public String getMem_swappiness() {
+		return mem_swappiness;
+	}
+	public void setMem_swappiness(String mem_swappiness) {
+		this.mem_swappiness = mem_swappiness;
 	}
 	public String getPids_limit() {
 		return pids_limit;

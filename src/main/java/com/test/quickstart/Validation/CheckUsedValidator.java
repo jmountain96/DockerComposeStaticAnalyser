@@ -1,6 +1,5 @@
 package com.test.quickstart.Validation;
-import java.util.Arrays;
-import java.util.List;
+
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -15,6 +14,10 @@ public class CheckUsedValidator implements ConstraintValidator<CheckUsed, Depend
 		boolean found = false;
 		String notUsed = "";
 		int index = 0;
+		if(value.dependents == null)
+		{
+			return true;
+		}
 		for(String x : value.dependents)
 		{
 			for(String y : value.target)

@@ -7,29 +7,47 @@ public class VersionValidator {
 		super();
 		this.level = level;
 	}
-	public void Validate()
+	public void Validate() throws Exception
 	{
 		switch(level.getVersion())
 		{
 		case "2":
-			
+			Validate2();
+			break;
 		case "2.1":
-		
+			Validate21();
+			break;
 		case "2.2":
-			
+			Validate22();
+			break;
 		case "2.3":
-		
+			Validate23();
+			break;
 		case "2.4":
-		
+			Validate24();
+			break;
 		case "3":
-		
+			Validate3();
+			Version3Removal();
+			break;
 		case "3.3":
-		
+			Validate33();
+			Version3Removal();
+			break;
 		case "3.4":
-		
+			Validate34();
+			Version3Removal();
+			break;
 		case "3.5":
-		
+			Validate35();
+			Version3Removal();
+			break;
 		case "3.6":
+			Validate36();
+			Version3Removal();
+			break;
+		default:
+			throw new Exception("Version not supplied");
 			
 		}
 	}
@@ -93,14 +111,16 @@ public class VersionValidator {
 					}
 			}
 		}
-		if(level.getIsolation() != null)
-		{
-			System.out.println("Isolation is only compatible with version 2.1+");
 		}
 		if(level.getIsolation() != null)
 		{
 			System.out.println("Isolation is only compatible with version 2.1+");
 		}
+		if(level.getIsolation() != null)
+		{
+			System.out.println("Isolation is only compatible with version 2.1+");
+		}
+		Validate21();
 		
 	}
 	public void Validate21()
@@ -121,6 +141,7 @@ public class VersionValidator {
 		{
 			System.out.println("Cpu rt runtime compatible with version 2.2+");
 		}
+		Validate22();
 	
 	}
 	
@@ -169,7 +190,7 @@ public class VersionValidator {
 		{
 			System.out.println("Device c group rules are only compatible with version 2.3+");
 		}
-		
+		Validate23();
 		
 	}
 	public void Validate23()
@@ -178,6 +199,7 @@ public class VersionValidator {
 		{
 			System.out.println("Platform is only compatible with version 2.4+");
 		}
+		Validate23();
 		
 	}
 	public void Validate24()
@@ -192,6 +214,7 @@ public class VersionValidator {
 				}
 			}
 		}
+		Validate3();
 	}
 	public void Version3Removal()
 	{
@@ -276,6 +299,7 @@ public class VersionValidator {
 				}
 			}
 		}
+		Validate33();
 	}
 	public void Validate33()
 	{
@@ -320,6 +344,7 @@ public class VersionValidator {
 				}
 			}
 		}
+		Validate34();
 	}
 	public void Validate34()
 	{
@@ -364,6 +389,7 @@ public class VersionValidator {
 				}
 			}
 		}
+		Validate35();
 	}
 	public void Validate35()
 	{
@@ -371,6 +397,7 @@ public class VersionValidator {
 		{
 			System.out.println("Tmpfs is only compatible with version 3.6+");
 		}
+		Validate36();
 	}
 	public void Validate36()
 	{
@@ -382,9 +409,12 @@ public class VersionValidator {
 				{
 					System.out.println("Service init is only compatible with version 3.7+");
 				}
-				if(s.getDeploy().getRollback_config()!= null)
+				if(s.getDeploy() != null)
 				{
-					System.out.println("Deploy rollback config is only compatible with version 3.7+");
+					if(s.getDeploy().getRollback_config()!= null)
+					{
+						System.out.println("Deploy rollback config is only compatible with version 3.7+");
+					}
 				}
 			}
 		}
