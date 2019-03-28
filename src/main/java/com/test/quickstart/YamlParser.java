@@ -25,10 +25,15 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class YamlParser {
-	 public static void main(String[] args) throws IOException {
-		 //String File = args[0];
+	 public static void main(String[] string) throws IOException 
+	 {
+		 File f = new File("testConfigs/testValidationPass.yaml");
+		 Validate(f);
+		
+	 }
+	 public static void Validate(File File)
+	 {
 		 TopLevel level = new TopLevel();
-		 String File = "testConfigs/testValidationPass.yaml";
 		 try 
 		 {
 	       level = ParseFile(File);
@@ -52,12 +57,12 @@ public class YamlParser {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	    }
-	 public static TopLevel ParseFile(String file) throws JsonParseException, JsonMappingException, IOException
+	 }
+	 public static TopLevel ParseFile(File file) throws JsonParseException, JsonMappingException, IOException
 	 {
 		 	ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 	        TopLevel level = new TopLevel();
-            level = mapper.readValue(new File(file), TopLevel.class);
+            level = mapper.readValue(file, TopLevel.class);
 	        return level;
 	 }
 	 /**
@@ -103,7 +108,7 @@ public class YamlParser {
 				if(r.getEnvList() != null && s.getEnv_file() != null)
 				{
 					s.setEnvironmentDependencies(r.getEnvList());
-					EnvList = (String[])ArrayUtils.addAll(EnvList, s.getEnv_file());
+					EnvList = (String[])ArrayUtils.addAll(EnvList, s.getEnv_fileSL());
 				}
 				if(r.getNetworks() != null && s.getNetworks() != null)
 				{
@@ -416,6 +421,15 @@ public class YamlParser {
 			    	 }
 			    	 
 		    	 }
+		    	 if(s.getHealthcheck()!= null)
+			     {
+			    	 Set<ConstraintViolation<Healthcheck>> constraintViolationsSH = validator.validate(s.getHealthcheck());
+			    	 for (ConstraintViolation<Healthcheck> violation : constraintViolationsSH) 
+			    	 {
+			    		 System.out.println(violation.getMessage());
+			    		 totalViolations += 1;
+			    	 } 
+			     }
 		    	 if(s.getLogging() != null)
 		    	 {
 		    		 Set<ConstraintViolation<Logging>> constraintViolationsSL = validator.validate(s.getLogging());
@@ -492,7 +506,7 @@ public class YamlParser {
 	     }
 	     return totalViolations;
 	 }
-	 private static void checkForDuplicateKeys(String File)
+	 private static void checkForDuplicateKeys(File File)
 	 {
 		 
      	try {

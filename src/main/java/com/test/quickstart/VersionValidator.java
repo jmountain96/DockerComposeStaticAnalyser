@@ -30,6 +30,14 @@ public class VersionValidator {
 			Validate3();
 			Version3Removal();
 			break;
+		case "3.1":
+			Validate33();
+			Version3Removal();
+			break;
+		case "3.2":
+			Validate33();
+			Version3Removal();
+			break;
 		case "3.3":
 			Validate33();
 			Version3Removal();
@@ -199,7 +207,7 @@ public class VersionValidator {
 		{
 			System.out.println("Platform is only compatible with version 2.4+");
 		}
-		Validate23();
+		Validate24();
 		
 	}
 	public void Validate24()
@@ -293,9 +301,12 @@ public class VersionValidator {
 		{
 			for(Service s : level.getServices().values())
 			{
-				if(s.getDeploy().getEndpoint_mode()!= null)
+				if(s.getDeploy() != null)
 				{
-					System.out.println("Deploy endpoints are only compatible with version 3.3+");
+					if(s.getDeploy().getEndpoint_mode()!= null)
+					{
+						System.out.println("Deploy endpoints are only compatible with version 3.3+");
+					}
 				}
 			}
 		}
@@ -307,9 +318,12 @@ public class VersionValidator {
 		{
 			for(Volume V : level.getVolumes().values()) 
 			{
-				if(V.getName() != null)
+				if(V != null)
 				{
-					System.out.println("Volume name is only compatible with version 3.4+");
+					if(V.getName() != null)
+					{
+						System.out.println("Volume name is only compatible with version 3.4+");
+					}
 				}
 			}
 		}
@@ -335,11 +349,14 @@ public class VersionValidator {
 		{
 			for(Service s : level.getServices().values())
 			{
-				if(s.getDeploy().getRollback_config()!= null)
+				if(s.getDeploy() != null)
 				{
-					if(s.getDeploy().getRollback_config().getOrder()!= null)
+					if(s.getDeploy().getRollback_config()!= null)
 					{
-						System.out.println("Deploy rollback config order is only compatible with version 3.4+");
+						if(s.getDeploy().getRollback_config().getOrder()!= null)
+						{
+							System.out.println("Deploy rollback config order is only compatible with version 3.4+");
+						}
 					}
 				}
 			}

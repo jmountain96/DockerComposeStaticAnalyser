@@ -2,6 +2,7 @@ package com.test.quickstart;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -12,7 +13,8 @@ public class ValidationTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			level = YamlParser.ParseFile("testConfigs/testValidationPass.yaml");
+			File f = new File("testConfigs/testValidationPass.yaml");
+			level = YamlParser.ParseFile(f);
 		} 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -25,12 +27,13 @@ public class ValidationTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			level = YamlParser.ParseFile("testConfigs/testValidationFail.yaml");
+			File f = new File("testConfigs/testValidationFail.yaml");
+			level = YamlParser.ParseFile(f);
 		} 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertEquals(YamlParser.Validate(level), 116);
+		assertEquals(YamlParser.Validate(level), 120);
 	}
 }

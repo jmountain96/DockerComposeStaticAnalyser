@@ -3,6 +3,8 @@ package com.test.quickstart;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -257,7 +259,7 @@ public class TopLevel {
 	public Object getCommand() {
 		return command;
 	}
-	public void setCommand(Object command) {
+	public void setCommand(Object command) throws Exception {
 		this.command = command;
 		convertCommand();
 	}
@@ -832,10 +834,6 @@ public class TopLevel {
 	}
 	public void setServices(Map<String,Service> services) {
 		this.services = services;
-		for (Entry<String, Service> service : this.services.entrySet())
-		{
-			service.getValue().setName(service.getKey());
-		}
 	}
 	public Dependencies getSecretCheckUsed() {
 		return SecretCheckUsed;
@@ -904,25 +902,25 @@ public class TopLevel {
 		}
 		NetworkCheckUsed.dependents = networks;
 	}
-	private void convertCommand() 
+	private void convertCommand() throws Exception 
 	{
-		boolean set = false;
 		String tCommand = command.toString();
 		if(resolver.checkStringList(command))
 		{
 			commandSL = converter.convertStringList(tCommand);
 			commandType = "String[]";
-			set = true;
-		}
-		else 
 			
-		{
-			if(set == false)
+		}
+		else if(resolver.checkString(command) == true)
 			{
 				commandS = tCommand;
 				commandType = "String";
 			}
-		}	
+		
+		else 
+		{
+			throw new Exception("Unknown type for command");
+		}
 	}
 	private void convertDNS()
 	{
@@ -956,10 +954,11 @@ public class TopLevel {
 		}
 		else 
 		{
-			if(set == false){
+			if(set == false)
+			{
 			entrypointS = tEntrypoint ;
 			entrypointType = "String";
-		}
+			}
 		}
 	}
 	private void convertEnv_file()
@@ -1025,8 +1024,18 @@ public class TopLevel {
 			networksN = converter.convertNetworks(networksAL);
 			this.networkType = "Map<String,Network>";
 		}
+		else if(resolver.checkMap(networks))
+		{
+			Map<String,String> map = converter.convertMap(networks);
+			Set<String> keys = map.keySet();
+			String[] netList = keys.toArray(new String[keys.size()]);
+			this.networksSL = netList;
+			this.networkType = "String[]";
+		}
 		else
 		{
+			System.out.println(networks);
+			System.out.println("yes");
 			throw new Exception ("Unknown type entered for Top Level Network");
 		}
 	}

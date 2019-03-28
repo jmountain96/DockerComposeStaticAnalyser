@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,7 +25,8 @@ public class ParsingTests {
 	public void testIncorrectKeys() 
 	{
 		try {
-			YamlParser.ParseFile("testConfigs/testIncorrectKeys.yaml");
+			File f = new File("testConfigs/testIncorrectKeys.yaml");
+			YamlParser.ParseFile(f);
 			fail("Expected an UnrecognizedPropertyException to be thrown");
 		} 
 		catch(UnrecognizedPropertyException UPE)
@@ -40,7 +42,8 @@ public class ParsingTests {
 	public void testIncorrectValue()
 	{
 		try {
-			YamlParser.ParseFile("testConfigs/testIncorrectValue.yaml");
+			File f = new File("testConfigs/testIncorrectValue.yaml");
+			YamlParser.ParseFile(f);
 			fail("Expected an UnrecognizedPropertyException to be thrown");
 		} 
 		catch(MismatchedInputException MIE)
@@ -57,7 +60,8 @@ public class ParsingTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			level = YamlParser.ParseFile("testConfigs/testFullCompose.yaml");
+			File f = new File("testConfigs/testFullCompose.yaml");
+			level = YamlParser.ParseFile(f);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.test.quickstart;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -12,18 +13,20 @@ import org.kohsuke.github.PagedSearchIterable;
 
 public class GHRunner 
 {
+	YamlParser y = new YamlParser();
 	@Test
 	public void run() throws IOException
 	{
-		GitHub gh = GitHub.connectUsingOAuth("");
-		GHContentSearchBuilder search = gh.searchContent();
-		GHContentSearchBuilder s = search.q("in:file+filename:docker-compose.yml+org:mobomo");
-
-		PagedSearchIterable<GHContent> res = s.list();
 		
-		for (GHContent ghRepository : res) 
+		File dir = new File("./ghConfigs");
+		File[] dirListing = dir.listFiles();
+		
+		for( int index = 0; index < dirListing.length; index++)
 		{
-			System.out.println(ghRepository.getName());
+			if (dirListing[index] != null)
+			{
+				YamlParser.Validate(dirListing[index]);
+			}
 		}
 	}
 	

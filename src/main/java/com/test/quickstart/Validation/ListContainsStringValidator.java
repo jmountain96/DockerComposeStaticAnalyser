@@ -42,10 +42,12 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 				for(String n : constraints)
 				{
 					
-					if(x.matches("(" + n + "){1}.*( == ){1}.+") == true)
+					if(x.matches("(" + n + "){1}.*( == ){1}.+") == true || x.matches("(" + n + "){1}.*( != ){1}.+") == true)
 					{
 						matches = true;
 					}
+					
+				
 				}
 				if(matches == false)
 				{
