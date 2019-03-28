@@ -1,0 +1,23 @@
+# Declare compose version
+version: '3'
+
+# Define your services
+services:
+    restservice:    # REST service container
+        build: ./companyRESTservice
+        volumes: 
+            - ./companyRESTservice:/service/app
+        ports:
+            - "3000:3000"
+        
+    web:    # REST service container
+        build: ./html_client
+        volumes: 
+            - ./html_client:/service/app
+        ports:
+            - "5000:80"
+        depends_on:
+            - restservice
+  
+
+

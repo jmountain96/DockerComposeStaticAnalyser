@@ -1,0 +1,9 @@
+version: '3'
+services:
+  ruby:
+    build:
+      context: .
+    volumes:
+      - .:/website
+    ports:
+      - 4000:4000

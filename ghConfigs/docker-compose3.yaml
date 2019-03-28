@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    build: .
+    image: chimerast/resembla:latest
+    command: resembla_server -c sample/default.json
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./sample:/app/sample

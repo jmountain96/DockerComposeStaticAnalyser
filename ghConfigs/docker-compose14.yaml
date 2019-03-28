@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  wiki.server:
+    image: ${DOCKER_REGISTRY}wikiserver
+    build:
+      context: .
+      dockerfile: Wiki.Server/Dockerfile

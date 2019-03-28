@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+
+  postgresql:
+    image: docker.bintray.io/postgres:9.5.2
+    ports:
+     - 5432:5432
+    environment:
+     - POSTGRES_DB=artifactory
+     - POSTGRES_USER=artifactory
+     - POSTGRES_PASSWORD=password
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 9
+      placement:
+        constraints: [node.role != manager]
+
+  artifactory:
+    image: docker.bintray.io/jfrog/artifactory-oss:6.1.0
+    ports:
+     - 80:8081
+    depends_on:
+     - postgresql
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 9
+      placement:
+        constraints: [node.role != manager]
+    environment:
+     - DB_TYPE=postgresql
+     - DB_USER=artifactory
+     - DB_PASSWORD=password
+     #- EXTRA_JAVA_OPTIONS=-Xmx4g
