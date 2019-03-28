@@ -1,0 +1,27 @@
+version: '2' 
+services:
+  gobyte1:
+    image: crypto-env-gobyte:latest
+    container_name: crypto-env-gobyte1
+    volumes:
+      - ./gobytecore1:/home/crypto/.gobytecore
+      - ./gobyte:/home/crypto/gobyte
+    ports:
+      - "12456:12455"
+    networks:
+    - back
+
+  gobyte2:
+    image: crypto-env-gobyte:latest
+    container_name: crypto-env-gobyte2
+    volumes:
+      - ./gobytecore2:/home/crypto/.gobytecore
+      - ./gobyte:/home/crypto/gobyte
+    ports:
+      - "12457:12455"
+    networks:
+    - back
+
+networks:
+  back:
+    external: true

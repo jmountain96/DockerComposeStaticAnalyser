@@ -28,10 +28,10 @@ public class YamlParser {
 	 public static void main(String[] string) throws IOException 
 	 {
 		 File f = new File("testConfigs/testValidationPass.yaml");
-		 Validate(f);
+		 Start(f);
 		
 	 }
-	 public static void Validate(File File)
+	 public static void Start(File File)
 	 {
 		 TopLevel level = new TopLevel();
 		 try 
@@ -234,21 +234,24 @@ public class YamlParser {
 	    	 for(String net : level.getNetworksN().keySet())
     		 {
 	    		 Network n = level.getNetworksN().get(net);
-    			 Set<ConstraintViolation<Network>> constraintViolationsN = validator.validate(n);
-    			 for (ConstraintViolation<Network> violation : constraintViolationsN) 
-    			 {
-    				 System.out.println(violation.getMessage());
-    				 totalViolations += 1;
-    			 }
-    			 if(n.getIpam() != null)
-    			 {
-    				 Set<ConstraintViolation<Ipam>> constraintViolationsNI = validator.validate(n.getIpam());
-        			 for (ConstraintViolation<Ipam> violation : constraintViolationsNI) 
-        			 {
-        				 System.out.println(violation.getMessage());
-        				 totalViolations += 1;
-        			 }
-    			 }
+	    		 if(n != null)
+	    		 {
+	    			 Set<ConstraintViolation<Network>> constraintViolationsN = validator.validate(n);
+	    			 for (ConstraintViolation<Network> violation : constraintViolationsN) 
+	    			 {
+	    				 System.out.println(violation.getMessage());
+	    				 totalViolations += 1;
+	    			 }
+	    			 if(n.getIpam() != null)
+	    			 {
+	    				 Set<ConstraintViolation<Ipam>> constraintViolationsNI = validator.validate(n.getIpam());
+	        			 for (ConstraintViolation<Ipam> violation : constraintViolationsNI) 
+	        			 {
+	        				 System.out.println(violation.getMessage());
+	        				 totalViolations += 1;
+	        			 }
+	    			 }
+	    		 }
     		 }
 	     }
 	     if(level.getPortsP() != null)

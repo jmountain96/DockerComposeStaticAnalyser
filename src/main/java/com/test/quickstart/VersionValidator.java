@@ -380,9 +380,12 @@ public class VersionValidator {
 		{
 			for(Network N : level.getNetworksN().values()) 
 			{
-				if(N.getName() != null)
+				if(N != null)
 				{
-					System.out.println("Network name is only compatible with version 3.5+");
+					if(N.getName() != null)
+					{
+						System.out.println("Network name is only compatible with version 3.5+");
+					}
 				}
 			}
 		}

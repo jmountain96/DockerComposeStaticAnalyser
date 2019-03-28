@@ -25,7 +25,7 @@ public class GHRunner
 		{
 			if (dirListing[index] != null)
 			{
-				YamlParser.Validate(dirListing[index]);
+				YamlParser.Start(dirListing[index]);
 			}
 		}
 	}

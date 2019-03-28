@@ -54,25 +54,32 @@ public class TypeConverter {
 		for(String key : input.keySet()) 
 		{
 			Map<String,Object> s = input.get(key);
-			Ipam I = null;
-			BeanWrapper newWrappedNetwork = new BeanWrapperImpl(new Network());
-			for (Map.Entry<String, Object> property : s.entrySet())
+			if( s == null)
 			{
-				if(property.getKey().equals("ipam")) 
-				{
-					I = convertIpam(property.getValue());
-				}
-				else 
-				{
-					newWrappedNetwork.setPropertyValue(property.getKey(), property.getValue());
-				}
+				ret.put(key, null);
 			}
-			Network newNetwork = (Network)newWrappedNetwork.getWrappedInstance();
-			if(I != null)
+			else
 			{
-				newNetwork.setIpam(I);
+				Ipam I = null;
+				BeanWrapper newWrappedNetwork = new BeanWrapperImpl(new Network());
+				for (Map.Entry<String, Object> property : s.entrySet())
+				{
+					if(property.getKey().equals("ipam")) 
+					{
+						I = convertIpam(property.getValue());
+					}
+					else 
+					{
+						newWrappedNetwork.setPropertyValue(property.getKey(), property.getValue());
+					}
+				}
+				Network newNetwork = (Network)newWrappedNetwork.getWrappedInstance();
+				if(I != null)
+				{
+					newNetwork.setIpam(I);
+				}
+				ret.put(key, newNetwork);
 			}
-			ret.put(key, newNetwork);
 		}
 		return ret;
 	}
@@ -263,5 +270,21 @@ public class TypeConverter {
 		VolumeV b = (VolumeV) ret.getWrappedInstance();
 		
 		return b;
+	}
+	public Map<String, Condition> convertMapCondition(Map<String, Map<String,Object>> input)
+	{
+		Map<String,Condition> ret = new HashMap<>();
+		for(String key : input.keySet()) 
+		{
+			Map<String,Object> s = input.get(key);
+			BeanWrapper newWrappedCondition = new BeanWrapperImpl(new Condition());
+			for (Map.Entry<String, Object> property : s.entrySet())
+			{
+				newWrappedCondition.setPropertyValue(property.getKey(), property.getValue());
+			}
+			Condition newCondition = (Condition)newWrappedCondition.getWrappedInstance();
+			ret.put(key, newCondition);
+		}
+		return ret;
 	}
 }

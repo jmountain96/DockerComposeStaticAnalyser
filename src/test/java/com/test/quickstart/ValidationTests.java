@@ -20,7 +20,7 @@ public class ValidationTests {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertEquals(YamlParser.Validate(level), 2);
+		assertEquals(YamlParser.Validate(level), 1);
 	}
 	@Test
 	public void testValidationFail()
@@ -34,6 +34,6 @@ public class ValidationTests {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertEquals(YamlParser.Validate(level), 120);
+		assertEquals(YamlParser.Validate(level), 110);
 	}
 }

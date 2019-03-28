@@ -2,6 +2,7 @@ package com.test.quickstart;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 import com.test.quickstart.Validation.ValidationEnums;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
@@ -40,7 +41,10 @@ public class Service {
 	private String mem_limit;
 	private String memswap_limit;
 	private String mem_swappiness;
-	private String[] depends_on;
+	private Object depends_on;
+	private Map<String,Condition> depends_onM;
+	private String[] depends_onS;
+	private String depends_onType;
 	private Deploy deploy;
 	private Object entrypoint;
 	@CheckDuplication(message = "Duplicate entrypoint detected")
@@ -60,6 +64,7 @@ public class Service {
 	@CheckDuplication(message = "Duplicate port detected")
 	private String[] expose;
 	private Healthcheck healthcheck;
+	private String hostname;
 	private Object labels;
 	private Map<String,String> labelsM;
 	@CheckDuplication(message = "Duplicate service lable detected")
@@ -285,11 +290,30 @@ public class Service {
 	public void setCpuset(String cpuset) {
 		this.cpuset = cpuset;
 	}
-	public String[] getDepends_on() {
+	public Object getDepends_on() {
 		return depends_on;
 	}
-	public void setDepends_on(String[] depends_on) {
+	public void setDepends_on(Object depends_on) throws Exception {
 		this.depends_on = depends_on;
+		convertDependsOn();
+	}
+	public Map<String, Condition> getDepends_onM() {
+		return depends_onM;
+	}
+	public void setDepends_onM(Map<String, Condition> depends_onM) {
+		this.depends_onM = depends_onM;
+	}
+	public String[] getDepends_onS() {
+		return depends_onS;
+	}
+	public void setDepends_onS(String[] depends_onS) {
+		this.depends_onS = depends_onS;
+	}
+	public String getDepends_onType() {
+		return depends_onType;
+	}
+	public void setDepends_onType(String depends_onType) {
+		this.depends_onType = depends_onType;
 	}
 	public Deploy getDeploy() {
 		return deploy;
@@ -381,6 +405,12 @@ public class Service {
 	}
 	public void setExpose(String[] expose) {
 		this.expose = expose;
+	}
+	public String getHostname() {
+		return hostname;
+	}
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
 	}
 	public Healthcheck getHealthcheck() {
 		return healthcheck;
@@ -536,7 +566,17 @@ public class Service {
 	public void setServiceDependenciesD(String[] services) {
 		if(this.depends_on != null)
 		{
-			ServiceDependencies.dependents = this.depends_on;
+			if(depends_onType == "String[]")
+			{
+				ServiceDependencies.dependents = this.depends_onS;
+			}
+			else
+			{
+				Set<String> keys = this.depends_onM.keySet();
+				String[] array = keys.toArray(new String[keys.size()]);
+				ServiceDependencies.dependents = array;
+			}
+			
 		}
 		else 
 		{
@@ -852,6 +892,23 @@ public class Service {
 			entrypointS = tEntrypoint ;
 			entrypointType = "String";
 			}
+		}
+	}
+	private void convertDependsOn() throws Exception
+	{
+		if(resolver.checkNestedMap(depends_on) == true)
+		{
+			depends_onM = Converter.convertMapCondition((Map<String, Map<String, Object>>) depends_on);
+			depends_onType = "Map<String,Condition>";
+		}
+		else if(resolver.checkStringList(depends_on))
+		{
+			depends_onS = Converter.convertStringList(depends_on);
+			depends_onType = "String[]";
+		}
+		else
+		{
+			throw new Exception("Unknown type for depends_on test");
 		}
 	}
 

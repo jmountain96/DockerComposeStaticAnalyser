@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    hostname: redis
+    networks:
+      - queue
+
+  postgres:
+    image: postgres:9.6
+    hostname: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - db
+
+  web:
+    hostname: web
+    build: .
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - 4000:4000
+    volumes:
+      - '.:/app'
+    links:
+      - redis
+      - postgres
+    networks:
+      queue:
+        aliases:
+         - redis
+         - web.service.queue
+      db:
+        aliases:
+          - postgres
+          - web.service.db
+    env_file:
+      - .env
+
+networks:
+  queue:
+  db:

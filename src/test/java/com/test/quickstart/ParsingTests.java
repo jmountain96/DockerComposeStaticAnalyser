@@ -44,7 +44,7 @@ public class ParsingTests {
 		try {
 			File f = new File("testConfigs/testIncorrectValue.yaml");
 			YamlParser.ParseFile(f);
-			fail("Expected an UnrecognizedPropertyException to be thrown");
+			fail("Expected an MismatchedInputException to be thrown");
 		} 
 		catch(MismatchedInputException MIE)
 		{
@@ -86,7 +86,7 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getGid(), "104");
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getMode(), "0440");
 		String[] depends = {"db"};
-		assertArrayEquals(level.getServices().get("webapp").getDepends_on(), depends);
+		assertArrayEquals(level.getServices().get("webapp").getDepends_onS(), depends);
 		assertNotNull(level.getServices().get("webapp").getDeploy());
 		assertEquals(level.getServices().get("webapp").getDeploy().getReplicas(), 6);
 		assertEquals(level.getServices().get("webapp").getDeploy().getRestart_policy().getCondition(), "on-failure");
