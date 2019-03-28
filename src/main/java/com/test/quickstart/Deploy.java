@@ -7,6 +7,7 @@ import com.test.quickstart.Validation.Interfaces.ContainsString;
 
 public class Deploy {
 	private TypeConverter Converter = new TypeConverter();
+	private TypeResolver Resolver = new TypeResolver();
 	@ContainsString(message = "Endpoint mode must be vip or dnsrr", value = ValidationEnums.ContainsStringType.ENDPOINT_MODE)
 	private String endpoint_mode;
 	private Object labels;
@@ -42,7 +43,7 @@ public class Deploy {
 		return labels;
 	}
 
-	public void setLabels(Object labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -127,21 +128,22 @@ public class Deploy {
 		this.update_config = update_config;
 	}
 
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(Resolver.checkMap(labels) == true)
+		{
 			labelsM = Converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = Converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		
+		else if(Resolver.checkStringList(labels) == true)
+		{
+			labelsS = Converter.convertStringList(labels);
+			labelType = "String[]";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Labels Args");
 		}
 	}
 }

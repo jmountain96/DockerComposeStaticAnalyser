@@ -7,17 +7,18 @@ import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 public class Volume {
 	private TypeConverter converter = new TypeConverter();
-	@ContainsString(message = "Invalid voume type", value = ValidationEnums.ContainsStringType.VOLUME_TYPE)
+	private TypeResolver Resolver = new TypeResolver();
+	@ContainsString(message = "Invalid volume type", value = ValidationEnums.ContainsStringType.VOLUME_TYPE)
 	private String type;
 	private String source;
 	@CheckFolderExists(message = "Volume target folder doesn't exist")
 	private String target;
 	@ContainsString(message = "Volume read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
-	private Map<String,String> bind;
-	private Map<String,String> volume;
-	private Map<String,String> tmpfs;
-	@ContainsString(message = "Invalid voume type", value = ValidationEnums.ContainsStringType.VOLUME_CONSISTENCY)
+	private Bind bind;
+	private VolumeV volume;
+	private TMPFS tmpfs;
+	@ContainsString(message = "Invalid volume consistency", value = ValidationEnums.ContainsStringType.VOLUME_CONSISTENCY)
 	private String consistency;
 	private String driver;
 	private Map<String,String> driver_opts;
@@ -64,23 +65,23 @@ public class Volume {
 	public void setRead_only(String read_only) {
 		this.read_only = read_only;
 	}
-	public Map<String, String> getBind() {
+	public Bind getBind() {
 		return bind;
 	}
-	public void setBind(Map<String, String> bind) {
+	public void setBind(Bind bind) {
 		this.bind = bind;
 	}
-	public Map<String, String> getVolume() {
+	public VolumeV getVolume() {
 		return volume;
 	}
-	public void setVolume(Map<String, String> volume) {
+	public void setVolume(VolumeV volume) {
 		this.volume = volume;
 	}
-	public Map<String, String> getTmpfs() {
+	public TMPFS getTmpfs() {
 		return tmpfs;
 	}
-	public void setTmpfs(Map<String, String> tmpfs) {
-		this.tmpfs = tmpfs;
+	public void setTmpfs(TMPFS b) {
+		this.tmpfs = b;
 	}
 	public String getConsistency() {
 		return consistency;
@@ -103,7 +104,7 @@ public class Volume {
 	public Object getExternal() {
 		return external;
 	}
-	public void setExternal(Object external) {
+	public void setExternal(Object external) throws Exception {
 		this.external = external;
 		convertExternal();
 	}
@@ -128,7 +129,7 @@ public class Volume {
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -156,39 +157,39 @@ public class Volume {
 	public void setName(String name) {
 		this.name = name;
 	}
-	private void convertExternal() 
+	private void convertExternal() throws Exception 
 	{
-		boolean set = false;
-		String tExternal = external.toString();
-		try {
+		if(Resolver.checkMap(external) == true)
+		{
 			externalM = converter.convertMap(external);
-			externalType = "Map<String,String[]>";
-			set = true;
+			externalType = "Map<String,String>";
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				externalS = tExternal;
-				externalType = "String";
-			}
+		else if(Resolver.checkString(external) == true)
+		{
+			externalS = external.toString();
+			externalType = "String";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Config External");
 		}
 	}
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(Resolver.checkMap(labels) == true)
+		{
 			labelsM = converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		
+		else if(Resolver.checkStringList(labels) == true)
+		{
+			labelsS = converter.convertStringList(labels);
+			labelType = "String[]";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Build Labels");
 		}
 	}
 }

@@ -1,0 +1,72 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:mainline-alpine
+    ports:
+     - "80:80"
+    volumes:
+     - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+    depends_on:
+     - jenkins
+     - gogs
+     - qualidade_aplicativo
+     - producao_aplicativo
+    links:
+     - jenkins
+     - gogs
+     - qualidade_aplicativo
+     - producao_aplicativo
+  jenkins:
+    image: jenkins:alpine
+    ports:
+     - "8080:8080"
+     - "50000:50000"
+    links:
+      - gogs
+      - mongo
+      - mysql
+    privileged: true
+    #HACK para resolver a execução do gradle dentro da máquina do jenkins:alpine
+    #depois de subir a máquina rodar esse comando alterando o ID do conteiner do DOCKER
+    #docker exec -it -u root 132 apk add --no-cache libstdc++
+  gogs:
+    image: gogs/gogs
+    ports:
+      - "10022:10022"
+      - "10080:10080"
+      - "3000:3000"
+  mysql:
+    image: mysql:5.6.24
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=treinamento
+      - MYSQL_USER=treinamento
+      - MYSQL_PASSWORD=treinamento
+      - MYSQL_DATABASE=treinamento
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+  qualidade_aplicativo:
+    build: .
+    environment:
+      - SPRING_PROFILES_ACTIVE=qa
+    ports:
+      - "2605:2605"
+    links:
+      - mongo
+      - mysql
+  producao_aplicativo:
+    build: .
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "2603:2603"
+    links:
+      - mongo
+      - mysql
+  registry:
+    image: registry
+    ports:
+      - "5000:50000"

@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+
+  sshd-server:
+    image: vincent/proxy:sshd-server
+    # build:
+    #   context: .
+    #   dockerfile: sshd-server.dockerfile
+    volumes:
+      - socks-server:/root/.ssh/
+  
+  socks-server:
+    image: vincent/proxy:socks-server
+    # build:
+    #   context: .
+    #   dockerfile: socks-server.dockerfile
+    volumes:
+      - socks-server:/root/.ssh/
+    depends_on:
+      - sshd-server
+    ports:
+      - 1080:1080
+
+volumes:
+  socks-server:

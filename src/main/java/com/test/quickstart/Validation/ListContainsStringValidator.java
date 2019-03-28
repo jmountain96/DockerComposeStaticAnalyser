@@ -6,7 +6,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import com.test.quickstart.Validation.ValidationEnums.*;
-import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.Interfaces.ListContainsString;
 public class ListContainsStringValidator implements ConstraintValidator<ListContainsString, String[]> {
 	
@@ -42,10 +41,13 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 				boolean matches = false;
 				for(String n : constraints)
 				{
-					if(x.matches("(" + n + ")( == )\\w+") == true)
+					
+					if(x.matches("(" + n + "){1}.*( == ){1}.+") == true || x.matches("(" + n + "){1}.*( != ){1}.+") == true)
 					{
 						matches = true;
 					}
+					
+				
 				}
 				if(matches == false)
 				{
@@ -61,7 +63,7 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 				boolean matches = false;
 				for(String n : constraints)
 				{
-					if(x.matches("(spread=)(" + n + ")( == )\\w+") == true)
+					if(x.contains("spread == " + n)== true)
 					{
 						matches = true;
 					}
@@ -73,7 +75,7 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 					
 				}
 			}
-		
+			return true;
 		default:
 			context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate( "Unknown type"  ).addConstraintViolation();

@@ -12,20 +12,20 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 	private ContainsStringType type;
 	private List<String> endpoint_mode = Arrays.asList("VIP", "DNSRR");
 	private List<String> deploy_mode= Arrays.asList("GLOBAL", "REPLICATED");
-	private List<String> restart_policy = Arrays.asList("NONE", "ON-FALIURE", "ANY");
+	private List<String> restart_policy = Arrays.asList("NONE", "ON-FAILURE", "ANY", "UNLESS-STOPPED", "NO", "ALWAYS");
 	private List<String> rb_failure_action = Arrays.asList("CONTINUE", "PAUSE");
 	private List<String> uc_failure_action = Arrays.asList("CONTINUE", "PAUSE", "ROLLBACK");
 	private List<String> configOrder = Arrays.asList("STOP-FIRST", "START-FIRST");
 	private List<String> booleanString= Arrays.asList("TRUE","FALSE","YES","NO");
 	private List<String> isolation = Arrays.asList("DEFAULT","PROCESS","HYPERV");
 	private List<String> healthCheckTest= Arrays.asList("NONE", "CMD", "CMDSHELL");
-	private List<String> networkMode = Arrays.asList("bridge", "host", "overlay", "macvlan", "none");
-	private List<String> versions = Arrays.asList("1","1.0", "2","2.0", "2.1", "2.2", "2.3", "2.4", "3","3.0", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7");
+	private List<String> networkMode = Arrays.asList("BRIDGE", "HOST", "OVERLAY", "MACVLAN", "NONE");
+	private List<String> versions = Arrays.asList("1","1.0", "2","2.0", "2.1", "2.2", "2.3", "2.4", "3","3.0", "3.1", "3.2","3.3", "3.4", "3.5", "3.6", "3.7");
 	private String pid = "host";
-	private List<String> portProtocol = Arrays.asList("tcp", "udp");
-	private List<String> portMode = Arrays.asList("host", "ingress");
-	private List<String> volumeType = Arrays.asList("volumes", "bind","tmpfs");
-	private List<String> volumeConsistency = Arrays.asList("consistent", "cached", "delegated");
+	private List<String> portProtocol = Arrays.asList("TCP", "UDP");
+	private List<String> portMode = Arrays.asList("HOST", "INGRESS");
+	private List<String> volumeType = Arrays.asList("VOLUME", "BIND","TMPFS");
+	private List<String> volumeConsistency = Arrays.asList("CONSISTENT", "CACHED", "DELEGATED");
 	private List<String> loggingDriver = Arrays.asList("none", "json-file", "local", "syslog", "journald", "gelf", "fluentd", "awslogs", "splunk", "etwlogs", "gcplogs", "logentries" );
 	public void initialize(ContainsString constraintAnnotation) {
         this.type = constraintAnnotation.value();
@@ -43,7 +43,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following version is invalid " + value + "/n it must be one of the following " + versions.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following version is invalid " + value + " it must be one of the following " + versions.toString()).addConstraintViolation();
 				return false;
 			}
 		case ENDPOINT_MODE:
@@ -53,7 +53,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else
 			{
-				context.buildConstraintViolationWithTemplate( "The following end point is invalid " + value + "/n it must be one of the following " + endpoint_mode.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following end point is invalid " + value + " it must be one of the following " + endpoint_mode.toString()).addConstraintViolation();
 				return false;
 			}
 		case DEPLOY_MODE:
@@ -63,7 +63,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following deploy mode is invalid " + value + "/n it must be one of the following " + deploy_mode.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following deploy mode is invalid " + value + " it must be one of the following " + deploy_mode.toString()).addConstraintViolation();
 				return false;
 			}
 		case RESTART_POLICY_CONDITION:
@@ -73,7 +73,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following restart policy is invalid " + value + "/n it must be one of the following " + restart_policy.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following restart policy is invalid " + value + " it must be one of the following " + restart_policy.toString()).addConstraintViolation();
 				return false;
 			}
 		case RBFAILUREACTION:
@@ -83,7 +83,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following rollback failure option is invalid " + value + "/n it must be one of the following " + rb_failure_action.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following rollback failure option is invalid " + value + " it must be one of the following " + rb_failure_action.toString()).addConstraintViolation();
 				return false;
 			}
 		case UCFAILUREACTION:
@@ -93,7 +93,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following uc failure action is invalid " + value + "/n it must be one of the following " + uc_failure_action.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following uc failure action is invalid " + value + " it must be one of the following " + uc_failure_action.toString()).addConstraintViolation();
 				return false;
 			}
 		case CONFIGORDER:
@@ -103,7 +103,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following config order is invalid " + value + "/n it must be one of the following " + configOrder.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following config order is invalid " + value + " it must be one of the following " + configOrder.toString()).addConstraintViolation();
 				return false;
 			}
 		case BOOLEAN:
@@ -113,7 +113,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The value is not a boolean " + value + "/n it must be one of the following " + booleanString.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The value is not a boolean " + value + " it must be one of the following " + booleanString.toString()).addConstraintViolation();
 				return false;
 			}
 		case ISOLATION:
@@ -123,7 +123,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following isolation is invalid " + value + "/n it must be one of the following " + isolation.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following isolation is invalid " + value + " it must be one of the following " + isolation.toString()).addConstraintViolation();
 				return false;
 			}
 		case HEALTHCHECK:
@@ -133,7 +133,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following healthcheck test is invalid " + value + "/n it must be one of the following " + healthCheckTest.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following healthcheck test is invalid " + value + " it must be one of the following " + healthCheckTest.toString()).addConstraintViolation();
 				return false;
 			}
 		case NETWORK_MODE:
@@ -143,17 +143,17 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following network mode is invalid " + value + "/n it must be one of the following " + networkMode.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following network mode is invalid " + value + " it must be one of the following " + networkMode.toString()).addConstraintViolation();
 				return false;
 			}
 		case PID:
-			if(value == pid )
+			if(value.equals(pid) )
 			{
 				return true;
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following PID is invalid " + value + "/n it must be one of the following " + pid.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following PID is invalid " + value + " it must be one of the following " + pid.toString()).addConstraintViolation();
 				return false;
 			}
 		case PORT_PROTOCOL:
@@ -163,7 +163,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following port protocol is invalid " + value + "/n it must be one of the following " + portProtocol.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following port protocol is invalid " + value + " it must be one of the following " + portProtocol.toString()).addConstraintViolation();
 				return false;
 			}
 		case PORT_MODE:
@@ -173,7 +173,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following port mode is invalid " + value + "/n it must be one of the following " + portMode.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following port mode is invalid " + value + " it must be one of the following " + portMode.toString()).addConstraintViolation();
 				return false;
 			}
 		case VOLUME_TYPE:	
@@ -183,7 +183,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following volume type is invalid " + value + "/n it must be one of the following " + volumeType.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following volume type is invalid " + value + " it must be one of the following " + volumeType.toString()).addConstraintViolation();
 				return false;
 			}
 		case VOLUME_CONSISTENCY:
@@ -193,7 +193,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following volume consistency is invalid " + value + "/n it must be one of the following " + volumeConsistency.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following volume consistency is invalid " + value + " it must be one of the following " + volumeConsistency.toString()).addConstraintViolation();
 				return false;
 			}
 		case LOGGING_DRIVER:
@@ -203,7 +203,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following logging driver is invalid " + value + "/n it must be one of the following " + loggingDriver.toString()).addConstraintViolation();
+				context.buildConstraintViolationWithTemplate( "The following logging driver is invalid " + value + "it must be one of the following " + loggingDriver.toString()).addConstraintViolation();
 				return false;
 			}
 		default:

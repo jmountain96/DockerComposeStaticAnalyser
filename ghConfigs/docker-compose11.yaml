@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  php:
+      build: ./php/
+      expose:
+        - 9000
+      volumes:
+        - ./www:/var/www/html
+        - ./php/php.ini:/usr/local/etc/php/php.ini
+        - ./php/www.conf:/usr/local/etc/php/fpm/pool.d/www.conf
+      env_file:
+        - ./www/.env
+      restart: always

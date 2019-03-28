@@ -1,7 +1,9 @@
 package com.test.quickstart;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;;
@@ -10,36 +12,26 @@ public class TypeConverter {
 	
 	
 	
-	public boolean checkString(Object input)
-	{
-		String value = input.toString();
-		if(value.startsWith("{") == false)
-		{
-			return true;
-		}
-		else 
-		{
-			return false;
-		}
-	}
 	
-	public boolean checkStringList(Object input) {
-		String value = input.toString();
-		if(value.startsWith("[") == false) 
-		{
-			return false;
-		}
-		else 
-		{
-			return true;
-		}
-	}
 	@SuppressWarnings("unchecked")
 	public Map<String,String> convertMap(Object input)
 	{
 		Map<String,String> _ret;
 		_ret = (Map<String,String>)input;
 		return _ret;
+	}
+	@SuppressWarnings("unchecked")
+	public Map<String, Object>[] convertMapList(List<Map<String, Object>> input)
+	{
+		Map<String, Object>[] listOfMaps = (Map<String, Object>[]) new Map[input.size()];
+		for(int i = 0; i < input.size(); i++)
+		{
+			Map<String, Object> map;
+			map = (Map<String, Object>)input.get(i);
+			listOfMaps[i] = map;
+		}
+		
+		return listOfMaps;
 	}
 	public String[] convertStringList(Object input)
 	{
@@ -56,12 +48,40 @@ public class TypeConverter {
 		_ret = (Map<String,String[]>)input;
 		return _ret;
 	}
-	@SuppressWarnings("unchecked")
-	public Map<String,Network> convertMapSN(Object input)
+	public Map<String, Network> convertNetworks(Map<String, Map<String,Object>> input)
 	{
-		Map<String,Network> _ret;
-		_ret = (Map<String,Network>)input;
-		return _ret;
+		Map<String,Network> ret = new HashMap<>();
+		for(String key : input.keySet()) 
+		{
+			Map<String,Object> s = input.get(key);
+			if( s == null)
+			{
+				ret.put(key, null);
+			}
+			else
+			{
+				Ipam I = null;
+				BeanWrapper newWrappedNetwork = new BeanWrapperImpl(new Network());
+				for (Map.Entry<String, Object> property : s.entrySet())
+				{
+					if(property.getKey().equals("ipam")) 
+					{
+						I = convertIpam(property.getValue());
+					}
+					else 
+					{
+						newWrappedNetwork.setPropertyValue(property.getKey(), property.getValue());
+					}
+				}
+				Network newNetwork = (Network)newWrappedNetwork.getWrappedInstance();
+				if(I != null)
+				{
+					newNetwork.setIpam(I);
+				}
+				ret.put(key, newNetwork);
+			}
+		}
+		return ret;
 	}
 	@SuppressWarnings("unchecked")
 	public Map<String,Configs> convertMapSC(Object input)
@@ -87,12 +107,9 @@ public class TypeConverter {
 		
 		
 	}
-	@SuppressWarnings("unchecked")
-	public Configs[] convertConfigsList(ArrayList<Map<String, Object>> input)
+	public Configs[] convertConfigsList(List<Map<String, Object>> input)
 	{
 		Configs[] ret = new Configs[input.size()];
-		
-		
 		for(int i = 0 ;  i < input.size(); i++) 
 		{
 			BeanWrapper newWrappedConfig = new BeanWrapperImpl(new Configs());
@@ -105,11 +122,9 @@ public class TypeConverter {
 		}
 		return ret;
 	}
-	public Ports[] convertPorts(ArrayList<Map<String, Object>> input)
+	public Ports[] convertPorts(List<Map<String, Object>> input)
 	{
 		Ports[] ret = new Ports[input.size()];
-		
-		
 		for(int i = 0 ;  i < input.size(); i++) 
 		{
 			BeanWrapper newWrappedConfig = new BeanWrapperImpl(new Ports());
@@ -123,20 +138,48 @@ public class TypeConverter {
 		return ret;
 	}
 	
-	public Volume[] convertVolumes(ArrayList<Map<String, Object>> input)
+	public Volume[] convertVolumes(List<Map<String, Object>> input)
 	{
 		Volume[] ret = new Volume[input.size()];
-		
-		
 		for(int i = 0 ;  i < input.size(); i++) 
 		{
+			Bind B = null;
+			TMPFS T = null;
+			VolumeV V = null;
 			BeanWrapper newWrappedConfig = new BeanWrapperImpl(new Volume());
 			for (Map.Entry<String, Object> property : input.get(i).entrySet())
 			{
-				newWrappedConfig.setPropertyValue(property.getKey(), property.getValue());
+				if(property.getKey().equals("bind"))
+				{
+					B = convertBind(property.getValue());
+				}
+				else if(property.getKey().equals("tmpfs"))
+				{
+					T = convertTmpfs(property.getValue());
+				}
+				else if(property.getKey().equals("volume"))
+				{
+					V = convertVolumeV(property.getValue());
+				}
+				else
+				{
+					newWrappedConfig.setPropertyValue(property.getKey(), property.getValue());
+				}
 			}
 			Volume newConfig = (Volume)newWrappedConfig.getWrappedInstance();
 			ret[i] = newConfig;
+			if(B != null)
+			{
+				ret[i].setBind(B);
+			}
+			if(T != null)
+			{
+				ret[i].setTmpfs(T);
+			}
+			if(V != null)
+			{
+				ret[i].setVolume(V);
+			}
 		}
 		return ret;
 	}
@@ -156,6 +199,91 @@ public class TypeConverter {
 			newSecrets.setSource(key);
 			ret[index] = newSecrets;
 			index++;
+		}
+		return ret;
+	}
+	public Ipam convertIpam(Object input)
+	{
+		BeanWrapper ret = new BeanWrapperImpl(new Ipam());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		Ipam b = (Ipam) ret.getWrappedInstance();
+		
+		return b;
+	}
+	public Secrets[] convertSecretList(Map<String,Object>[] input)
+	{
+		Secrets[] ret = new Secrets[input.length];
+		int index = 0;
+		for(Map<String,Object> sec : input)
+		{
+			BeanWrapper newWrappedSecrets = new BeanWrapperImpl(new Secrets());
+			for (Map.Entry<String, Object> property : sec.entrySet())
+			{
+				newWrappedSecrets.setPropertyValue(property.getKey(), property.getValue());
+			}
+			Secrets newSecrets = (Secrets)newWrappedSecrets.getWrappedInstance();
+			ret[index] = newSecrets;
+			index++;
+		}
+		return ret;
+	}
+	public Bind convertBind(Object input)
+	{
+		BeanWrapper ret = new BeanWrapperImpl(new Bind());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		Bind b = (Bind) ret.getWrappedInstance();
+		
+		return b;
+	}
+	public TMPFS convertTmpfs(Object input)
+	{
+		BeanWrapper ret = new BeanWrapperImpl(new TMPFS());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		TMPFS b = (TMPFS) ret.getWrappedInstance();
+		
+		return b;
+	}
+	public VolumeV convertVolumeV(Object input)
+	{
+		BeanWrapper ret = new BeanWrapperImpl(new VolumeV());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> input2 = (Map<String, Object>)input;
+		for (Map.Entry<String, Object> property : input2.entrySet())
+		{
+			ret.setPropertyValue(property.getKey(), property.getValue());
+		}
+		VolumeV b = (VolumeV) ret.getWrappedInstance();
+		
+		return b;
+	}
+	public Map<String, Condition> convertMapCondition(Map<String, Map<String,Object>> input)
+	{
+		Map<String,Condition> ret = new HashMap<>();
+		for(String key : input.keySet()) 
+		{
+			Map<String,Object> s = input.get(key);
+			BeanWrapper newWrappedCondition = new BeanWrapperImpl(new Condition());
+			for (Map.Entry<String, Object> property : s.entrySet())
+			{
+				newWrappedCondition.setPropertyValue(property.getKey(), property.getValue());
+			}
+			Condition newCondition = (Condition)newWrappedCondition.getWrappedInstance();
+			ret.put(key, newCondition);
 		}
 		return ret;
 	}

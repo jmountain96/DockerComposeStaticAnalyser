@@ -1,0 +1,20 @@
+version: '3'
+services:
+  chrome:
+    image: "selenium/standalone-chrome"
+  firefox:
+    image: "selenium/standalone-firefox"
+  www.jrtapsell.co.uk:
+    image: "website"
+    depends_on:
+     - chrome
+     - firefox
+  runner:
+    image: "verifier"
+    depends_on:
+     - "www.jrtapsell.co.uk"
+    volumes:
+      - ./dockerOut:/output
+    environment:
+      - "RUNNERS=CHROME_chrome:4444_https://www.jrtapsell.co.uk/sitemap.xml FIREFOX_firefox:4444_https://www.jrtapsell.co.uk/sitemap.xml"
+      - "IMAGES=/output"

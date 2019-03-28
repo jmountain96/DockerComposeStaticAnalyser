@@ -3,6 +3,8 @@ package com.test.quickstart;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -16,6 +18,7 @@ import com.test.quickstart.Validation.Interfaces.CheckFileListExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
+import com.test.quickstart.Validation.Interfaces.CheckUsed;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.Interfaces.Dependency;
 import com.test.quickstart.Validation.Interfaces.ListContainsString;
@@ -24,9 +27,10 @@ import javax.validation.constraints.Email;
 
 public class TopLevel {
 	private TypeConverter converter = new TypeConverter();
+	private TypeResolver resolver = new TypeResolver();
 	
 	private Object build;
-	@CheckFolderExists(message = "Directory doesn't exist")
+	@CheckFolderExists(message = "Build directory doesn't exist")
 	private String buildS;
 	private Build buildB;
 	private String buildType;
@@ -45,13 +49,24 @@ public class TopLevel {
 	private Map<String,Configs> configs;
 	private String container_name;
 	private CredentialSpec credential_spec;
+	private String cpu_shares;
+	private String cpu_quota;
+	private String cpu_rt_runtime;
+	@CheckStringFormat(message = "Invalid time format for cpu rt period", value = ValidationEnums.CheckStringType.TIME)
+	private String cpu_rt_period;
+	private String cpuset;
+	@CheckStringFormat(message = "Invalid time format for cpu period", value = ValidationEnums.CheckStringType.TIME)
+	private String cpu_period;
+	private String oom_kill_disable;
+	private String oom_score_adj;
 	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
 	@CheckDuplication(message = "Duplicate device detected")
 	private String[] devices;
+	private String device_cgroup_rules;
 	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String domainname;
 	private Object dns;
-	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DNS)
+	@CheckStringFormat(message = "Invalid format of dns field specified within the top level", value = ValidationEnums.CheckStringType.DNS)
 	private String dnsS;
 	@CheckStringListFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringListType.DNS)
 	@CheckDuplication(message = "Duplicate dns detected")
@@ -59,6 +74,7 @@ public class TopLevel {
 	private String dnsType;
 	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String dns_search;
+	private String[] dns_opt;
 	private Object entrypoint;
 	@CheckDuplication(message = "Duplicate entrypoint detected")
 	private String[] entrypointSL;
@@ -78,7 +94,11 @@ public class TopLevel {
 	@CheckDuplication(message = "Duplicate environment detected")
 	private String[] environmentSL;
 	private String environmentType;
-	private String expose;
+	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
+	@CheckDuplication(message = "Duplicate port detected")
+	private String[] expose;
+	@JsonProperty("extends")
+	private String Extends;
 	@CheckDuplication(message = "Duplicate external link detected")
 	private String[] external_links;
 	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
@@ -90,6 +110,8 @@ public class TopLevel {
 	private String ipc;
 	@ContainsString(message = "Isolation must be default, process or hyperv", value = ValidationEnums.ContainsStringType.ISOLATION) 
 	private String isolation;
+	private String init;
+	private String[] group_add;
 	private Object labels;
 	private Map<String,String> labelsM;
 	@CheckDuplication(message = "Duplicate label detected")
@@ -97,15 +119,23 @@ public class TopLevel {
 	private String labelType;
 	@CheckStringFormat(message = "mac_address must be a valid memory format", value = ValidationEnums.CheckStringType.MAC)
 	private String mac_address;
+	private String mem_limit;
+	private String memswap_limit;
+	private String mem_swappiness;
+	@CheckStringFormat(message = "mem reservation isn't a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
+	private String mem_reservation;
 	private Object networks;
 	@CheckDuplication(message = "Duplicate network detected")
 	private String[] networksSL;
-	private Map<String,Network> networksM;
+	private Map<String, Network> networksN;
 	private String networkType;
 	@ContainsString(message = "Invalid network type", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String network_mode;
 	@ContainsString(message  = "Invalid PID mode", value = ValidationEnums.ContainsStringType.PID)
 	private String pid;
+	private String pids_limit;
+	private String platform;
+	private String scale;
 	private Object ports;
 	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
 	@CheckDuplication(message = "Duplicate port detected")
@@ -116,12 +146,14 @@ public class TopLevel {
 	private String privileged;
 	@ContainsString(message = "Read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String read_only;
+	@ContainsString(message = "Invalid restart condition", value = ValidationEnums.ContainsStringType.RESTART_POLICY_CONDITION)
+	private String restart;
 	private Object secrets;
 	@CheckDuplication(message = "Duplicate secret detected")
 	private String[] secretsL;
 	private Secrets[] secretsSL;
 	private String secretsType;
-	private String security_opt;
+	private String[] security_opt;
 	@CheckStringFormat(message = "shm_size must be a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
 	private String shm_size;
 	@ContainsString(message = "stdin_open must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
@@ -134,14 +166,19 @@ public class TopLevel {
 	@CheckDuplication(message = "Duplicate sysctls detected")
 	private String[] sysctlsSL;
 	private String sysctlsType;
+	private Object tmpfs;
 	@CheckDuplication(message = "Duplicate tmpfs detected")
-	private String[] tmpfs;
+	private String[] tmpfsSL;
+	private String tmpfsS;
+	private String tmpfsType;
 	@ContainsString(message = "tty must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String tty;
 	private Ulimits ulimits;
 	private String user;
 	private String userns_mode;
 	private Map<String, Volume> volumes;
+	private String volume_driver;
+	private String volumes_from;
 	@CheckFolderExists(message = "Working directory folder doesn't exist")
 	private String working_dir;
 	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing Docker Compose Version, compiler will assume version 1 of Compose is being used")
@@ -149,7 +186,16 @@ public class TopLevel {
 	private Map<String,Service> services;
 	@Dependency(message = "Service references a network mode for a service that isn't present")
 	private Dependencies NetworkModeDependencies = new Dependencies();
-	
+	@CheckUsed(message = "Unused Secret")
+	private Dependencies SecretCheckUsed = new Dependencies();
+	@CheckUsed(message = "Unused Config")
+	private Dependencies ConfigCheckUsed = new Dependencies();
+	@CheckUsed(message = "Unused Volume")
+	private Dependencies VolumeCheckUsed = new Dependencies();
+	@CheckUsed(message = "Unused Env")
+	private Dependencies EnvCheckUsed = new Dependencies();
+	@CheckUsed(message = "Unused Network")
+	private Dependencies NetworkCheckUsed = new Dependencies();
 	
 	
 	public TypeConverter getConverter() {
@@ -163,7 +209,7 @@ public class TopLevel {
 	}
 	public void setBuild(Object build) {
 		this.build = build;
-		if(converter.checkString(build) == true)
+		if(resolver.checkString(build) == true)
 		{
 			this.buildS = build.toString();
 			this.buildType = "String";
@@ -213,7 +259,7 @@ public class TopLevel {
 	public Object getCommand() {
 		return command;
 	}
-	public void setCommand(Object command) {
+	public void setCommand(Object command) throws Exception {
 		this.command = command;
 		convertCommand();
 	}
@@ -290,6 +336,12 @@ public class TopLevel {
 	public void setDns_search(String dns_search) {
 		this.dns_search = dns_search;
 	}
+	public String[] getDns_opt() {
+		return dns_opt;
+	}
+	public void setDns_opt(String[] dns_opt) {
+		this.dns_opt = dns_opt;
+	}
 	public Healthcheck getHealthcheck() {
 		return healthcheck;
 	}
@@ -355,7 +407,7 @@ public class TopLevel {
 	public Object getEnvironment() {
 		return environment;
 	}
-	public void setEnvironment(Object environment) {
+	public void setEnvironment(Object environment) throws Exception {
 		this.environment = environment;
 		convertEnvironment();
 	}
@@ -377,10 +429,10 @@ public class TopLevel {
 	public void setEnvironmentType(String environmentType) {
 		this.environmentType = environmentType;
 	}
-	public String getExpose() {
+	public String[] getExpose() {
 		return expose;
 	}
-	public void setExpose(String expose) {
+	public void setExpose(String[] expose) {
 		this.expose = expose;
 	}
 	public String[] getExternal_links() {
@@ -422,7 +474,7 @@ public class TopLevel {
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -453,7 +505,7 @@ public class TopLevel {
 	public Object getNetworks() {
 		return networks;
 	}
-	public void setNetworks(Object networks) {
+	public void setNetworks(Object networks) throws Exception {
 		this.networks = networks;
 		convertNetworks();
 	}
@@ -463,11 +515,11 @@ public class TopLevel {
 	public void setNetworksSL(String[] networksSL) {
 		this.networksSL = networksSL;
 	}
-	public Map<String, Network> getNetworksM() {
-		return networksM;
+	public Map<String, Network> getNetworksN() {
+		return networksN;
 	}
-	public void setNetworksM(Map<String, Network> networksM) {
-		this.networksM = networksM;
+	public void setNetworksN(Map<String, Network> networksN) {
+		this.networksN = networksN;
 	}
 	public String getNetworkType() {
 		return networkType;
@@ -479,7 +531,7 @@ public class TopLevel {
 		return network_mode;
 	}
 	public void setNetwork_mode(String network_mode) {
-		this.network_mode = network_mode.substring(network_mode.lastIndexOf("="));;
+		this.network_mode = network_mode;
 		
 	}
 	public Dependencies getNetworkModeDependencies() {
@@ -505,7 +557,7 @@ public class TopLevel {
 	public void setPorts(Object ports) {
 		this.ports = ports;
 		ArrayList<Map<String, Object>> portsAL = null;
-		if(converter.checkStringList(ports) == true)
+		if(resolver.checkStringList(ports) == false)
 		{
 			this.portsSL = converter.convertStringList(ports);
 			this.portsType = "String[]";
@@ -547,13 +599,19 @@ public class TopLevel {
 	public void setRead_only(String read_only) {
 		this.read_only = read_only;
 	}
+	public String getRestart() {
+		return restart;
+	}
+	public void setRestart(String restart) {
+		this.restart = restart;
+	}
 	public Object getSecrets() {
 		return secrets;
 	}
 	public void setSecrets(Object secrets) {
 		this.secrets = secrets;
 		Map<String, Map<String,Object>> secretsAL = null;;
-		if(converter.checkStringList(secrets) == true)
+		if(resolver.checkStringList(secrets) == true)
 		{
 			this.secretsL = converter.convertStringList(secrets);
 			this.secretsType = "String[]";
@@ -583,10 +641,10 @@ public class TopLevel {
 	public void setSecretsType(String secretsType) {
 		this.secretsType = secretsType;
 	}
-	public String getSecurity_opt() {
+	public String[] getSecurity_opt() {
 		return security_opt;
 	}
-	public void setSecurity_opt(String security_opt) {
+	public void setSecurity_opt(String[] security_opt) {
 		this.security_opt = security_opt;
 	}
 	public String getShm_size() {
@@ -616,7 +674,7 @@ public class TopLevel {
 	public Object getSysctls() {
 		return sysctls;
 	}
-	public void setSysctls(Object sysctls) {
+	public void setSysctls(Object sysctls) throws Exception {
 		this.sysctls = sysctls;
 		convertSysctls();
 	}
@@ -638,11 +696,30 @@ public class TopLevel {
 	public void setSysctlsType(String sysctlsType) {
 		this.sysctlsType = sysctlsType;
 	}
-	public String[] getTmpfs() {
-		return tmpfs;
+	public String[] getTmpfsSL() {
+		return tmpfsSL;
 	}
-	public void setTmpfs(String[] tmpfs) {
+	public void setTmpfsSL(String[] tmpfsSL) {
+		this.tmpfsSL = tmpfsSL;
+	}
+	public String getTmpfsS() {
+		return tmpfsS;
+	}
+	public void setTmpfsS(String tmpfsS) {
+		this.tmpfsS = tmpfsS;
+	}
+	public String getTmpfsType() {
+		return tmpfsType;
+	}
+	public void setTmpfsType(String tmpfsType) {
+		this.tmpfsType = tmpfsType;
+	}
+	public void setTmpfs(Object tmpfs) {
 		this.tmpfs = tmpfs;
+		convertTmpfs();
+	}
+	public Object getTmpfs() {
+		return tmpfs;
 	}
 	public String getTty() {
 		return tty;
@@ -686,40 +763,170 @@ public class TopLevel {
 	public void setVersion(String version) {
 		this.version = version;
 	}
+	public String getCpu_shares() {
+		return cpu_shares;
+	}
+	public void setCpu_shares(String cpu_shares) {
+		this.cpu_shares = cpu_shares;
+	}
+	public String getCpu_quota() {
+		return cpu_quota;
+	}
+	public void setCpu_quota(String cpu_quota) {
+		this.cpu_quota = cpu_quota;
+	}
+	public String getCpuset() {
+		return cpuset;
+	}
+	public void setCpuset(String cpuset) {
+		this.cpuset = cpuset;
+	}
+	public String getExtends() {
+		return Extends;
+	}
+	public void setExtends(String extends1) {
+		Extends = extends1;
+	}
+	public String[] getGroup_add() {
+		return group_add;
+	}
+	public void setGroup_add(String[] group_add) {
+		this.group_add = group_add;
+	}
+	public String getMem_limit() {
+		return mem_limit;
+	}
+	public void setMem_limit(String mem_limit) {
+		this.mem_limit = mem_limit;
+	}
+	public String getMemswap_limit() {
+		return memswap_limit;
+	}
+	public void setMemswap_limit(String memswap_limit) {
+		this.memswap_limit = memswap_limit;
+	}
+	public String getMem_swappiness() {
+		return mem_swappiness;
+	}
+	public void setMem_swappiness(String mem_swappiness) {
+		this.mem_swappiness = mem_swappiness;
+	}
+	public String getPids_limit() {
+		return pids_limit;
+	}
+	public void setPids_limit(String pids_limit) {
+		this.pids_limit = pids_limit;
+	}
+	public String getVolume_driver() {
+		return volume_driver;
+	}
+	public void setVolume_driver(String volume_driver) {
+		this.volume_driver = volume_driver;
+	}
+	public String getVolumes_from() {
+		return volumes_from;
+	}
+	public void setVolumes_from(String volumes_from) {
+		this.volumes_from = volumes_from;
+	}
 	public Map<String,Service> getServices() {
 		return services;
 	}
 	public void setServices(Map<String,Service> services) {
 		this.services = services;
-		for (Entry<String, Service> service : this.services.entrySet())
+	}
+	public Dependencies getSecretCheckUsed() {
+		return SecretCheckUsed;
+	}
+	public void setSecretCheckUsed(String[] secretCheckUsed) {
+		SecretCheckUsed.target = secretCheckUsed;
+		if(this.secretsType == "String[]")
 		{
-			service.getValue().setName(service.getKey());
+			SecretCheckUsed.dependents = this.secretsL;
+		}
+		else 
+		{
+			String[] secretSources = new String[secretsSL.length];
+			for(int i = 0 ; i < secretSources.length ; i++)
+			{
+				secretSources[i] = secretsSL[i].getSource();
+			}
+			this.SecretCheckUsed.dependents = secretSources;
 		}
 	}
-	private void convertCommand() 
+	public Dependencies getConfigCheckUsed() {
+		return ConfigCheckUsed;
+	}
+	public void setConfigCheckUsed(String[] configCheckUsed) {
+		this.ConfigCheckUsed.target = configCheckUsed;
+		this.ConfigCheckUsed.dependents = this.configs.keySet().toArray(new String[this.configs.size()]);
+	}
+	public Dependencies getVolumeCheckUsed() {
+		return VolumeCheckUsed;
+	}
+	public void setVolumeCheckUsed(String[]  volumeCheckUsed) {
+		VolumeCheckUsed.target = volumeCheckUsed;
+		this.VolumeCheckUsed.dependents = this.volumes.keySet().toArray(new String[this.volumes.size()]);
+	}
+	public Dependencies getEnvCheckUsed() {
+		return EnvCheckUsed;
+	}
+	public void setEnvCheckUsed(String[]  envCheckUsed) {
+		EnvCheckUsed.target = envCheckUsed;
+		String[] envList = null;
+		if(getEnv_FileType() == "String") 
+		{
+			envList = new String[1];
+			envList[0] = getEnv_fileS();
+		}
+		else 
+		{
+			envList = getEnv_fileSL();
+		}
+		EnvCheckUsed.dependents = envList;
+	}
+	public Dependencies getNetworkCheckUsed() {
+		return NetworkCheckUsed;
+	}
+	public void setNetworkCheckUsed(String[]  networkCheckUsed) {
+		NetworkCheckUsed.target = networkCheckUsed;
+		String[] networks;
+		if(getNetworkType() == "String[]")
+		{
+			networks = getNetworksSL();
+		}
+		else
+		{
+			Map<String,Network> networkList = getNetworksN();
+			networks = networkList.keySet().toArray(new String[networkList.size()]);
+		}
+		NetworkCheckUsed.dependents = networks;
+	}
+	private void convertCommand() throws Exception 
 	{
-		boolean set = false;
 		String tCommand = command.toString();
-		if(tCommand.charAt(0) == '[')
+		if(resolver.checkStringList(command))
 		{
 			commandSL = converter.convertStringList(tCommand);
 			commandType = "String[]";
-			set = true;
-		}
-		else 
 			
-		{
-			if(set == false){
-			commandS = tCommand;
-			commandType = "String";
 		}
+		else if(resolver.checkString(command) == true)
+			{
+				commandS = tCommand;
+				commandType = "String";
 			}
+		
+		else 
+		{
+			throw new Exception("Unknown type for command");
+		}
 	}
 	private void convertDNS()
 	{
 		boolean set = false;
 		String tDNS = dns.toString();
-		if(tDNS.charAt(0) == '[')
+		if(resolver.checkStringList(dns))
 		{
 			dnsSL = converter.convertStringList(tDNS);
 			dnsType = "String[]";
@@ -739,7 +946,7 @@ public class TopLevel {
 	{
 		boolean set = false;
 		String tEntrypoint = entrypoint.toString();
-		if(tEntrypoint .charAt(0) == '[')
+		if(resolver.checkStringList(entrypoint))
 		{
 			entrypointSL  = converter.convertStringList(tEntrypoint );
 			entrypointType = "String[]";
@@ -747,118 +954,179 @@ public class TopLevel {
 		}
 		else 
 		{
-			if(set == false){
+			if(set == false)
+			{
 			entrypointS = tEntrypoint ;
 			entrypointType = "String";
-		}
+			}
 		}
 	}
 	private void convertEnv_file()
 	{
-		boolean set = false;
 		String tEnv_file = env_file.toString();
-		if(tEnv_file .charAt(0) == '[')
+		if(resolver.checkStringList(env_file))
 		{
 			env_fileSL  = converter.convertStringList(tEnv_file );
 			env_FileType = "String[]";
-			set = true;
 		}
 		else 
 		{
-			if(set == false){
 			env_fileS = tEnv_file ;
 			env_FileType = "String";
-		}
+		
 		}
 	}
-	private void convertEnvironment() 
+	private void convertEnvironment() throws Exception
 	{
-		boolean set = false;
-		try {
+		if(resolver.checkMap(environment) == true)
+		{
 			environmentM = converter.convertMap(environment);
 			environmentType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				environmentSL = converter.convertStringList(environment);
-				environmentType = "String[]";
-			}
+		else if(resolver.checkStringList(environment) == true)
+		{
+			environmentSL = converter.convertStringList(environment);
+			environmentType = "String[]";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Environment");
 		}
 	}
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(resolver.checkMap(labels) == true)
+		{
 			labelsM = converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		else if(resolver.checkStringList(labels) == true)
+		{
+			labelsS = converter.convertStringList(labels);
+			labelType = "String[]";
 		}
-	}
-	private void convertNetworks() 
-	{
-		boolean set = false;
-		try {
-			networksM = converter.convertMapSN(networks);
-			networkType = "Map<String,Network>";
-			set = true;
-		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				networksSL = converter.convertStringList(networks);
-				networkType = "String[]";
-			}
+		else
+		{
+			throw new Exception ("Unknown type entered for Top Level Labels");
 		}
 	}
-	private void convertSecrets()
+	private void convertNetworks() throws Exception 
 	{
-		boolean set = false;
-		try {
-			secretsSL = (Secrets[])secrets;
-			secretsType = "Secrets[]";
-			set = true;
+		Map<String, Map<String,Object>> networksAL = null;;
+		if(resolver.checkStringList(networks) == true)
+		{
+			this.networksSL = converter.convertStringList(networks);
+			this.networkType = "String[]";
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				secretsL = converter.convertStringList(secrets);
-				secretsType = "String[]";
-			}
+		else if(resolver.checkNestedMap(networks) == true)
+		{
+			networksAL = (Map<String, Map<String,Object>>)networks;
+			networksN = converter.convertNetworks(networksAL);
+			this.networkType = "Map<String,Network>";
+		}
+		else if(resolver.checkMap(networks))
+		{
+			Map<String,String> map = converter.convertMap(networks);
+			Set<String> keys = map.keySet();
+			String[] netList = keys.toArray(new String[keys.size()]);
+			this.networksSL = netList;
+			this.networkType = "String[]";
+		}
+		else
+		{
+			System.out.println(networks);
+			System.out.println("yes");
+			throw new Exception ("Unknown type entered for Top Level Network");
 		}
 	}
-	private void convertSysctls()
+	private void convertSysctls() throws Exception
 	{
-		boolean set = false;
-		try {
+		if(resolver.checkMap(sysctls) == true)
+		{
 			sysctlsM = converter.convertMap(sysctls);
 			sysctlsType = "Map<String,String>";
+		}
+		else if(resolver.checkStringList(sysctls) == true)
+		{
+			sysctlsSL = converter.convertStringList(sysctls);
+			sysctlsType = "String[]";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Top Level sysctls");
+		}
+	}
+	private void convertTmpfs() 
+	{
+		boolean set = false;
+		String tTmpfs = tmpfs.toString();
+		if(resolver.checkStringList(tmpfs))
+		{
+			tmpfsSL = converter.convertStringList(tmpfs);
+			tmpfsType = "String[]";
 			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				sysctlsSL = converter.convertStringList(sysctls);
-				sysctlsType = "String[]";
+		else 
+			
+		{
+			if(set == false)
+			{
+				tmpfsS = tTmpfs;
+				tmpfsType = "String";
 			}
-		}
+		}	
 	}
 	public TopLevelReturn accept(YamlParserVisitor parser)
 	{
 		return parser.visit(this);
+	}
+	public String getPlatform() {
+		return platform;
+	}
+	public void setPlatform(String platform) {
+		this.platform = platform;
+	}
+	public String getCpu_rt_runtime() {
+		return cpu_rt_runtime;
+	}
+	public void setCpu_rt_runtime(String cpu_rt_runtime) {
+		this.cpu_rt_runtime = cpu_rt_runtime;
+	}
+	public String getCpu_rt_period() {
+		return cpu_rt_period;
+	}
+	public void setCpu_rt_period(String cpu_rt_period) {
+		this.cpu_rt_period = cpu_rt_period;
+	}
+	public String getCpu_period() {
+		return cpu_period;
+	}
+	public void setCpu_period(String cpu_period) {
+		this.cpu_period = cpu_period;
+	}
+	public String getOom_kill_disable() {
+		return oom_kill_disable;
+	}
+	public void setOom_kill_disable(String oom_kill_disable) {
+		this.oom_kill_disable = oom_kill_disable;
+	}
+	public String getInit() {
+		return init;
+	}
+	public void setInit(String init) {
+		this.init = init;
+	}
+	public String getScale() {
+		return scale;
+	}
+	public void setScale(String scale) {
+		this.scale = scale;
+	}
+	public String getDevice_cgroup_rules() {
+		return device_cgroup_rules;
+	}
+	public void setDevice_cgroup_rules(String device_cgroup_rules) {
+		this.device_cgroup_rules = device_cgroup_rules;
 	}
 	
 }

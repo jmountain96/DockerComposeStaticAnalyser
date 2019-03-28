@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+    mysql:
+      image: mysql:8.0.2
+      #build:                ./mysql
+      volumes:
+        - ./site:/usr/share/nginx/html
+      restart: always
+      environment:
+        - MYSQL_ROOT_PASSWORD=pass
+        - MYSQL_DATABASE=data1
+        - MYSQL_USER=admin
+        - MYSQL_PASSWORD=admin
+    nginx:
+      build: ./nginx
+      volumes:
+        - ./site:/usr/share/nginx/html
+      ports:
+        - "80:80"
+    php:
+      build: ./php
+      volumes:
+        - ./site:/usr/share/nginx/html
+    adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8080:8080

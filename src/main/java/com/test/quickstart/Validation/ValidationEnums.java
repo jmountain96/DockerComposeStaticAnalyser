@@ -10,11 +10,11 @@ public class ValidationEnums {
 	}
 	public enum CheckStringType
 	{
-		IMAGE, MEMORY, INTEGER, TIME, DNS, DOMAIN, IPV6, PORT, MAC, UNIX_PERM,SYSLOG, ENV
+		IMAGE, MEMORY, INTEGER, TIME, DNS, DOMAIN, IPV6, PORT, MAC, UNIX_PERM,SYSLOG, ENV, SUBNET
 	}
 	public enum CheckStringListType
 	{
-		IMAGE, DNS, EXTRAHOST, SUBNET, PORT, ENV
+		IMAGE, DNS, EXTRAHOST, PORT, ENV
 	}
 	public enum ListContainsStringType
 	{

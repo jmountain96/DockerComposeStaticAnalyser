@@ -1,5 +1,5 @@
 package com.test.quickstart.Validation;
-import java.io.File;
+
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -24,6 +24,7 @@ public class CheckFolderExistsValidator implements ConstraintValidator<CheckFold
 		}
 		else 
 		{
+			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate( "The following folder cannot be found - " + value).addConstraintViolation();
 			return false;
 		}

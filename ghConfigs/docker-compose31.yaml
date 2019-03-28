@@ -1,0 +1,58 @@
+# Run docker-compose build
+# Run docker-compose up
+# Live long and prosper
+
+version: '3.1'
+
+services:
+
+  webapp:
+    container_name: webapp
+    image: nginx
+    build:
+      context: .
+      dockerfile: .docker/nginx.dockerfile
+    volumes:
+      - ./client:/usr/share/nginx/html
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on: 
+      - node
+    networks:
+      - app-network
+
+  node:
+    container_name: nodeapp
+    image: nodeapp
+    restart: always
+    build:
+      context: .
+      dockerfile: .docker/node.dockerfile
+    volumes:
+      - ./server:/var/www/node
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://db/customermanager
+    ports:
+      - "4215:4215"
+    depends_on: 
+      - db
+    networks:
+      - app-network
+      
+  #No authentication is provided here - JUST A DEMO! That would absolutely
+  #be needed for a "real" application
+  db:
+    container_name: db
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

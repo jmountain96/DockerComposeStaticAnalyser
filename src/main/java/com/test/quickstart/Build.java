@@ -10,11 +10,15 @@ import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 
 public class Build {
 	private TypeConverter Converter = new TypeConverter();
+	private TypeResolver Resolver = new TypeResolver();
 	@CheckFolderExists(message = "Directory doesn't exist")
 	private String context;
 	private String dockerfile;
 	@CheckFileExists(message = "Referenced alternate Docker file doesn't exist", value = "")
 	private String dockerfileContext;
+	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
+	@CheckDuplication(message = "Duplicate extra host detected")
+	private String[] extra_hosts;
 	private Object args;
 	private Map<String, String> argsM;
 	@CheckDuplication(message = "Duplicate arg detected")
@@ -31,6 +35,7 @@ public class Build {
 	@CheckStringFormat(message = "memory in shm_size are in the wrong format", value = ValidationEnums.CheckStringType.MEMORY)
 	private String shm_size;
 	private String target;
+	private String network;
 	
 	public String getContext() {
 		return context;
@@ -48,7 +53,7 @@ public class Build {
 	public Object getArgs() {
 		return args;
 	}
-	public void setArgs(Object args) {
+	public void setArgs(Object args) throws Exception {
 		this.args = args;
 		convertArgs();
 	}
@@ -76,10 +81,16 @@ public class Build {
 	public void setCache_from(String[] cache_from) {
 		this.cache_from = cache_from;
 	}
+	public String[] getExtra_hosts() {
+		return extra_hosts;
+	}
+	public void setExtra_hosts(String[] extra_hosts) {
+		this.extra_hosts = extra_hosts;
+	}
 	public Object getLabels() {
 		return labels;
 	}
-	public void setLabels(Object  labels) {
+	public void setLabels(Object labels) throws Exception {
 		this.labels = labels;
 		convertLabels();
 	}
@@ -101,6 +112,12 @@ public class Build {
 	public void setLabelType(String labelType) {
 		this.labelType = labelType;
 	}
+	public String getNetwork() {
+		return network;
+	}
+	public void setNetwork(String network) {
+		this.network = network;
+	}
 	public String getShm_size() {
 		return shm_size;
 	}
@@ -113,38 +130,40 @@ public class Build {
 	public void setTarget(String target) {
 		this.target = target;
 	}
-	private void convertArgs() 
+	private void convertArgs() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(Resolver.checkMap(args) == true)
+		{
 			argsM = Converter.convertMap(args);
 			argType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				argsS = Converter.convertStringList(args);
-				argType = "String[]";
-			}
+		
+		else if(Resolver.checkStringList(args) == true)
+		{
+			argsS = Converter.convertStringList(args);
+			argType = "String[]";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Build Args");
 		}
 	}
-	private void convertLabels() 
+	private void convertLabels() throws Exception 
 	{
-		boolean set = false;
-		try {
+		if(Resolver.checkMap(labels) == true)
+		{
 			labelsM = Converter.convertMap(labels);
 			labelType = "Map<String,String>";
-			set = true;
 		}
-		catch(java.lang.ClassCastException e){}
-		finally {
-			if(set == false) 
-				{
-				labelsS = Converter.convertStringList(labels);
-				labelType = "String[]";
-			}
+		
+		else if(Resolver.checkStringList(labels) == true)
+		{
+			labelsS = Converter.convertStringList(labels);
+			labelType = "String[]";
+		}
+		else 
+		{
+			throw new Exception("Unknown type for Build Labels");
 		}
 	}
 }

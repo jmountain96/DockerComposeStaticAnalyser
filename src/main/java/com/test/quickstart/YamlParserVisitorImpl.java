@@ -29,7 +29,7 @@ public class YamlParserVisitorImpl  implements YamlParserVisitor{
 			}
 			else
 			{
-				Map<String,Network> networkList = input.getNetworksM();
+				Map<String,Network> networkList = input.getNetworksN();
 				networks = networkList.keySet().toArray(new String[networkList.size()]);
 			}
 			ret.setNetworks(networks);
@@ -62,10 +62,10 @@ public class YamlParserVisitorImpl  implements YamlParserVisitor{
 		}
 		if(input.getEnv_file() != null)
 		{
-			String[] envList;
+			String[] envList = null;
 			if(input.getEnv_FileType() == "String") 
 			{
-				envList = new String[0];
+				envList = new String[1];
 				envList[0] = input.getEnv_fileS();
 			}
 			else 

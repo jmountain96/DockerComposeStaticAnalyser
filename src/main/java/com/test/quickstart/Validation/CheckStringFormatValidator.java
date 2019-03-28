@@ -132,12 +132,22 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 			case ENV:
 				
-				if(value.matches("\\w+(.env)") == false)
+				if(value.matches(".+(.env){1}") == false)
 					{
 					    context.buildConstraintViolationWithTemplate( "The following env file isn't a valid env file, it should have the file extention .env - " + value).addConstraintViolation();
 						return false;
 					}
 			
+				return true;
+			case SUBNET:
+				
+					
+					if(value.matches("^([0-9]{1,3}\\.){3}[0-9]{1,3}(\\/([0-9]|[1-2][0-9]|3[0-2]))?$") == false)
+						{
+							context.buildConstraintViolationWithTemplate( "The following subnet is of the wrong format - " + value).addConstraintViolation();
+							return false;
+						}
+				
 				return true;
 			default:
 				return false;
