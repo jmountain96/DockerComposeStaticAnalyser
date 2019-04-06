@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.7"
 services:
   webapp:
     build:
@@ -129,11 +129,11 @@ services:
       - target: 80
         published: 8080
         protocol: tcp
+        mode: host
     privileged: true
     read_only: true
     
     restart: "no"
-    mode: host
     security_opt:
       - label:user:USER
       - label:role:ROLE
@@ -193,7 +193,6 @@ networks:
     name: host
     attachable: true
     driver: bridge
-    enable_ipv6: true
     internal: true
     ipam:
       driver: default

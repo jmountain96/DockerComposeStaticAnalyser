@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.quickstart.Validation.ValidationEnums;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
@@ -66,8 +67,11 @@ public class Service {
 	@CheckDuplication(message = "Duplicate dns detected")
 	private String[] dnsSL;
 	private String dnsType;
+	private Object dns_search;
 	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DOMAIN)
-	private String dns_search;
+	private String dns_searchS;
+	private String[] dns_searchSL;
+	private String dns_searchType;
 	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String domainname;
 	private Object entrypoint;
@@ -92,6 +96,8 @@ public class Service {
 	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
 	@CheckDuplication(message = "Duplicate extra host detected")
 	private String[] extra_hosts;
+	@JsonProperty("extends")
+	private Extends Extends;
 	private Healthcheck healthcheck;
 	private String hostname;
 	private Object labels;
@@ -100,7 +106,7 @@ public class Service {
 	private String[] labelsS;
 	private String labelType;
 	private String image;
-	@CheckFileExists(message = "The docker-init file specfied by the service init cannot be found", value = "")
+	@CheckFileExists(message = "Either the service init isn't the value 'true' or the docker-init file specfied by the service init cannot be found", value = "")
 	private String init; 
 	private String ipc;
 	@ContainsString(message = "Isolation must be default, process or hyperv", value = ValidationEnums.ContainsStringType.ISOLATION) 
@@ -158,7 +164,7 @@ public class Service {
 	private String[] tmpfsSL;
 	private String tmpfsS;
 	private String tmpfsType;
-	@ContainsString(message = "tty must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	
 	private Ulimits ulimits;
 	private String user;
 	private String userns_mode;
@@ -460,6 +466,12 @@ public class Service {
 	public void setEnv_fileType(String env_fileType) {
 		this.env_fileType = env_fileType;
 	}
+	public Extends getExtends() {
+		return Extends;
+	}
+	public void setExtends(Extends extends1) {
+		Extends = extends1;
+	}
 	public String[] getExpose() {
 		return expose;
 	}
@@ -731,17 +743,17 @@ public class Service {
 	public void setPorts(Object ports) {
 		this.ports = ports;
 		ArrayList<Map<String, Object>> portsAL = null;
-		if(resolver.checkStringList(ports) == true)
-		{
-			
-			this.portsSL = Converter.convertStringList(ports);
-			this.portsType = "String[]";
-		}
-		else 
+		if(resolver.checkMapList(ports) == true)
 		{
 			portsAL = (ArrayList<Map<String, Object>>)ports;
 			portsP = Converter.convertPorts(portsAL);
 			this.portsType = "Ports[]";
+			
+		}
+		else 
+		{
+			this.portsSL = Converter.convertStringList(ports);
+			this.portsType = "String[]";
 		}
 	}
 	public String[] getPortsSL() {
@@ -928,14 +940,36 @@ public class Service {
 	public String getDnsType() {
 		return dnsType;
 	}
-	public void setDnsType(String dnsType) {
-		this.dnsType = dnsType;
-	}
-	public String getDns_search() {
-		return dns_search;
-	}
 	public void setDns_search(String dns_search) {
 		this.dns_search = dns_search;
+	}
+	public String getDns_searchS() {
+		return dns_searchS;
+	}
+	public void setDns_searchS(String dns_searchS) {
+		this.dns_searchS = dns_searchS;
+	}
+	public String[] getDns_searchSL() {
+		return dns_searchSL;
+	}
+	public void setDns_searchSL(String[] dns_searchSL) {
+		this.dns_searchSL = dns_searchSL;
+	}
+	public String getDns_searchType() {
+		return dns_searchType;
+	}
+	public void setDns_searchType(String dns_searchType) {
+		this.dns_searchType = dns_searchType;
+	}
+	public void setDns_search(Object dns_search) {
+		this.dns_search = dns_search;
+		convertDnsSearch();
+	}
+	public Object getDns_search() {
+		return dns_search;
+	}
+	public void setDnsType(String dnsType) {
+		this.dnsType = dnsType;
 	}
 	public String getDomainname() {
 		return domainname;
@@ -1243,15 +1277,32 @@ public class Service {
 			set = true;
 		}
 		else 
-			
-				
 		{
 			if(set == false){
 			dnsS = tDNS;
 			dnsType = "String";
+			}
 		}
-				}
 	}
+	private void convertDnsSearch()
+	{
+		boolean set = false;
+		String tDNS = dns_search.toString();
+		if(resolver.checkStringList(dns))
+		{
+			dns_searchSL = Converter.convertStringList(tDNS);
+			dns_searchType = "String[]";
+			set = true;
+		}
+		else 
+		{
+			if(set == false){
+				dns_searchS = tDNS;
+				dns_searchType = "String";
+			}
+		}
+	}
+
 
 	
 }

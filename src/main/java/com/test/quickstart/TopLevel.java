@@ -73,12 +73,6 @@ public class TopLevel {
 	private String pids_limit;
 	private String platform;
 	private String scale;
-	private Object ports;
-	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
-	@CheckDuplication(message = "Duplicate port detected")
-	private String[] portsSL;
-	private Ports[] portsP; 
-	private String portsType;
 	
 	
 	
@@ -192,42 +186,6 @@ public class TopLevel {
 	
 	
 	
-	public Object getPorts() {
-		return ports;
-	}
-	public void setPorts(Object ports) {
-		this.ports = ports;
-		ArrayList<Map<String, Object>> portsAL = null;
-		if(resolver.checkStringList(ports) == false)
-		{
-			this.portsSL = converter.convertStringList(ports);
-			this.portsType = "String[]";
-		}
-		else 
-		{
-			portsAL = (ArrayList<Map<String, Object>>)ports;
-			portsP = converter.convertPorts(portsAL);
-			this.portsType = "Ports[]";
-		}
-	}
-	public String[] getPortsSL() {
-		return portsSL;
-	}
-	public void setPortsSL(String[] portsSL) {
-		this.portsSL = portsSL;
-	}
-	public Ports[] getPortsP() {
-		return portsP;
-	}
-	public void setPortsP(Ports[] portsP) {
-		this.portsP = portsP;
-	}
-	public String getPortsType() {
-		return portsType;
-	}
-	public void setPortsType(String portsType) {
-		this.portsType = portsType;
-	}
 	
 	public Object getSecrets() {
 		return secrets;

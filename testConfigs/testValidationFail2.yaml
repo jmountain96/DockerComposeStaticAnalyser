@@ -188,7 +188,7 @@ services:
 
 configs:
   my_config:
-    file: ./testFiles/tqeewqdfwest.env
+    file: ./testFiles/test.env
     external:
       name: redis_config
 
@@ -198,18 +198,19 @@ networks:
     external: true
     name: host
     attachable: true
-    driver: qwdda
+    driver: bridge
+    enable_ipv6: true
     internal: true
     ipam:
       driver: default
       config:
-      - subnet: 172.16.238dqwdwq.0/24
+      - subnet: 172.16.238.0/24
   some-network:
     external: true
 
 secrets:
   my_secret:
-    file: ./testFiles/tesqwdsdt.env
+    file: ./testFiles/test.env
     external: true
     name: redis_secret
 

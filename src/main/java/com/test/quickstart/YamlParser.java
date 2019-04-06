@@ -220,18 +220,7 @@ public class YamlParser {
 	    		 }
     		 }
 	     }
-	     if(level.getPortsP() != null)
-	     {
-	    	 for(Ports p : level.getPortsP()) 
-	    	 {
-	    		 Set<ConstraintViolation<Ports>> constraintViolationsP = validator.validate(p);
-		    	 for (ConstraintViolation<Ports> violation : constraintViolationsP) 
-		    	 {
-		    		 System.out.println(violation.getMessage());
-		    		 totalViolations += 1;
-		    	 }
-	    	 }
-	     }
+	     
 	     if(level.getSecretsType() == "Secrets[]")
 	     {
 	    	 for(Secrets s : level.getSecretsSL()) 

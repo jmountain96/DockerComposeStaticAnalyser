@@ -54,6 +54,9 @@ public class VersionValidator {
 			Validate36();
 			Version3Removal();
 			break;
+		case "3.7":
+			Version3Removal();
+			break;
 		default:
 			throw new Exception("Version not supplied");
 			
