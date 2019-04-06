@@ -60,7 +60,7 @@ public class ParsingTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			File f = new File("testConfigs/testFullCompose.yaml");
+			File f = new File("testConfigs/testValidationPass.yaml");
 			level = YamlParser.ParseFile(f);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -69,13 +69,14 @@ public class ParsingTests {
 		assertEquals(level.getVersion(), "3.1");
 		assertNotNull(level.getServices().get("webapp"));
 		assertNotNull(level.getServices().get("webapp").getBuildB());
-		assertEquals(level.getServices().get("webapp").getBuildB().getContext(), "./dir");
-		assertEquals(level.getServices().get("webapp").getBuildB().getDockerfile(), "Dockerfile-alternate");
+		assertEquals(level.getServices().get("webapp").getBuildB().getContext(), "./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBuildB().getDockerfile(), "test.env");
 		Map<String,Object> args = new LinkedHashMap<>();;
 		args.put("buildno", 1);
 		assertEquals(level.getServices().get("webapp").getBuildB().getArgsM().get("buildno"), args.get("buildno"));
 		String[] labels = {"com.example.description=Accounting webapp", "com.example.department=Finance","com.example.label-with-empty-value" };
-		System.out.println(ReflectionToStringBuilder.toString(level.getServices().get("webapp"),ToStringStyle.MULTI_LINE_STYLE));
+		String[] cache = {"alpine:latest", "corp/web_app:3.14"};
+		assertArrayEquals(level.getServices().get("webapp").getBuildB().getCache_from(), cache);
 		assertArrayEquals(level.getServices().get("webapp").getBuildB().getLabelsS(), labels);
 		assertEquals(level.getServices().get("webapp").getBuildB().getTarget(), "prod");
 		assertEquals(level.getServices().get("webapp").getBuildB().getShm_size(), "2gb");

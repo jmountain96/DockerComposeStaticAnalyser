@@ -27,7 +27,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 					}
 					else 
 					{
-						context.buildConstraintViolationWithTemplate( "The following image is of the wrong format - " + value).addConstraintViolation();
+						String msg = context.getDefaultConstraintMessageTemplate();
+						context.disableDefaultConstraintViolation();
+						context.buildConstraintViolationWithTemplate( msg + "The following image is of the wrong format - " + value).addConstraintViolation();
 						return false;
 					}
 			case MEMORY:
@@ -37,7 +39,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else
 				{
-					context.buildConstraintViolationWithTemplate( "The following memory specification is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + " The following memory specification is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case INTEGER:
@@ -47,7 +51,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else
 				{
-					context.buildConstraintViolationWithTemplate( "The following integer is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + "The following integer is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case TIME:
@@ -57,7 +63,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else
 				{
-					context.buildConstraintViolationWithTemplate( "The following time value is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + "The following time value is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case DNS:
@@ -67,7 +75,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else
 				{
-					context.buildConstraintViolationWithTemplate( "The following dns address is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + "The following dns address is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case DOMAIN:
@@ -77,7 +87,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else
 				{
-					context.buildConstraintViolationWithTemplate( "The following domain is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + "The following domain is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case IPV6:
@@ -87,7 +99,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else
 				{
-					context.buildConstraintViolationWithTemplate( "The following IPv6 address is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + "The following IPv6 address is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case PORT:
@@ -97,7 +111,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else 
 				{
-					context.buildConstraintViolationWithTemplate( "The following port is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + " The following port is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case MAC:
@@ -107,7 +123,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else 
 				{
-					context.buildConstraintViolationWithTemplate( "The following mac address is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + " The following mac address is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case UNIX_PERM:
@@ -116,7 +134,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				{
 					if (Values.contains(value.charAt(i)) == false) 
 					{
-						context.buildConstraintViolationWithTemplate( "The following unix permutation is of the wrong format - " + value).addConstraintViolation();
+						String msg = context.getDefaultConstraintMessageTemplate();
+						context.disableDefaultConstraintViolation();
+						context.buildConstraintViolationWithTemplate( msg + " The following unix permutation is of the wrong format - " + value).addConstraintViolation();
 						return false;
 					}
 				}
@@ -127,7 +147,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 				}
 				else 
 				{
-					context.buildConstraintViolationWithTemplate( "The following SYSLOG value is of the wrong format - " + value).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + "The following SYSLOG value is of the wrong format - " + value).addConstraintViolation();
 					return false;
 				}
 			case ENV:
@@ -144,7 +166,9 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 					
 					if(value.matches("^([0-9]{1,3}\\.){3}[0-9]{1,3}(\\/([0-9]|[1-2][0-9]|3[0-2]))?$") == false)
 						{
-							context.buildConstraintViolationWithTemplate( "The following subnet is of the wrong format - " + value).addConstraintViolation();
+							String msg = context.getDefaultConstraintMessageTemplate();
+							context.disableDefaultConstraintViolation();
+							context.buildConstraintViolationWithTemplate( msg + "The following subnet is of the wrong format - " + value).addConstraintViolation();
 							return false;
 						}
 				

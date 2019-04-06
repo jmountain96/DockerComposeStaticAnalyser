@@ -24,8 +24,9 @@ public class CheckFolderExistsValidator implements ConstraintValidator<CheckFold
 		}
 		else 
 		{
+			String msg = context.getDefaultConstraintMessageTemplate();
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate( "The following folder cannot be found - " + value).addConstraintViolation();
+			context.buildConstraintViolationWithTemplate( msg + "The following folder cannot be found - " + value).addConstraintViolation();
 			return false;
 		}
 	}

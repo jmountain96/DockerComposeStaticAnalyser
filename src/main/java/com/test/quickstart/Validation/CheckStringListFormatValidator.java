@@ -25,7 +25,9 @@ public class CheckStringListFormatValidator implements ConstraintValidator<Check
 				for(String x: value) {
 					if(x.matches(".*(:).*") == false)
 						{
-						    context.buildConstraintViolationWithTemplate( "The following image is of the wrong format - " + x).addConstraintViolation();
+							String msg = context.getDefaultConstraintMessageTemplate();
+							context.disableDefaultConstraintViolation();
+						    context.buildConstraintViolationWithTemplate( msg + " The following image is of the wrong format - " + x).addConstraintViolation();
 							return false;
 						}
 				}
@@ -34,7 +36,9 @@ public class CheckStringListFormatValidator implements ConstraintValidator<Check
 				for(String x: value) {
 					if(x.matches("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$") == false)
 						{
-						    context.buildConstraintViolationWithTemplate( "The following DNS address is of the wrong format - " + x).addConstraintViolation();
+							String msg = context.getDefaultConstraintMessageTemplate();
+							context.disableDefaultConstraintViolation();
+						    context.buildConstraintViolationWithTemplate( msg + " The following DNS address is of the wrong format - " + x).addConstraintViolation();
 							return false;
 						}
 				}
@@ -44,7 +48,9 @@ public class CheckStringListFormatValidator implements ConstraintValidator<Check
 					String[] x1 = x.split(":");
 					if(x1[1].matches("(^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$") == false)
 							{
-								context.buildConstraintViolationWithTemplate( "The following extrahost is of the wrong format - " + x).addConstraintViolation();
+								String msg = context.getDefaultConstraintMessageTemplate();
+								context.disableDefaultConstraintViolation();
+								context.buildConstraintViolationWithTemplate( msg + " The following extrahost is of the wrong format - " + x).addConstraintViolation();
 								return false;
 							}
 				}
@@ -53,7 +59,9 @@ public class CheckStringListFormatValidator implements ConstraintValidator<Check
 				for(String x: value) {
 					if(x.matches("(\\d\\-?)+(:)?(\\d\\-?)+") == false)
 						{
-							context.buildConstraintViolationWithTemplate( "The following port is of the wrong format - " + x).addConstraintViolation();
+							String msg = context.getDefaultConstraintMessageTemplate();
+							context.disableDefaultConstraintViolation();
+							context.buildConstraintViolationWithTemplate( msg + "The following port is of the wrong format - " + x).addConstraintViolation();
 							return false;
 						}
 				}
@@ -62,7 +70,9 @@ public class CheckStringListFormatValidator implements ConstraintValidator<Check
 				for(String x: value) {
 					if(x.matches("\\w+(.env)") == false)
 						{
-							context.buildConstraintViolationWithTemplate( "The following env file isn't a valid env file, it should have the file extention .env - " + x).addConstraintViolation();
+							String msg = context.getDefaultConstraintMessageTemplate();
+							context.disableDefaultConstraintViolation();
+							context.buildConstraintViolationWithTemplate( msg  + " The following env file isn't a valid env file, it should have the file extention .env - " + x).addConstraintViolation();
 							return false;
 						}
 				}

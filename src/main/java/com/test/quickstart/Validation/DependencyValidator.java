@@ -28,8 +28,9 @@ public class DependencyValidator implements ConstraintValidator<Dependency, Depe
 		}
 		if(_ret == false)
 		{
+			String msg = context.getDefaultConstraintMessageTemplate();
 			context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate( "Missing service dependencies " + missingDependencies ).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate( msg + "Missing service dependencies " + missingDependencies ).addConstraintViolation();
 		}
 		return _ret;
 	}

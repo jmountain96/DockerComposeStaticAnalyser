@@ -11,7 +11,7 @@ import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 public class Build {
 	private TypeConverter Converter = new TypeConverter();
 	private TypeResolver Resolver = new TypeResolver();
-	@CheckFolderExists(message = "Directory doesn't exist")
+	@CheckFolderExists(message = "Build context cannot be found")
 	private String context;
 	private String dockerfile;
 	@CheckFileExists(message = "Referenced alternate Docker file doesn't exist", value = "")
@@ -21,7 +21,7 @@ public class Build {
 	private String[] extra_hosts;
 	private Object args;
 	private Map<String, String> argsM;
-	@CheckDuplication(message = "Duplicate arg detected")
+	@CheckDuplication(message = "Duplicate arg within build detected")
 	private String[] argsS;
 	private String argType;
 	@CheckStringListFormat(message = "images in cache_from are in the wrong format", value = ValidationEnums.CheckStringListType.IMAGE)

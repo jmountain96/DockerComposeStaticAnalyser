@@ -19,7 +19,9 @@ public class CheckFileListExistsValidator implements ConstraintValidator<CheckFi
 			File input = new File(x);
 			if (input.exists() == false)
 			{
-				context.buildConstraintViolationWithTemplate( "The following file cannot be found - " + x).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following file cannot be found - " + x).addConstraintViolation();
 				return false;
 			}
 		}

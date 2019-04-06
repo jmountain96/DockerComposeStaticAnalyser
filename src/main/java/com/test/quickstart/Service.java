@@ -22,15 +22,15 @@ public class Service {
 	private String Name;
 	private Blkio_config blkio_config;
 	private Object build;
-	@CheckFolderExists(message = "Directory doesn't exist")
+	@CheckFolderExists(message = "Specified build directory cannot be found")
 	private String buildS;
 	private Build buildB;
 	private String buildType;
-	@ListContainsString(message = "unknown capability within cap_add", value = ValidationEnums.ListContainsStringType.CAP)
+	@ListContainsString(message = "Unknown capability within cap_add", value = ValidationEnums.ListContainsStringType.CAP)
 	@CheckDuplication(message = "Duplicate cap_add capability detected")
 	private String[] cap_add;
-	@ListContainsString(message = "unknown capability within cap_drop", value = ValidationEnums.ListContainsStringType.CAP)
-	@CheckDuplication(message = "Duplicate cap_drop capability detected detected")
+	@ListContainsString(message = "Unknown capability within cap_drop", value = ValidationEnums.ListContainsStringType.CAP)
+	@CheckDuplication(message = "Duplicate cap_drop capability detected")
 	private String[] cap_drop;
 	private String cgroup_parent;
 	private Object command;

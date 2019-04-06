@@ -36,8 +36,9 @@ public class CheckUsedValidator implements ConstraintValidator<CheckUsed, Depend
 		}
 		if(_ret == false)
 		{
+			String msg = context.getDefaultConstraintMessageTemplate();
 			context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate( "The following are not in use by any service " + notUsed ).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate( msg + "The following are not in use by any service " + notUsed ).addConstraintViolation();
 		}
 		return _ret;
 	}
