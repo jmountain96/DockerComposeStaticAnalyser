@@ -74,12 +74,7 @@ public class YamlParser {
 	 {
 		 YamlParserVisitor visitor = new YamlParserVisitorImpl();
 		 TopLevelReturn r = input.accept(visitor);
-		 if(input.getNetwork_mode() != null)
-		 {
-			 input.setNetworkModeDependencies();
-		 }
 		 String[] Configs = null;
-		 String[] EnvList = null;
 		 String[] Networks = null;
 		 String[] Secrets = null;
 		 String[] Volumes = null;
@@ -104,11 +99,6 @@ public class YamlParser {
 							Configs = (String[])ArrayUtils.addAll(Configs, configSources);
 						}
 				}
-				}
-				if(r.getEnvList() != null && s.getEnv_file() != null)
-				{
-					s.setEnvironmentDependencies(r.getEnvList());
-					EnvList = (String[])ArrayUtils.addAll(EnvList, s.getEnv_fileSL());
 				}
 				if(r.getNetworks() != null && s.getNetworks() != null)
 				{
@@ -142,6 +132,10 @@ public class YamlParser {
 				if(r.getServices() != null)
 				{
 					s.setServiceDependenciesD(r.getServices());
+					if(s.getNetwork_mode() != null)
+					{
+						s.setNetworkModeDependencies(r.getServices());
+					}
 				}
 				if(r.getVolumes() != null && s.getVolumes() != null)
 				{
@@ -168,10 +162,6 @@ public class YamlParser {
 		 if(Configs != null)
 		 {
 			 input.setConfigCheckUsed(Configs);
-		 }
-		 if(EnvList != null)
-		 {
-			 input.setEnvCheckUsed(EnvList);
 		 }
 		 if(Networks != null)
 		 {
@@ -204,31 +194,7 @@ public class YamlParser {
 	          System.out.println(violation.getMessage());
 	          totalViolations += 1;
 	     }
-	     if(level.getBuildB() != null) {
-	    	 Set<ConstraintViolation<Build>> constraintViolationsB = validator.validate(level.getBuildB());
-	    	 for (ConstraintViolation<Build> violation : constraintViolationsB) 
-	    	 {
-	    		 System.out.println(violation.getMessage());
-	    		 totalViolations += 1;
-	    	 }
-	     }
-	     if(level.getCredential_spec() != null) {
-	    	 Set<ConstraintViolation<CredentialSpec>> constraintViolationsC = validator.validate(level.getCredential_spec());
-	    	 for (ConstraintViolation<CredentialSpec> violation : constraintViolationsC) 
-	    	 {
-	    		 System.out.println(violation.getMessage());
-	    		 totalViolations += 1;
-	    	 }
-	     }
-	     if(level.getHealthcheck()!= null)
-	     {
-	    	 Set<ConstraintViolation<Healthcheck>> constraintViolationsH = validator.validate(level.getHealthcheck());
-	    	 for (ConstraintViolation<Healthcheck> violation : constraintViolationsH) 
-	    	 {
-	    		 System.out.println(violation.getMessage());
-	    		 totalViolations += 1;
-	    	 } 
-	     }
+	     
 	     if(level.getNetworksN() != null)
 	     {
 	    	 for(String net : level.getNetworksN().keySet())
@@ -278,24 +244,7 @@ public class YamlParser {
 		    	 }
 	    	 }
 	     }
-	     if(level.getUlimits() != null)
-	     {
-	    	 Set<ConstraintViolation<Ulimits>> constraintViolationsH = validator.validate(level.getUlimits());
-	    	 for (ConstraintViolation<Ulimits> violation : constraintViolationsH) 
-	    	 {
-	    		 System.out.println(violation.getMessage());
-	    		 totalViolations += 1;
-	    	 }
-	    	 if(level.getUlimits().getNofile() != null)
-	    	 {
-	    		 Set<ConstraintViolation<Nofile>> constraintViolationsUNF = validator.validate(level.getUlimits().getNofile());
-		    	 for (ConstraintViolation<Nofile> violation : constraintViolationsUNF) 
-		    	 {
-		    		 System.out.println(violation.getMessage());
-		    		 totalViolations += 1;
-		    	 } 
-	    	 }
-	     }
+	     
 	     if(level.getServices() != null)
 	     {
 	    	 for(Service s : level.getServices().values()) 
@@ -424,6 +373,14 @@ public class YamlParser {
 			    	 }
 			    	 
 		    	 }
+		    	 if(s.getCredential_spec() != null) {
+			    	 Set<ConstraintViolation<CredentialSpec>> constraintViolationsC = validator.validate(s.getCredential_spec());
+			    	 for (ConstraintViolation<CredentialSpec> violation : constraintViolationsC) 
+			    	 {
+			    		 System.out.println(violation.getMessage());
+			    		 totalViolations += 1;
+			    	 }
+			     }
 		    	 if(s.getHealthcheck()!= null)
 			     {
 			    	 Set<ConstraintViolation<Healthcheck>> constraintViolationsSH = validator.validate(s.getHealthcheck());
@@ -466,6 +423,24 @@ public class YamlParser {
 		    			 } 
 		    		 }
 		    	 }
+		    	 if(s.getUlimits() != null)
+			     {
+			    	 Set<ConstraintViolation<Ulimits>> constraintViolationsH = validator.validate(s.getUlimits());
+			    	 for (ConstraintViolation<Ulimits> violation : constraintViolationsH) 
+			    	 {
+			    		 System.out.println(violation.getMessage());
+			    		 totalViolations += 1;
+			    	 }
+			    	 if(s.getUlimits().getNofile() != null)
+			    	 {
+			    		 Set<ConstraintViolation<Nofile>> constraintViolationsUNF = validator.validate(s.getUlimits().getNofile());
+				    	 for (ConstraintViolation<Nofile> violation : constraintViolationsUNF) 
+				    	 {
+				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
+				    	 } 
+			    	 }
+			     }
 		    	 if(s.getVolumesVL() != null)
 		    	 {
 		    		 for(Volume v : s.getVolumesVL())

@@ -8,9 +8,11 @@ import com.test.quickstart.Validation.ValidationEnums;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
+import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.Interfaces.Dependency;
+import com.test.quickstart.Validation.Interfaces.ListContainsString;
 
 
 
@@ -24,6 +26,13 @@ public class Service {
 	private String buildS;
 	private Build buildB;
 	private String buildType;
+	@ListContainsString(message = "unknown capability within cap_add", value = ValidationEnums.ListContainsStringType.CAP)
+	@CheckDuplication(message = "Duplicate cap_add capability detected")
+	private String[] cap_add;
+	@ListContainsString(message = "unknown capability within cap_drop", value = ValidationEnums.ListContainsStringType.CAP)
+	@CheckDuplication(message = "Duplicate cap_drop capability detected detected")
+	private String[] cap_drop;
+	private String cgroup_parent;
 	private Object command;
 	private String commandS;
 	@CheckDuplication(message = "Duplicate command detected")
@@ -34,6 +43,7 @@ public class Service {
 	private Configs[] configsC;
 	@CheckDuplication(message = "Duplicate service config detected")
 	private String[] configsSL;
+	private CredentialSpec credential_spec;
 	private String configType;
 	private String cpu_shares;
 	private String cpu_quota;
@@ -46,6 +56,20 @@ public class Service {
 	private String[] depends_onS;
 	private String depends_onType;
 	private Deploy deploy;
+	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
+	@CheckDuplication(message = "Duplicate device detected")
+	private String[] devices;
+	private Object dns;
+	@CheckStringFormat(message = "Invalid format of dns field specified within the top level", value = ValidationEnums.CheckStringType.DNS)
+	private String dnsS;
+	@CheckStringListFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringListType.DNS)
+	@CheckDuplication(message = "Duplicate dns detected")
+	private String[] dnsSL;
+	private String dnsType;
+	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DOMAIN)
+	private String dns_search;
+	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
+	private String domainname;
 	private Object entrypoint;
 	@CheckDuplication(message = "Duplicate entrypoint detected")
 	private String[] entrypointSL;
@@ -63,6 +87,11 @@ public class Service {
 	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
 	@CheckDuplication(message = "Duplicate port detected")
 	private String[] expose;
+	@CheckDuplication(message = "Duplicate external link detected")
+	private String[] external_links;
+	@CheckStringListFormat(message = "extra hosts doesn't specify valid host addresses", value = ValidationEnums.CheckStringListType.EXTRAHOST)
+	@CheckDuplication(message = "Duplicate extra host detected")
+	private String[] extra_hosts;
 	private Healthcheck healthcheck;
 	private String hostname;
 	private Object labels;
@@ -72,11 +101,16 @@ public class Service {
 	private String labelType;
 	private String image;
 	@CheckFileExists(message = "The docker-init file specfied by the service init cannot be found", value = "")
-	private String init;
+	private String init; 
+	private String ipc;
+	@ContainsString(message = "Isolation must be default, process or hyperv", value = ValidationEnums.ContainsStringType.ISOLATION) 
+	private String isolation;
 	@CheckDuplication(message = "Duplicate service link detected")
 	private String[] links;
 	private Logging logging;
 	private String[] group_add;
+	@CheckStringFormat(message = "mac_address must be a valid memory format", value = ValidationEnums.CheckStringType.MAC)
+	private String mac_address;
 	@ContainsString(message = "Invalid network type", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String network_mode;
 	private Object networks;
@@ -84,6 +118,8 @@ public class Service {
 	private String[] networksSL;
 	private Map<String,Network> networksN;
 	private String networkType;
+	@ContainsString(message  = "Invalid PID mode", value = ValidationEnums.ContainsStringType.PID)
+	private String pid;
 	@ContainsString(message = "Invalid restart condition", value = ValidationEnums.ContainsStringType.RESTART_POLICY_CONDITION)
 	private String restart;
 	private String runtime;
@@ -104,6 +140,28 @@ public class Service {
 	private String portsType;
 	@ContainsString(message = "Priveleged must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String privileged;
+	@ContainsString(message = "Read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	private String read_only;
+	private String[] security_opt;
+	@CheckStringFormat(message = "shm_size must be a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
+	private String shm_size;
+	@CheckStringFormat(message = "Invalid time specified for stop grace period", value = ValidationEnums.CheckStringType.TIME)
+	private String stop_grace_period;
+	private String stop_signal;
+	private Object sysctls;
+	private Map<String, String> sysctlsM;
+	@CheckDuplication(message = "Duplicate sysctls detected")
+	private String[] sysctlsSL;
+	private String sysctlsType;
+	private Object tmpfs;
+	@CheckDuplication(message = "Duplicate tmpfs detected")
+	private String[] tmpfsSL;
+	private String tmpfsS;
+	private String tmpfsType;
+	@ContainsString(message = "tty must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
+	private Ulimits ulimits;
+	private String user;
+	private String userns_mode;
 	private Object volumes;
 	private Volume[] volumesVL;
 	@CheckDuplication(message = "Duplicate service volume detected")
@@ -126,6 +184,8 @@ public class Service {
 	private Dependencies VolumeDependencies = new Dependencies();
 	@Dependency(message = "Service references an env_file that isn't present")
 	private Dependencies EnvironmentDependencies = new Dependencies();
+	@Dependency(message = "Service references a network mode for a service that isn't present")
+	private Dependencies NetworkModeDependencies = new Dependencies();
 	
 	public TypeConverter getConverter() {
 		return Converter;
@@ -529,6 +589,17 @@ public class Service {
 	public void setNetworkType(String networkType) {
 		this.networkType = networkType;
 	}
+	public Dependencies getNetworkModeDependencies() {
+		return NetworkModeDependencies;
+	}
+	public void setNetworkModeDependencies(String[] services) {
+		if(this.network_mode.startsWith("service:") == true)
+		{
+			NetworkModeDependencies.dependents[0] = this.network_mode.substring(this.network_mode.lastIndexOf("="));
+		}
+		NetworkModeDependencies.target = services;
+		
+	}
 	public Dependencies getNetworkDependencies() {
 		return NetworkDependencies;
 	}
@@ -799,6 +870,219 @@ public class Service {
 	public void setWorking_dir(String working_dir) {
 		this.working_dir = working_dir;
 	}
+	public TypeResolver getResolver() {
+		return resolver;
+	}
+	public void setResolver(TypeResolver resolver) {
+		this.resolver = resolver;
+	}
+	public String[] getCap_add() {
+		return cap_add;
+	}
+	public void setCap_add(String[] cap_add) {
+		this.cap_add = cap_add;
+	}
+	public String[] getCap_drop() {
+		return cap_drop;
+	}
+	public void setCap_drop(String[] cap_drop) {
+		this.cap_drop = cap_drop;
+	}
+	public String getCgroup_parent() {
+		return cgroup_parent;
+	}
+	public void setCgroup_parent(String cgroup_parent) {
+		this.cgroup_parent = cgroup_parent;
+	}
+	public CredentialSpec getCredential_spec() {
+		return credential_spec;
+	}
+	public void setCredential_spec(CredentialSpec credential_spec) {
+		this.credential_spec = credential_spec;
+	}
+	public String[] getDevices() {
+		return devices;
+	}
+	public void setDevices(String[] devices) {
+		this.devices = devices;
+	}
+	public Object getDns() {
+		return dns;
+	}
+	public void setDns(Object dns) {
+		this.dns = dns;
+		convertDNS();
+	}
+	public String getDnsS() {
+		return dnsS;
+	}
+	public void setDnsS(String dnsS) {
+		this.dnsS = dnsS;
+	}
+	public String[] getDnsSL() {
+		return dnsSL;
+	}
+	public void setDnsSL(String[] dnsSL) {
+		this.dnsSL = dnsSL;
+	}
+	public String getDnsType() {
+		return dnsType;
+	}
+	public void setDnsType(String dnsType) {
+		this.dnsType = dnsType;
+	}
+	public String getDns_search() {
+		return dns_search;
+	}
+	public void setDns_search(String dns_search) {
+		this.dns_search = dns_search;
+	}
+	public String getDomainname() {
+		return domainname;
+	}
+	public void setDomainname(String domainname) {
+		this.domainname = domainname;
+	}
+	public String[] getExternal_links() {
+		return external_links;
+	}
+	public void setExternal_links(String[] external_links) {
+		this.external_links = external_links;
+	}
+	public String[] getExtra_hosts() {
+		return extra_hosts;
+	}
+	public void setExtra_hosts(String[] extra_hosts) {
+		this.extra_hosts = extra_hosts;
+	}
+	public String getIpc() {
+		return ipc;
+	}
+	public void setIpc(String ipc) {
+		this.ipc = ipc;
+	}
+	public String getIsolation() {
+		return isolation;
+	}
+	public void setIsolation(String isolation) {
+		this.isolation = isolation;
+	}
+	public String getMac_address() {
+		return mac_address;
+	}
+	public void setMac_address(String mac_address) {
+		this.mac_address = mac_address;
+	}
+	public Map<String, Network> getNetworksN() {
+		return networksN;
+	}
+	public void setNetworksN(Map<String, Network> networksN) {
+		this.networksN = networksN;
+	}
+	public String getPid() {
+		return pid;
+	}
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+	public String getRead_only() {
+		return read_only;
+	}
+	public void setRead_only(String read_only) {
+		this.read_only = read_only;
+	}
+	public String[] getSecurity_opt() {
+		return security_opt;
+	}
+	public void setSecurity_opt(String[] security_opt) {
+		this.security_opt = security_opt;
+	}
+	public String getShm_size() {
+		return shm_size;
+	}
+	public void setShm_size(String shm_size) {
+		this.shm_size = shm_size;
+	}
+	public String getStop_grace_period() {
+		return stop_grace_period;
+	}
+	public void setStop_grace_period(String stop_grace_period) {
+		this.stop_grace_period = stop_grace_period;
+	}
+	public String getStop_signal() {
+		return stop_signal;
+	}
+	public void setStop_signal(String stop_signal) {
+		this.stop_signal = stop_signal;
+	}
+	public Object getSysctls() {
+		return sysctls;
+	}
+	public void setSysctls(Object sysctls) throws Exception {
+		this.sysctls = sysctls;
+		convertSysctls();
+	}
+	public Map<String, String> getSysctlsM() {
+		return sysctlsM;
+	}
+	public void setSysctlsM(Map<String, String> sysctlsM) {
+		this.sysctlsM = sysctlsM;
+	}
+	public String[] getSysctlsSL() {
+		return sysctlsSL;
+	}
+	public void setSysctlsSL(String[] sysctlsSL) {
+		this.sysctlsSL = sysctlsSL;
+	}
+	public String getSysctlsType() {
+		return sysctlsType;
+	}
+	public void setSysctlsType(String sysctlsType) {
+		this.sysctlsType = sysctlsType;
+	}
+	public String[] getTmpfsSL() {
+		return tmpfsSL;
+	}
+	public void setTmpfsSL(String[] tmpfsSL) {
+		this.tmpfsSL = tmpfsSL;
+	}
+	public String getTmpfsS() {
+		return tmpfsS;
+	}
+	public void setTmpfsS(String tmpfsS) {
+		this.tmpfsS = tmpfsS;
+	}
+	public String getTmpfsType() {
+		return tmpfsType;
+	}
+	public void setTmpfsType(String tmpfsType) {
+		this.tmpfsType = tmpfsType;
+	}
+	public void setTmpfs(Object tmpfs) {
+		this.tmpfs = tmpfs;
+		convertTmpfs();
+	}
+	public Object getTmpfs() {
+		return tmpfs;
+	}
+	public Ulimits getUlimits() {
+		return ulimits;
+	}
+	public void setUlimits(Ulimits ulimits) {
+		this.ulimits = ulimits;
+	}
+	public String getUser() {
+		return user;
+	}
+	public void setUser(String user) {
+		this.user = user;
+	}
+	public String getUserns_mode() {
+		return userns_mode;
+	}
+	public void setUserns_mode(String userns_mode) {
+		this.userns_mode = userns_mode;
+	}
 	private void convertLabels() throws Exception 
 	{
 		if(resolver.checkMap(labels) == true)
@@ -910,6 +1194,63 @@ public class Service {
 		{
 			throw new Exception("Unknown type for depends_on test");
 		}
+	}
+	private void convertTmpfs() 
+	{
+		boolean set = false;
+		String tTmpfs = tmpfs.toString();
+		if(resolver.checkStringList(tmpfs))
+		{
+			tmpfsSL = Converter.convertStringList(tmpfs);
+			tmpfsType = "String[]";
+			set = true;
+		}
+		else 
+			
+		{
+			if(set == false)
+			{
+				tmpfsS = tTmpfs;
+				tmpfsType = "String";
+			}
+		}	
+	}
+	private void convertSysctls() throws Exception
+	{
+		if(resolver.checkMap(sysctls) == true)
+		{
+			sysctlsM = Converter.convertMap(sysctls);
+			sysctlsType = "Map<String,String>";
+		}
+		else if(resolver.checkStringList(sysctls) == true)
+		{
+			sysctlsSL = Converter.convertStringList(sysctls);
+			sysctlsType = "String[]";
+		}
+		else
+		{
+			throw new Exception ("Unknown type entered for Top Level sysctls");
+		}
+	}
+	private void convertDNS()
+	{
+		boolean set = false;
+		String tDNS = dns.toString();
+		if(resolver.checkStringList(dns))
+		{
+			dnsSL = Converter.convertStringList(tDNS);
+			dnsType = "String[]";
+			set = true;
+		}
+		else 
+			
+				
+		{
+			if(set == false){
+			dnsS = tDNS;
+			dnsType = "String";
+		}
+				}
 	}
 
 	

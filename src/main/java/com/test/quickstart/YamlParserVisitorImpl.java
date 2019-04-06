@@ -60,20 +60,7 @@ public class YamlParserVisitorImpl  implements YamlParserVisitor{
 			String[] volumes = volumesList.keySet().toArray(new String[volumesList.size()]);
 			ret.setVolumes(volumes);
 		}
-		if(input.getEnv_file() != null)
-		{
-			String[] envList = null;
-			if(input.getEnv_FileType() == "String") 
-			{
-				envList = new String[1];
-				envList[0] = input.getEnv_fileS();
-			}
-			else 
-			{
-				envList = input.getEnv_fileSL();
-			}
-			ret.setEnvList(envList);
-		}
+		
 		return ret;
 		
 		
