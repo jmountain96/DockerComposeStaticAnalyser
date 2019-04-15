@@ -43,7 +43,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following version is invalid " + value + " it must be one of the following " + versions.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following version is invalid " + value + " it must be one of the following " + versions.toString()).addConstraintViolation();
 				return false;
 			}
 		case ENDPOINT_MODE:
@@ -53,7 +55,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else
 			{
-				context.buildConstraintViolationWithTemplate( "The following end point is invalid " + value + " it must be one of the following " + endpoint_mode.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following end point is invalid " + value + " it must be one of the following " + endpoint_mode.toString()).addConstraintViolation();
 				return false;
 			}
 		case DEPLOY_MODE:
@@ -63,7 +67,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following deploy mode is invalid " + value + " it must be one of the following " + deploy_mode.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following deploy mode is invalid " + value + " it must be one of the following " + deploy_mode.toString()).addConstraintViolation();
 				return false;
 			}
 		case RESTART_POLICY_CONDITION:
@@ -73,7 +79,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following restart policy is invalid " + value + " it must be one of the following " + restart_policy.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following restart policy is invalid " + value + " it must be one of the following " + restart_policy.toString()).addConstraintViolation();
 				return false;
 			}
 		case RBFAILUREACTION:
@@ -83,7 +91,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following rollback failure option is invalid " + value + " it must be one of the following " + rb_failure_action.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following rollback failure option is invalid " + value + " it must be one of the following " + rb_failure_action.toString()).addConstraintViolation();
 				return false;
 			}
 		case UCFAILUREACTION:
@@ -93,7 +103,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following uc failure action is invalid " + value + " it must be one of the following " + uc_failure_action.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following uc failure action is invalid " + value + " it must be one of the following " + uc_failure_action.toString()).addConstraintViolation();
 				return false;
 			}
 		case CONFIGORDER:
@@ -103,7 +115,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following config order is invalid " + value + " it must be one of the following " + configOrder.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate(msg +  "The following config order is invalid " + value + " it must be one of the following " + configOrder.toString()).addConstraintViolation();
 				return false;
 			}
 		case BOOLEAN:
@@ -113,7 +127,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The value is not a boolean " + value + " it must be one of the following " + booleanString.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The value is not a boolean " + value + " it must be one of the following " + booleanString.toString()).addConstraintViolation();
 				return false;
 			}
 		case ISOLATION:
@@ -123,7 +139,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following isolation is invalid " + value + " it must be one of the following " + isolation.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate(msg +  "The following isolation is invalid " + value + " it must be one of the following " + isolation.toString()).addConstraintViolation();
 				return false;
 			}
 		case HEALTHCHECK:
@@ -133,7 +151,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following healthcheck test is invalid " + value + " it must be one of the following " + healthCheckTest.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following healthcheck test is invalid " + value + " it must be one of the following " + healthCheckTest.toString()).addConstraintViolation();
 				return false;
 			}
 		case NETWORK_MODE:
@@ -143,7 +163,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following network mode is invalid " + value + " it must be one of the following " + networkMode.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following network mode is invalid " + value + " it must be one of the following " + networkMode.toString()).addConstraintViolation();
 				return false;
 			}
 		case PID:
@@ -153,7 +175,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following PID is invalid " + value + " it must be one of the following " + pid.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following PID is invalid " + value + " it must be one of the following " + pid.toString()).addConstraintViolation();
 				return false;
 			}
 		case PORT_PROTOCOL:
@@ -163,7 +187,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following port protocol is invalid " + value + " it must be one of the following " + portProtocol.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following port protocol is invalid " + value + " it must be one of the following " + portProtocol.toString()).addConstraintViolation();
 				return false;
 			}
 		case PORT_MODE:
@@ -173,7 +199,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following port mode is invalid " + value + " it must be one of the following " + portMode.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following port mode is invalid " + value + " it must be one of the following " + portMode.toString()).addConstraintViolation();
 				return false;
 			}
 		case VOLUME_TYPE:	
@@ -183,7 +211,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following volume type is invalid " + value + " it must be one of the following " + volumeType.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following volume type is invalid " + value + " it must be one of the following " + volumeType.toString()).addConstraintViolation();
 				return false;
 			}
 		case VOLUME_CONSISTENCY:
@@ -193,7 +223,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following volume consistency is invalid " + value + " it must be one of the following " + volumeConsistency.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following volume consistency is invalid " + value + " it must be one of the following " + volumeConsistency.toString()).addConstraintViolation();
 				return false;
 			}
 		case LOGGING_DRIVER:
@@ -203,7 +235,9 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 			}
 			else 
 			{
-				context.buildConstraintViolationWithTemplate( "The following logging driver is invalid " + value + "it must be one of the following " + loggingDriver.toString()).addConstraintViolation();
+				String msg = context.getDefaultConstraintMessageTemplate();
+				context.disableDefaultConstraintViolation();
+				context.buildConstraintViolationWithTemplate( msg + "The following logging driver is invalid " + value + "it must be one of the following " + loggingDriver.toString()).addConstraintViolation();
 				return false;
 			}
 		default:

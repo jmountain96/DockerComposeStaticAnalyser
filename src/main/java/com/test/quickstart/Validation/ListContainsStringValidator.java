@@ -30,7 +30,9 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 			for(String x: value) {
 				if(capabilities.contains(x.toUpperCase())== false)
 				{
-					context.buildConstraintViolationWithTemplate( "The following capability is invalid " + x + "/n it must be one of the following " + capabilities.toString()).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + "The following capability is invalid " + x + "/n it must be one of the following " + capabilities.toString()).addConstraintViolation();
 					return false;
 				}
 				return true;
@@ -51,7 +53,9 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 				}
 				if(matches == false)
 				{
-					context.buildConstraintViolationWithTemplate( "The following constraint is invalid " + x + "/n it must be one of the following " + constraints.toString()).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate( msg + "The following constraint is invalid " + x + "/n it must be one of the following " + constraints.toString()).addConstraintViolation();
 					return false;
 					
 				}
@@ -70,7 +74,9 @@ public class ListContainsStringValidator implements ConstraintValidator<ListCont
 				}
 				if(matches == false)
 				{
-					context.buildConstraintViolationWithTemplate( "The following placement pref is invalid " + x + "/n it must be one of the following " + constraints.toString()).addConstraintViolation();
+					String msg = context.getDefaultConstraintMessageTemplate();
+					context.disableDefaultConstraintViolation();
+					context.buildConstraintViolationWithTemplate(msg +  "The following placement pref is invalid " + x + "/n it must be one of the following " + constraints.toString()).addConstraintViolation();
 					return false;
 					
 				}

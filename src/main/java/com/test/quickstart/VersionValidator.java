@@ -54,6 +54,9 @@ public class VersionValidator {
 			Validate36();
 			Version3Removal();
 			break;
+		case "3.7":
+			Version3Removal();
+			break;
 		default:
 			throw new Exception("Version not supplied");
 			
@@ -61,22 +64,7 @@ public class VersionValidator {
 	}
 	public void Validate2()
 	{
-		if(level.getIsolation() != null)
-		{
-			System.out.println("Isolation is only compatible with version 2.1+");
-		}
-		if(level.getUserns_mode() != null)
-		{
-			System.out.println("Userns mode is only compatible with version 2.1+");
-		}
-		if(level.getHealthcheck() != null)
-		{
-			System.out.println("Healthcheck is only compatible with version 2.1+");
-		}
-		if(level.getSysctls()!= null)
-		{
-			System.out.println("Sysctls is only compatible with version 2.1+");
-		}
+		
 		if(level.getPids_limit() != null)
 		{
 			System.out.println("Pids Limit is only compatible with version 2.1+");
@@ -117,17 +105,34 @@ public class VersionValidator {
 							System.out.println("Volume names are only compatible with version 2.1+");
 						}
 					}
+				if(s.getIsolation() != null)
+				{
+					System.out.println("Isolation is only compatible with version 2.1+");
+				}
+				if(s.getIsolation() != null)
+				{
+					System.out.println("Isolation is only compatible with version 2.1+");
+				}
+				if(s.getIsolation() != null)
+				{
+					System.out.println("Isolation is only compatible with version 2.1+");
+				}
+				if(s.getUserns_mode() != null)
+				{
+					System.out.println("Userns mode is only compatible with version 2.1+");
+				}
+				if(s.getHealthcheck() != null)
+				{
+					System.out.println("Healthcheck is only compatible with version 2.1+");
+				}
+				if(s.getSysctls()!= null)
+				{
+					System.out.println("Sysctls is only compatible with version 2.1+");
+				}
 			}
 		}
-		}
-		if(level.getIsolation() != null)
-		{
-			System.out.println("Isolation is only compatible with version 2.1+");
-		}
-		if(level.getIsolation() != null)
-		{
-			System.out.println("Isolation is only compatible with version 2.1+");
-		}
+	}
+		
 		Validate21();
 		
 	}
@@ -155,34 +160,8 @@ public class VersionValidator {
 	
 	public void Validate22()
 	{
-		if(level.getBuildB() != null)
-		{
-			if(level.getBuildB().getTarget() != null)
-			{
-				System.out.println("Build target are only compatible with version 2.3+");
-			}
-		}
-		if(level.getBuildB() != null)
-		{
-			if(level.getBuildB().getExtra_hosts() != null)
-			{
-				System.out.println("Build extra hosts are only compatible with version 2.3+");
-			}
-		}
-		if(level.getBuildB() != null)
-		{
-			if(level.getBuildB().getShm_size() != null)
-			{
-				System.out.println("Build shm size are only compatible with version 2.3+");
-			}
-		}
-		if(level.getHealthcheck() != null)
-		{
-			if(level.getHealthcheck().getStart_period() != null)
-			{
-				System.out.println("Healthcheck start_period are only compatible with version 2.3+");
-			}
-		}
+		
+		
 		for(Service s : level.getServices().values())
 		{
 			if(s.getRuntime() != null)
@@ -192,6 +171,28 @@ public class VersionValidator {
 			if(s.getVolumesVL() != null)
 			{
 				System.out.println("Service volume long syntax is only compatible with version 2.3+");
+			}
+			if(s.getHealthcheck() != null)
+			{
+				if(s.getHealthcheck().getStart_period() != null)
+				{
+					System.out.println("Healthcheck start_period are only compatible with version 2.3+");
+				}
+			}
+			if(s.getBuildB() != null)
+			{
+				if(s.getBuildB().getShm_size() != null)
+				{
+					System.out.println("Build shm size are only compatible with version 2.3+");
+				}
+				if(s.getBuildB().getExtra_hosts() != null)
+				{
+					System.out.println("Build extra hosts are only compatible with version 2.3+");
+				}
+				if(s.getBuildB().getTarget() != null)
+				{
+					System.out.println("Build target are only compatible with version 2.3+");
+				}
 			}
 		}
 		if(level.getDevice_cgroup_rules() != null)
@@ -276,23 +277,18 @@ public class VersionValidator {
 					{
 						System.out.println("Service network link local ips is only compatible with version 2.x");
 					}
+					if(n.getEnable_ipv6() != null)
+					{
+						System.out.println("Service network enable ipv6 is only compatible with version 2.x");
+					}
 				}
 			}
 		}
 	}
 	public void Validate3()
 	{
-		if(level.getBuildB() != null)
-		{
-			if(level.getBuildB().getLabels() != null)
-			{
-				System.out.println("Build labels are only compatible with version 3.3+");
-			}
-		}
-		if(level.getCredential_spec() != null)
-		{
-			System.out.println("Credential Specs are only compatible with version 3.3+");
-		}
+		
+		
 		if(level.getConfigs() != null)
 		{
 			System.out.println("Configs are only compatible with version 3.3+");
@@ -307,6 +303,17 @@ public class VersionValidator {
 					{
 						System.out.println("Deploy endpoints are only compatible with version 3.3+");
 					}
+				}
+				if(s.getBuildB() != null)
+				{
+					if(s.getBuildB().getLabels() != null)
+					{
+						System.out.println("Build labels are only compatible with version 3.3+");
+					}
+				}
+				if(s.getCredential_spec() != null)
+				{
+					System.out.println("Credential Specs are only compatible with version 3.3+");
 				}
 			}
 		}
@@ -327,24 +334,8 @@ public class VersionValidator {
 				}
 			}
 		}
-		if(level.getBuildB() != null)
-		{
-			if(level.getBuildB().getTarget() != null)
-			{
-				System.out.println("Build target is only compatible with version 3.4+");
-			}
-			if(level.getBuildB().getNetwork() != null)
-			{
-				System.out.println("Build network is only compatible with version 3.4+");
-			}
-		}
-		if(level.getHealthcheck() != null)
-		{
-			if(level.getHealthcheck().getStart_period() != null)
-			{
-				System.out.println("Healthcheck start period is only compatible with version 3.4+");
-			}
-		}
+		
+		
 		if(level.getServices() != null)
 		{
 			for(Service s : level.getServices().values())
@@ -358,6 +349,24 @@ public class VersionValidator {
 							System.out.println("Deploy rollback config order is only compatible with version 3.4+");
 						}
 					}
+					if(s.getBuildB() != null)
+					{
+						if(s.getBuildB().getTarget() != null)
+						{
+							System.out.println("Build target is only compatible with version 3.4+");
+						}
+						if(s.getBuildB().getNetwork() != null)
+						{
+							System.out.println("Build network is only compatible with version 3.4+");
+						}
+					}
+					if(s.getHealthcheck() != null)
+					{
+						if(s.getHealthcheck().getStart_period() != null)
+						{
+							System.out.println("Healthcheck start period is only compatible with version 3.4+");
+						}
+					}
 				}
 			}
 		}
@@ -365,17 +374,8 @@ public class VersionValidator {
 	}
 	public void Validate34()
 	{
-		if(level.getIsolation() != null)
-		{
-			System.out.println("Isolation is only compatible with version 3.5+");
-		}
-		if(level.getBuildB() != null)
-		{
-			if(level.getBuildB().getShm_size() != null)
-			{
-				System.out.println("Build shm size is only compatible with version 3.5+");
-			}
-		}
+		
+		
 		if(level.getNetworksN() != null)
 		{
 			for(Network N : level.getNetworksN().values()) 
@@ -407,16 +407,32 @@ public class VersionValidator {
 				{
 					System.out.println("Service name is only compatible with version 3.5+");
 				}
+				if(s.getBuildB() != null)
+				{
+					if(s.getBuildB().getShm_size() != null)
+					{
+						System.out.println("Build shm size is only compatible with version 3.5+");
+					}
+				}
+				if(s.getIsolation() != null)
+				{
+					System.out.println("Isolation is only compatible with version 3.5+");
+				}
 			}
 		}
 		Validate35();
 	}
 	public void Validate35()
+	{if(level.getServices() != null)
 	{
-		if(level.getTmpfs() != null)
+		for(Service s : level.getServices().values())
 		{
-			System.out.println("Tmpfs is only compatible with version 3.6+");
+			if(s.getTmpfs() != null)
+			{
+				System.out.println("Tmpfs is only compatible with version 3.6+");
+			}
 		}
+	}
 		Validate36();
 	}
 	public void Validate36()

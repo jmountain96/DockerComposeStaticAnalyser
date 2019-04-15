@@ -19,7 +19,9 @@ public class CheckDuplicationValidator implements ConstraintValidator<CheckDupli
 		  {
 		    if (k!=j && value[k].equals(value[j])) {
 		      duplicate=true;
-		      context.buildConstraintViolationWithTemplate( "The following value is a duplicate - " + value[k]).addConstraintViolation();
+		      String msg = context.getDefaultConstraintMessageTemplate();
+			  context.disableDefaultConstraintViolation();
+		      context.buildConstraintViolationWithTemplate( msg + " The following value is a duplicate - " + value[k]).addConstraintViolation();
 		    }
 		  }
 		}

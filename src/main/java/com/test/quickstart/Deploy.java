@@ -3,6 +3,7 @@ package com.test.quickstart;
 import java.util.Map;
 
 import com.test.quickstart.Validation.ValidationEnums;
+import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 
 public class Deploy {
@@ -12,6 +13,7 @@ public class Deploy {
 	private String endpoint_mode;
 	private Object labels;
 	private Map<String,String> labelsM;
+	@CheckDuplication(message = "Duplicate deploy lable detected")
 	private String[] labelsS;
 	private String labelType;
 	@ContainsString(message = "Deploy mode must be global or replicate", value = ValidationEnums.ContainsStringType.DEPLOY_MODE)
