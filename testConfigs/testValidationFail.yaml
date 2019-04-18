@@ -117,8 +117,8 @@ services:
       driver: sysalog
       options:
         syslog-address: "tcp://192.168.0.4r2:123"
-        max-size: "200j"
-        max-file: "10A"
+        max-size: "200"
+        max-file: "10"
     mac_address: 02:42:ac:11:65asd!:43
     network_mode: briadge
     networks:
@@ -139,7 +139,6 @@ services:
     read_only: true
     
     restart: "noo"
-    mode: host
     security_opt:
       - label:user:USER
       - label:role:ROLE
