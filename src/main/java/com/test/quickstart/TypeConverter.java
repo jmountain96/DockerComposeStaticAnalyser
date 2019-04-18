@@ -50,13 +50,13 @@ public class TypeConverter {
 	}
 	public Map<String, Network> convertNetworks(Map<String, Map<String,Object>> input)
 	{
-		Map<String,Network> ret = new HashMap<>();
+		Map<String,Network> ret = new HashMap<>(); 
 		for(String key : input.keySet()) 
 		{
-			Map<String,Object> s = input.get(key);
+			Map<String,Object> s = input.get(key); // Get the nested hashmap
 			if( s == null)
 			{
-				ret.put(key, null);
+				ret.put(key, null); // Some keys don't contain values, but the name still needs to be stored
 			}
 			else
 			{
@@ -70,7 +70,7 @@ public class TypeConverter {
 					}
 					else 
 					{
-						newWrappedNetwork.setPropertyValue(property.getKey(), property.getValue());
+						newWrappedNetwork.setPropertyValue(property.getKey(), property.getValue()); 
 					}
 				}
 				Network newNetwork = (Network)newWrappedNetwork.getWrappedInstance();

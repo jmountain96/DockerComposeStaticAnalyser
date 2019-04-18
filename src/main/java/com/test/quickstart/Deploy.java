@@ -2,6 +2,7 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.TypeEnums.Type;
 import com.test.quickstart.Validation.ValidationEnums;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
@@ -15,7 +16,7 @@ public class Deploy {
 	private Map<String,String> labelsM;
 	@CheckDuplication(message = "Duplicate deploy lable detected")
 	private String[] labelsS;
-	private String labelType;
+	private Type labelType;
 	@ContainsString(message = "Deploy mode must be global or replicate", value = ValidationEnums.ContainsStringType.DEPLOY_MODE)
 	private String mode;
 	private Placement placement;
@@ -66,11 +67,11 @@ public class Deploy {
 		this.labelsS = labelsS;
 	}
 
-	public String getLabelType() {
+	public Type getLabelType() {
 		return labelType;
 	}
 
-	public void setLabelType(String labelType) {
+	public void setLabelType(Type labelType) {
 		this.labelType = labelType;
 	}
 
@@ -135,13 +136,13 @@ public class Deploy {
 		if(Resolver.checkMap(labels) == true)
 		{
 			labelsM = Converter.convertMap(labels);
-			labelType = "Map<String,String>";
+			labelType = Type.MAP_STRING_STRING;
 		}
 		
 		else if(Resolver.checkStringList(labels) == true)
 		{
 			labelsS = Converter.convertStringList(labels);
-			labelType = "String[]";
+			labelType = Type.STRINGlIST;
 		}
 		else 
 		{

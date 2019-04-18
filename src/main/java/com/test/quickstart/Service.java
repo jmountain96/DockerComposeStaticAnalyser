@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.test.quickstart.TypeEnums.Type;
 import com.test.quickstart.Validation.ValidationEnums;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckFileExists;
@@ -26,7 +27,7 @@ public class Service {
 	@CheckFolderExists(message = "Specified build directory cannot be found")
 	private String buildS;
 	private Build buildB;
-	private String buildType;
+	private Type buildType;
 	@ListContainsString(message = "Unknown capability within cap_add", value = ValidationEnums.ListContainsStringType.CAP)
 	@CheckDuplication(message = "Duplicate cap_add capability detected")
 	private String[] cap_add;
@@ -38,14 +39,14 @@ public class Service {
 	private String commandS;
 	@CheckDuplication(message = "Duplicate command detected")
 	private String[] commandSL;
-	private String commandType;
+	private Type commandType;
 	private String container_name;
 	private Object configs;
 	private Configs[] configsC;
 	@CheckDuplication(message = "Duplicate service config detected")
 	private String[] configsSL;
 	private CredentialSpec credential_spec;
-	private String configType;
+	private Type configType;
 	private String cpu_shares;
 	private String cpu_quota;
 	private String cpuset;
@@ -55,7 +56,7 @@ public class Service {
 	private Object depends_on;
 	private Map<String,Condition> depends_onM;
 	private String[] depends_onS;
-	private String depends_onType;
+	private Type depends_onType;
 	private Deploy deploy;
 	@CheckStringListFormat(message = "Invalid format for devices", value = ValidationEnums.CheckStringListType.IMAGE)
 	@CheckDuplication(message = "Duplicate device detected")
@@ -66,19 +67,19 @@ public class Service {
 	@CheckStringListFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringListType.DNS)
 	@CheckDuplication(message = "Duplicate dns detected")
 	private String[] dnsSL;
-	private String dnsType;
+	private Type dnsType;
 	private Object dns_search;
 	@CheckStringFormat(message = "Invalid format for dns", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String dns_searchS;
 	private String[] dns_searchSL;
-	private String dns_searchType;
+	private Type dns_searchType;
 	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String domainname;
 	private Object entrypoint;
 	@CheckDuplication(message = "Duplicate entrypoint detected")
 	private String[] entrypointSL;
 	private String entrypointS;
-	private String entrypointType;
+	private Type entrypointType;
 	private Object env_file;
 	@CheckDuplication(message = "Duplicate service env_file detected")
 	private String[] env_fileSL;
@@ -87,7 +88,7 @@ public class Service {
 	private Map<String,String> environmentM;
 	@CheckDuplication(message = "Duplicate environment detected")
 	private String[] environmentSL;
-	private String environmentType;
+	private Type environmentType;
 	@CheckStringListFormat(message = "Invalid port target", value = ValidationEnums.CheckStringListType.PORT)
 	@CheckDuplication(message = "Duplicate port detected")
 	private String[] expose;
@@ -104,7 +105,7 @@ public class Service {
 	private Map<String,String> labelsM;
 	@CheckDuplication(message = "Duplicate service lable detected")
 	private String[] labelsS;
-	private String labelType;
+	private Type labelType;
 	private String image;
 	@CheckFileExists(message = "Either the service init isn't the value 'true' or the docker-init file specfied by the service init cannot be found", value = "")
 	private String init; 
@@ -123,7 +124,7 @@ public class Service {
 	@CheckDuplication(message = "Duplicate service network detected")
 	private String[] networksSL;
 	private Map<String,Network> networksN;
-	private String networkType;
+	private Type networkType;
 	@ContainsString(message  = "Invalid PID mode", value = ValidationEnums.ContainsStringType.PID)
 	private String pid;
 	@ContainsString(message = "Invalid restart condition", value = ValidationEnums.ContainsStringType.RESTART_POLICY_CONDITION)
@@ -134,7 +135,7 @@ public class Service {
 	@CheckDuplication(message = "Duplicate secret detected")
 	private String[] secretsL;
 	private Secrets[] secretsSL;
-	private String secretsType;
+	private Type secretsType;
 	@ContainsString(message = "stdin_open must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String stdin_open;
 	@ContainsString(message = "tty must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
@@ -143,7 +144,7 @@ public class Service {
 	@CheckDuplication(message = "Duplicate service port detected")
 	private String[] portsSL;
 	private Ports[] portsP; 
-	private String portsType;
+	private Type portsType;
 	@ContainsString(message = "Priveleged must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
 	private String privileged;
 	@ContainsString(message = "Read only must be a boolean", value = ValidationEnums.ContainsStringType.BOOLEAN)
@@ -158,13 +159,12 @@ public class Service {
 	private Map<String, String> sysctlsM;
 	@CheckDuplication(message = "Duplicate sysctls detected")
 	private String[] sysctlsSL;
-	private String sysctlsType;
+	private Type sysctlsType;
 	private Object tmpfs;
 	@CheckDuplication(message = "Duplicate tmpfs detected")
 	private String[] tmpfsSL;
 	private String tmpfsS;
-	private String tmpfsType;
-	
+	private Type tmpfsType;
 	private Ulimits ulimits;
 	private String user;
 	private String userns_mode;
@@ -172,7 +172,7 @@ public class Service {
 	private Volume[] volumesVL;
 	@CheckDuplication(message = "Duplicate service volume detected")
 	private String[] volumesSL;
-	private String volumeType;
+	private Type volumeType;
 	private String[] volumes_from;
 	@CheckFolderExists(message = "Working directory folder doesn't exist")
 	private String working_dir;
@@ -219,12 +219,12 @@ public class Service {
 		if(resolver.checkString(build) == true)
 		{
 			this.buildS = build.toString();
-			this.buildType = "String";
+			this.buildType = Type.STRING;
 		}
 		else 
 		{
 			this.buildB = Converter.convertBuild(build);
-			this.buildType = "Build";
+			this.buildType = Type.BUILD;
 		}
 	}
 	public String getBuildS() {
@@ -240,10 +240,10 @@ public class Service {
 	public void setBuildB(Build buildB) {
 		this.buildB = buildB;
 	}
-	public String getBuildType() {
+	public Type getBuildType() {
 		return buildType;
 	}
-	public void setBuildType(String buildType) {
+	public void setBuildType(Type buildType) {
 		this.buildType = buildType;
 	}
 	public Object getCommand() {
@@ -265,10 +265,10 @@ public class Service {
 	public void setCommandSL(String[] commandSL) {
 		this.commandSL = commandSL;
 	}
-	public String getCommandType() {
+	public Type getCommandType() {
 		return commandType;
 	}
-	public void setCommandType(String commandType) {
+	public void setCommandType(Type commandType) {
 		this.commandType = commandType;
 	}
 	public String getContainer_name() {
@@ -288,12 +288,12 @@ public class Service {
 		{
 			configAL = (ArrayList<Map<String, Object>>)configs;
 			configsC = Converter.convertConfigsList(configAL);
-			this.configType = "Configs[]";
+			this.configType = Type.CONFIGSLIST;
 		}
 		else if(resolver.checkStringList(configs) == true)
 		{
 			this.configsSL = Converter.convertStringList(configs);
-			this.configType = "String[]";
+			this.configType = Type.STRINGlIST;
 		}
 		else 
 		{
@@ -313,17 +313,17 @@ public class Service {
 	public void setConfigsSL(String[] configsSL) {
 		this.configsSL = configsSL;
 	}
-	public String getConfigType() {
+	public Type getConfigType() {
 		return configType;
 	}
-	public void setConfigType(String configType) {
+	public void setConfigType(Type configType) {
 		this.configType = configType;
 	}
 	public Dependencies getConfigDependencies() {
 		return ConfigDependencies;
 	}
 	public void setConfigDependencies(String[] configList) {
-		if(this.configType == "String[]")
+		if(this.configType == Type.STRINGlIST)
 		{
 			this.ConfigDependencies.dependents = this.configsSL;
 		}
@@ -375,10 +375,10 @@ public class Service {
 	public void setDepends_onS(String[] depends_onS) {
 		this.depends_onS = depends_onS;
 	}
-	public String getDepends_onType() {
+	public Type getDepends_onType() {
 		return depends_onType;
 	}
-	public void setDepends_onType(String depends_onType) {
+	public void setDepends_onType(Type depends_onType) {
 		this.depends_onType = depends_onType;
 	}
 	public Deploy getDeploy() {
@@ -406,10 +406,10 @@ public class Service {
 	public void setEntrypointS(String entrypointS) {
 		this.entrypointS = entrypointS;
 	}
-	public String getEntrypointType() {
+	public Type getEntrypointType() {
 		return entrypointType;
 	}
-	public void setEntrypointType(String entrypointType) {
+	public void setEntrypointType(Type entrypointType) {
 		this.entrypointType = entrypointType;
 	}
 	public Dependencies getEnvironmentDependencies() {
@@ -441,10 +441,10 @@ public class Service {
 	public void setEnvironmentSL(String[] environmentSL) {
 		this.environmentSL = environmentSL;
 	}
-	public String getEnvironmentType() {
+	public Type getEnvironmentType() {
 		return environmentType;
 	}
-	public void setEnvironmentType(String environmentType) {
+	public void setEnvironmentType(Type environmentType) {
 		this.environmentType = environmentType;
 	}
 	public Object getEnv_file() {
@@ -509,10 +509,10 @@ public class Service {
 	public void setLabelsS(String[] labelsS) {
 		this.labelsS = labelsS;
 	}
-	public String getLabelType() {
+	public Type getLabelType() {
 		return labelType;
 	}
-	public void setLabelType(String labelType) {
+	public void setLabelType(Type labelType) {
 		this.labelType = labelType;
 	}
 	public String[] getGroup_add() {
@@ -595,10 +595,10 @@ public class Service {
 	public void setNetworksM(Map<String, Network> networksN) {
 		this.networksN = networksN;
 	}
-	public String getNetworkType() {
+	public Type getNetworkType() {
 		return networkType;
 	}
-	public void setNetworkType(String networkType) {
+	public void setNetworkType(Type networkType) {
 		this.networkType = networkType;
 	}
 	public Dependencies getNetworkModeDependencies() {
@@ -617,7 +617,7 @@ public class Service {
 	}
 	public void setNetworkDependencies(String[] networks) {
 		this.NetworkDependencies.target = networks;
-		if(networkType == "String[]") {
+		if(networkType == Type.STRINGlIST) {
 			this.NetworkDependencies.dependents = this.networksSL;
 		}
 		else {
@@ -649,7 +649,7 @@ public class Service {
 	public void setServiceDependenciesD(String[] services) {
 		if(this.depends_on != null)
 		{
-			if(depends_onType == "String[]")
+			if(depends_onType == Type.STRINGlIST)
 			{
 				ServiceDependencies.dependents = this.depends_onS;
 			}
@@ -678,13 +678,13 @@ public class Service {
 		{
 			Map<String,Object>[] secretsSO = Converter.convertMapList((ArrayList<Map<String, Object>>)secrets);
 			this.secretsSL = Converter.convertSecretList(secretsSO);
-			this.secretsType = "Secrets[]";
+			this.secretsType = Type.SECRETLIST;
 		}
 		else 
 		{
 			Map<String, Map<String,Object>> secretsSSO = (Map<String, Map<String,Object>>)secrets;
 			secretsSL = Converter.convertSecrets(secretsSSO);
-			this.secretsType = "Secrets[]";
+			this.secretsType = Type.SECRETLIST;
 		}
 	}
 	public String[] getSecretsL() {
@@ -699,17 +699,17 @@ public class Service {
 	public void setSecretsSL(Secrets[] secretsSL) {
 		this.secretsSL = secretsSL;
 	}
-	public String getSecretsType() {
+	public Type getSecretsType() {
 		return secretsType;
 	}
-	public void setSecretsType(String secretsType) {
+	public void setSecretsType(Type secretsType) {
 		this.secretsType = secretsType;
 	}
 	public Dependencies getSecretDependencies() {
 		return SecretDependencies;
 	}
 	public void setSecretDependencies(String[] secrets) {
-		if(this.secretsType == "String[]")
+		if(this.secretsType == Type.STRINGlIST)
 		{
 			this.SecretDependencies.dependents = this.secretsL;
 		}
@@ -747,13 +747,13 @@ public class Service {
 		{
 			portsAL = (ArrayList<Map<String, Object>>)ports;
 			portsP = Converter.convertPorts(portsAL);
-			this.portsType = "Ports[]";
+			this.portsType = Type.PORTLIST;
 			
 		}
 		else 
 		{
 			this.portsSL = Converter.convertStringList(ports);
-			this.portsType = "String[]";
+			this.portsType = Type.STRINGlIST;
 		}
 	}
 	public String[] getPortsSL() {
@@ -768,10 +768,10 @@ public class Service {
 	public void setPortsP(Ports[] portsP) {
 		this.portsP = portsP;
 	}
-	public String getPortsType() {
+	public Type getPortsType() {
 		return portsType;
 	}
-	public void setPortsType(String portsType) {
+	public void setPortsType(Type portsType) {
 		this.portsType = portsType;
 	}
 	public String getPrivileged() {
@@ -792,12 +792,12 @@ public class Service {
 			
 			volumeAL = (ArrayList<Map<String, Object>>)volumes;
 			volumesVL = Converter.convertVolumes(volumeAL);
-			this.volumeType = "Volume[]";
+			this.volumeType = Type.VOLUMELISTS;
 		}
 		else if(resolver.checkStringList(volumes))
 		{
 			setVolumesSL(Converter.convertStringList(volumes));
-			this.volumeType = "String[]";
+			this.volumeType = Type.STRINGlIST;
 		}
 		else 
 		{
@@ -825,17 +825,17 @@ public class Service {
 		}
 
 	}
-	public String getVolumeType() {
+	public Type getVolumeType() {
 		return volumeType;
 	}
-	public void setVolumeType(String volumeType) {
+	public void setVolumeType(Type volumeType) {
 		this.volumeType = volumeType;
 	}
 	public Dependencies getVolumeDependencies() {
 		return VolumeDependencies;
 	}
 	public void setVolumeDependencies(String[] volumeList) {
-		if(this.volumeType == "String[]")
+		if(this.volumeType == Type.STRINGlIST)
 		{
 			this.VolumeDependencies.dependents = this.volumesSL;
 		}
@@ -844,7 +844,7 @@ public class Service {
 			String[] volumeSources = new String[volumesVL.length];
 			for(int i = 0 ; i < volumesVL.length ; i++)
 			{
-				volumeSources[i] = volumesVL[i].getSource();
+				volumeSources[i] = volumesVL[i].getSource(); //Retrives the names of the volume objects
 			}
 			this.VolumeDependencies.dependents = volumeSources;
 		}
@@ -862,13 +862,13 @@ public class Service {
 		if(resolver.checkStringList(command))
 		{
 			commandSL = Converter.convertStringList(tCommand);
-			commandType = "String[]";
+			commandType = Type.STRINGlIST;
 			
 		}
 		else if(resolver.checkString(command) == true)
 			{
 				commandS = tCommand;
-				commandType = "String";
+				commandType = Type.STRING;
 			}
 		
 		else 
@@ -937,7 +937,7 @@ public class Service {
 	public void setDnsSL(String[] dnsSL) {
 		this.dnsSL = dnsSL;
 	}
-	public String getDnsType() {
+	public Type getDnsType() {
 		return dnsType;
 	}
 	public void setDns_search(String dns_search) {
@@ -955,10 +955,10 @@ public class Service {
 	public void setDns_searchSL(String[] dns_searchSL) {
 		this.dns_searchSL = dns_searchSL;
 	}
-	public String getDns_searchType() {
+	public Type getDns_searchType() {
 		return dns_searchType;
 	}
-	public void setDns_searchType(String dns_searchType) {
+	public void setDns_searchType(Type dns_searchType) {
 		this.dns_searchType = dns_searchType;
 	}
 	public void setDns_search(Object dns_search) {
@@ -968,7 +968,7 @@ public class Service {
 	public Object getDns_search() {
 		return dns_search;
 	}
-	public void setDnsType(String dnsType) {
+	public void setDnsType(Type dnsType) {
 		this.dnsType = dnsType;
 	}
 	public String getDomainname() {
@@ -1068,10 +1068,10 @@ public class Service {
 	public void setSysctlsSL(String[] sysctlsSL) {
 		this.sysctlsSL = sysctlsSL;
 	}
-	public String getSysctlsType() {
+	public Type getSysctlsType() {
 		return sysctlsType;
 	}
-	public void setSysctlsType(String sysctlsType) {
+	public void setSysctlsType(Type sysctlsType) {
 		this.sysctlsType = sysctlsType;
 	}
 	public String[] getTmpfsSL() {
@@ -1086,10 +1086,10 @@ public class Service {
 	public void setTmpfsS(String tmpfsS) {
 		this.tmpfsS = tmpfsS;
 	}
-	public String getTmpfsType() {
+	public Type getTmpfsType() {
 		return tmpfsType;
 	}
-	public void setTmpfsType(String tmpfsType) {
+	public void setTmpfsType(Type tmpfsType) {
 		this.tmpfsType = tmpfsType;
 	}
 	public void setTmpfs(Object tmpfs) {
@@ -1122,12 +1122,12 @@ public class Service {
 		if(resolver.checkMap(labels) == true)
 		{
 			labelsM = Converter.convertMap(labels);
-			labelType = "Map<String,String>";
+			labelType = Type.MAP_STRING_STRING;
 		}
 		else if(resolver.checkStringList(labels) == true)
 		{
 			labelsS = Converter.convertStringList(labels);
-			labelType = "String[]";
+			labelType = Type.STRINGlIST;
 		}
 		else
 		{
@@ -1141,13 +1141,13 @@ public class Service {
 		if(resolver.checkStringList(networks) == true)
 		{
 			this.networksSL = Converter.convertStringList(networks);
-			this.networkType = "String[]";
+			this.networkType = Type.STRINGlIST;
 		}
 		else if(resolver.checkNestedMap(networks) == true)
 		{
 			networksAL = (Map<String, Map<String,Object>>)networks;
 			networksN = Converter.convertNetworks(networksAL);
-			this.networkType = "Map<String,Network>";
+			this.networkType = Type.MAP_STRING_NETWORK;
 		}
 		else
 		{
@@ -1160,12 +1160,12 @@ public class Service {
 		if(resolver.checkMap(environment) == true)
 		{
 			environmentM = Converter.convertMap(environment);
-			environmentType = "Map<String,String>";
+			environmentType = Type.MAP_STRING_STRING;
 		}
 		else if(resolver.checkStringList(environment) == true)
 		{
 			environmentSL = Converter.convertStringList(environment);
-			environmentType = "String[]";
+			environmentType = Type.STRINGlIST;
 		}
 		else
 		{
@@ -1200,7 +1200,7 @@ public class Service {
 		if(resolver.checkStringList(entrypoint))
 		{
 			entrypointSL  = Converter.convertStringList(tEntrypoint );
-			entrypointType = "String[]";
+			entrypointType = Type.STRINGlIST;
 			set = true;
 		}
 		else 
@@ -1208,7 +1208,7 @@ public class Service {
 			if(set == false)
 			{
 			entrypointS = tEntrypoint ;
-			entrypointType = "String";
+			entrypointType = Type.STRING;
 			}
 		}
 	}
@@ -1217,12 +1217,12 @@ public class Service {
 		if(resolver.checkNestedMap(depends_on) == true)
 		{
 			depends_onM = Converter.convertMapCondition((Map<String, Map<String, Object>>) depends_on);
-			depends_onType = "Map<String,Condition>";
+			depends_onType = Type.MAP_STRING_CONDITION;
 		}
 		else if(resolver.checkStringList(depends_on))
 		{
 			depends_onS = Converter.convertStringList(depends_on);
-			depends_onType = "String[]";
+			depends_onType = Type.STRINGlIST;
 		}
 		else
 		{
@@ -1236,7 +1236,7 @@ public class Service {
 		if(resolver.checkStringList(tmpfs))
 		{
 			tmpfsSL = Converter.convertStringList(tmpfs);
-			tmpfsType = "String[]";
+			tmpfsType = Type.STRINGlIST;
 			set = true;
 		}
 		else 
@@ -1245,7 +1245,7 @@ public class Service {
 			if(set == false)
 			{
 				tmpfsS = tTmpfs;
-				tmpfsType = "String";
+				tmpfsType = Type.STRING;
 			}
 		}	
 	}
@@ -1254,12 +1254,12 @@ public class Service {
 		if(resolver.checkMap(sysctls) == true)
 		{
 			sysctlsM = Converter.convertMap(sysctls);
-			sysctlsType = "Map<String,String>";
+			sysctlsType = Type.MAP_STRING_STRING;
 		}
 		else if(resolver.checkStringList(sysctls) == true)
 		{
 			sysctlsSL = Converter.convertStringList(sysctls);
-			sysctlsType = "String[]";
+			sysctlsType = Type.STRINGlIST;
 		}
 		else
 		{
@@ -1273,14 +1273,14 @@ public class Service {
 		if(resolver.checkStringList(dns))
 		{
 			dnsSL = Converter.convertStringList(tDNS);
-			dnsType = "String[]";
+			dnsType = Type.STRINGlIST;
 			set = true;
 		}
 		else 
 		{
 			if(set == false){
 			dnsS = tDNS;
-			dnsType = "String";
+			dnsType = Type.STRING;
 			}
 		}
 	}
@@ -1291,14 +1291,14 @@ public class Service {
 		if(resolver.checkStringList(dns))
 		{
 			dns_searchSL = Converter.convertStringList(tDNS);
-			dns_searchType = "String[]";
+			dns_searchType = Type.STRINGlIST;
 			set = true;
 		}
 		else 
 		{
 			if(set == false){
 				dns_searchS = tDNS;
-				dns_searchType = "String";
+				dns_searchType = Type.STRING;
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import com.test.quickstart.Validation.Interfaces.CheckFileExists;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
+import com.test.quickstart.TypeEnums.Type;
 
 public class Build {
 	private TypeConverter Converter = new TypeConverter();
@@ -23,7 +24,7 @@ public class Build {
 	private Map<String, String> argsM;
 	@CheckDuplication(message = "Duplicate arg within build detected")
 	private String[] argsS;
-	private String argType;
+	private Type argType;
 	@CheckStringListFormat(message = "images in cache_from are in the wrong format", value = ValidationEnums.CheckStringListType.IMAGE)
 	@CheckDuplication(message = "Duplicate cache_from detected in build")
 	private String[] cache_from;
@@ -31,7 +32,7 @@ public class Build {
 	private Map<String,String> labelsM;
 	@CheckDuplication(message = "Duplicate label detected in build")
 	private String[] labelsS;
-	private String labelType;
+	private Type labelType;
 	@CheckStringFormat(message = "memory in shm_size are in the wrong format", value = ValidationEnums.CheckStringType.MEMORY)
 	private String shm_size;
 	private String target;
@@ -69,10 +70,10 @@ public class Build {
 	public void setArgsS(String[] argsS) {
 		this.argsS = argsS;
 	}
-	public String getArgType() {
+	public Type getArgType() {
 		return argType;
 	}
-	public void setArgType(String argType) {
+	public void setArgType(Type argType) {
 		this.argType = argType;
 	}
 	public String[] getCache_from() {
@@ -106,10 +107,10 @@ public class Build {
 	public void setLabelsS(String[] labelsS) {
 		this.labelsS = labelsS;
 	}
-	public String getLabelType() {
+	public Type getLabelType() {
 		return labelType;
 	}
-	public void setLabelType(String labelType) {
+	public void setLabelType(Type labelType) {
 		this.labelType = labelType;
 	}
 	public String getNetwork() {
@@ -135,13 +136,13 @@ public class Build {
 		if(Resolver.checkMap(args) == true)
 		{
 			argsM = Converter.convertMap(args);
-			argType = "Map<String,String>";
+			argType = Type.MAP_STRING_STRING;
 		}
 		
 		else if(Resolver.checkStringList(args) == true)
 		{
 			argsS = Converter.convertStringList(args);
-			argType = "String[]";
+			argType = Type.STRINGlIST;
 		}
 		else 
 		{
@@ -153,13 +154,13 @@ public class Build {
 		if(Resolver.checkMap(labels) == true)
 		{
 			labelsM = Converter.convertMap(labels);
-			labelType = "Map<String,String>";
+			labelType = Type.MAP_STRING_STRING;
 		}
 		
 		else if(Resolver.checkStringList(labels) == true)
 		{
 			labelsS = Converter.convertStringList(labels);
-			labelType = "String[]";
+			labelType = Type.STRINGlIST;
 		}
 		else 
 		{

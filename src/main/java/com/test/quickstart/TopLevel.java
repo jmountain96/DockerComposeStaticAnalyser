@@ -22,6 +22,7 @@ import com.test.quickstart.Validation.Interfaces.CheckUsed;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.Validation.Interfaces.Dependency;
 import com.test.quickstart.Validation.Interfaces.ListContainsString;
+import com.test.quickstart.TypeEnums.Type;
 import com.test.quickstart.Validation.ValidationEnums;
 import javax.validation.constraints.Email;
 
@@ -50,7 +51,6 @@ public class TopLevel {
 
 	private String image;
 	
-	
 	private String init;
 	private String[] group_add;
 	private Object labels;
@@ -68,7 +68,7 @@ public class TopLevel {
 	@CheckDuplication(message = "Duplicate network detected")
 	private String[] networksSL;
 	private Map<String, Network> networksN;
-	private String networkType;
+	private Type networkType;
 	
 	private String pids_limit;
 	private String platform;
@@ -80,7 +80,7 @@ public class TopLevel {
 	@CheckDuplication(message = "Duplicate secret detected")
 	private String[] secretsL;
 	private Secrets[] secretsSL;
-	private String secretsType;
+	private Type secretsType;
 	
 	
 	
@@ -177,10 +177,10 @@ public class TopLevel {
 	public void setNetworksN(Map<String, Network> networksN) {
 		this.networksN = networksN;
 	}
-	public String getNetworkType() {
+	public Type getNetworkType() {
 		return networkType;
 	}
-	public void setNetworkType(String networkType) {
+	public void setNetworkType(Type networkType) {
 		this.networkType = networkType;
 	}
 	
@@ -196,13 +196,13 @@ public class TopLevel {
 		if(resolver.checkStringList(secrets) == true)
 		{
 			this.secretsL = converter.convertStringList(secrets);
-			this.secretsType = "String[]";
+			this.secretsType = Type.STRINGlIST;
 		}
 		else 
 		{
 			secretsAL = (Map<String, Map<String,Object>>)secrets;
 			secretsSL = converter.convertSecrets(secretsAL);
-			this.secretsType = "Secrets[]";
+			this.secretsType = Type.SECRETLIST;
 		}
 	}
 	public String[] getSecretsL() {
@@ -217,10 +217,10 @@ public class TopLevel {
 	public void setSecretsSL(Secrets[] secretsSL) {
 		this.secretsSL = secretsSL;
 	}
-	public String getSecretsType() {
+	public Type getSecretsType() {
 		return secretsType;
 	}
-	public void setSecretsType(String secretsType) {
+	public void setSecretsType(Type secretsType) {
 		this.secretsType = secretsType;
 	}
 	
@@ -319,7 +319,7 @@ public class TopLevel {
 	}
 	public void setSecretCheckUsed(String[] secretCheckUsed) {
 		SecretCheckUsed.target = secretCheckUsed;
-		if(this.secretsType == "String[]")
+		if(this.secretsType == Type.STRINGlIST)
 		{
 			SecretCheckUsed.dependents = this.secretsL;
 		}
@@ -356,7 +356,7 @@ public class TopLevel {
 	public void setNetworkCheckUsed(String[]  networkCheckUsed) {
 		NetworkCheckUsed.target = networkCheckUsed;
 		String[] networks;
-		if(getNetworkType() == "String[]")
+		if(getNetworkType() == Type.STRINGlIST)
 		{
 			networks = getNetworksSL();
 		}
@@ -394,13 +394,13 @@ public class TopLevel {
 		if(resolver.checkStringList(networks) == true)
 		{
 			this.networksSL = converter.convertStringList(networks);
-			this.networkType = "String[]";
+			this.networkType = Type.STRINGlIST;
 		}
 		else if(resolver.checkNestedMap(networks) == true)
 		{
 			networksAL = (Map<String, Map<String,Object>>)networks;
 			networksN = converter.convertNetworks(networksAL);
-			this.networkType = "Map<String,Network>";
+			this.networkType = Type.MAP_STRING_NETWORK;
 		}
 		else if(resolver.checkMap(networks))
 		{
@@ -408,7 +408,7 @@ public class TopLevel {
 			Set<String> keys = map.keySet();
 			String[] netList = keys.toArray(new String[keys.size()]);
 			this.networksSL = netList;
-			this.networkType = "String[]";
+			this.networkType = Type.STRINGlIST;
 		}
 		else
 		{

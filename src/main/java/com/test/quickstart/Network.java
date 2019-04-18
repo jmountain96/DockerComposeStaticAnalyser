@@ -2,6 +2,7 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.TypeEnums.Type;
 import com.test.quickstart.Validation.ValidationEnums;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
@@ -32,7 +33,7 @@ public class Network {
 	private Map<String,String> labelsM;
 	@CheckDuplication(message = "Duplicate network lable detected")
 	private String[] labelsS;
-	private String labelType;
+	private Type labelType;
 	private String[] link_local_ips;
 	private String priority;
 	private String name;
@@ -123,10 +124,10 @@ public class Network {
 	public void setLabelsS(String[] labelsS) {
 		this.labelsS = labelsS;
 	}
-	public String getLabelType() {
+	public Type getLabelType() {
 		return labelType;
 	}
-	public void setLabelType(String labelType) {
+	public void setLabelType(Type labelType) {
 		this.labelType = labelType;
 	}
 	public String[] getLink_local_ips() {
@@ -152,13 +153,13 @@ public class Network {
 		if(resolver.checkMap(labels) == true)
 		{
 			labelsM = converter.convertMap(labels);
-			labelType = "Map<String,String>";
+			labelType = Type.MAP_STRING_STRING;
 		}
 		
 		if(resolver.checkStringList(labels) == true)
 		{
 			labelsS = converter.convertStringList(labels);
-			labelType = "String[]";
+			labelType = Type.STRINGlIST;
 		}
 		else 
 		{

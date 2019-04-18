@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
+import com.test.quickstart.TypeEnums.Type;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class YamlParser {
@@ -86,7 +86,7 @@ public class YamlParser {
 				if(r.getConfigs() != null && s.getConfigs() != null)
 				{
 					s.setConfigDependencies(r.getConfigs());
-					if(s.getConfigType() == "String[]")
+					if(s.getConfigType() == Type.STRINGlIST)
 					{
 						Configs = (String[])ArrayUtils.addAll(Configs, s.getConfigsSL());
 					}
@@ -103,7 +103,7 @@ public class YamlParser {
 				if(r.getNetworks() != null && s.getNetworks() != null)
 				{
 					s.setNetworkDependencies(r.getNetworks());
-					if(s.getNetworkType()== "String[]") {
+					if(s.getNetworkType()== Type.STRINGlIST) {
 						Networks = (String[])ArrayUtils.addAll(Networks, s.getNetworksSL());
 					}
 					else {
@@ -115,7 +115,7 @@ public class YamlParser {
 				{
 					s.setSecretDependencies(r.getSecrets());
 					
-					if(s.getSecretsType() == "String[]")
+					if(s.getSecretsType() == Type.STRINGlIST)
 					{
 						Secrets = (String[])ArrayUtils.addAll(Secrets, s.getSecretsL());
 					}
@@ -141,7 +141,7 @@ public class YamlParser {
 				{
 					s.setVolumeDependencies(r.getVolumes());
 					
-					if(s.getVolumeType()== "String[]")
+					if(s.getVolumeType()== Type.STRINGlIST)
 					{
 						Volumes = (String[])ArrayUtils.addAll(Volumes, s.getVolumesSL());
 					}
@@ -221,7 +221,7 @@ public class YamlParser {
     		 }
 	     }
 	     
-	     if(level.getSecretsType() == "Secrets[]")
+	     if(level.getSecretsType() == Type.SECRETLIST)
 	     {
 	    	 for(Secrets s : level.getSecretsSL()) 
 	    	 {
@@ -305,7 +305,11 @@ public class YamlParser {
 			    	 {
 			    		 System.out.println(violation.getMessage());
 			    		 totalViolations += 1;
-			    	 } 
+			    	 }
+			    	 if(s.getBuildB().getContext() == null && s.getImage() == null)
+			    	 {
+			    		 System.out.println("A build context or an image must be given for each service");
+			    	 }
 		    	 }
 		    	 if(s.getDeploy() != null)
 		    	 {

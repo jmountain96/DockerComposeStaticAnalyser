@@ -102,7 +102,6 @@ services:
     hostname: foo
     init: true 
     ipc: host
-    
     isolation: default
     links:
       - db

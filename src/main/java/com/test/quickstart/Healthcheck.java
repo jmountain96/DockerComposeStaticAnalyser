@@ -3,6 +3,7 @@ package com.test.quickstart;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
+import com.test.quickstart.TypeEnums.Type;
 import com.test.quickstart.Validation.ValidationEnums;
 public class Healthcheck {
 	private TypeConverter converter = new TypeConverter();
@@ -11,7 +12,7 @@ public class Healthcheck {
 	@CheckDuplication(message = "Duplicate healthcare test detected")
 	private String[] testSL;
 	private String testS;
-	private String testType;
+	private Type testType;
 	@ContainsString(message = "Healthcheck test type is invalid", value = ValidationEnums.ContainsStringType.HEALTHCHECK)
 	private String testFormat;
 	@CheckStringFormat(message = "Invalid interval for healthcheck", value = ValidationEnums.CheckStringType.TIME)
@@ -66,12 +67,12 @@ public class Healthcheck {
 	}
 
 
-	public String getTestType() {
+	public Type getTestType() {
 		return testType;
 	}
 
 
-	public void setTestType(String testType) {
+	public void setTestType(Type testType) {
 		this.testType = testType;
 	}
 
@@ -131,13 +132,13 @@ public class Healthcheck {
 		if(resolver.checkStringList(test))
 		{
 			testSL  = converter.convertStringList(test );
-			testType = "String[]";
+			testType = Type.STRINGlIST;
 			testFormat = testSL[0];
 		}
 		else if(resolver.checkString(test))
 		{
 			testS = test.toString() ;
-			testType = "String";
+			testType = Type.STRING;
 		}
 		else 
 		{

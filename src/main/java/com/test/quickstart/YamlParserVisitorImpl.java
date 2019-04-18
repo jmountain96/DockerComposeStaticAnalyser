@@ -2,6 +2,8 @@ package com.test.quickstart;
 
 import java.util.Map;
 
+import com.test.quickstart.TypeEnums.Type;
+
 public class YamlParserVisitorImpl  implements YamlParserVisitor{
 
 	@Override
@@ -23,7 +25,7 @@ public class YamlParserVisitorImpl  implements YamlParserVisitor{
 		if(input.getNetworks() != null)
 		{
 			String[] networks;
-			if(input.getNetworkType() == "String[]")
+			if(input.getNetworkType() == Type.STRINGlIST)
 			{
 				networks = input.getNetworksSL();
 			}
@@ -37,7 +39,7 @@ public class YamlParserVisitorImpl  implements YamlParserVisitor{
 		if(input.getSecrets() != null )
 		{
 			String[] secrets;
-			if(input.getNetworkType() == "String[]")
+			if(input.getNetworkType() == Type.STRINGlIST)
 			{
 				secrets = input.getSecretsL();
 			}

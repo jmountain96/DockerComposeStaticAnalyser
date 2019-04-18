@@ -8,6 +8,7 @@ import com.test.quickstart.Validation.Interfaces.ContainsString;
 public class Secrets {
 	private TypeConverter converter = new TypeConverter();
 	private String source;
+	@CheckFileExists(message = "Secrets target file cannot be found", value = "")
 	private String target;
 	private int uid;
 	private int gid;
