@@ -19,6 +19,7 @@ public class ValidationTests {
 			e.printStackTrace();
 		}
 		assertEquals(YamlParser.Validate(level), 1);
+		YamlParser.Start("testConfigs/testValidationPass.yaml");
 	}
 	@Test
 	public void testValidationFail()
@@ -30,6 +31,6 @@ public class ValidationTests {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		assertEquals(YamlParser.Validate(level), 47);
+		assertEquals(YamlParser.Validate(level), 50);
 	}
 }

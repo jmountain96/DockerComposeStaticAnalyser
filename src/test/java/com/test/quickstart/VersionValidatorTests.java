@@ -16,7 +16,7 @@ public class VersionValidatorTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			level = YamlParser.ParseFile("testConfigs/testVersion2.1.yaml");
+			level = YamlParser.ParseFile("testConfigs/testVersion2.yaml");
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -29,5 +29,24 @@ public class VersionValidatorTests {
 		}
 		assertEquals("", systemOutRule.getLog());
 		System.out.println(systemOutRule.getLog());
+	}
+	@Test
+	public void testVersionFail()
+	{
+		TopLevel level = new TopLevel();
+		try {
+			level = YamlParser.ParseFile("testConfigs/testVersion2F.yaml");
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		VersionValidator v = new VersionValidator(level);
+		try {
+			v.Validate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		assertEquals(systemOutRule.getLog().length(),2071);
+		
 	}
 }

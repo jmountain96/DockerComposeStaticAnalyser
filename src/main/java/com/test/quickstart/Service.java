@@ -47,15 +47,19 @@ public class Service {
 	private String[] configsSL;
 	private CredentialSpec credential_spec;
 	private Type configType;
+	private String cpu_count;
 	private String cpu_shares;
 	private String cpu_quota;
 	private String cpuset;
+	private String cpus;
 	private String cpu_rt_runtime;
 	@CheckStringFormat(message = "Invalid time format for cpu rt period", value = ValidationEnums.CheckStringType.TIME)
 	private String cpu_rt_period;
 	@CheckStringFormat(message = "Invalid time format for cpu period", value = ValidationEnums.CheckStringType.TIME)
 	private String cpu_period;
+	private String cpu_percent;
 	private String oom_kill_disable;
+	private String oom_score_adj;
 	private String device_cgroup_rules;
 	private String mem_limit;
 	@CheckStringFormat(message = "mem reservation isn't a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
@@ -366,6 +370,24 @@ public class Service {
 	}
 	public void setCpuset(String cpuset) {
 		this.cpuset = cpuset;
+	}
+	public String getCpu_count() {
+		return cpu_count;
+	}
+	public void setCpu_count(String cpu_count) {
+		this.cpu_count = cpu_count;
+	}
+	public String getCpus() {
+		return cpus;
+	}
+	public void setCpus(String cpus) {
+		this.cpus = cpus;
+	}
+	public String getCpu_percent() {
+		return cpu_percent;
+	}
+	public void setCpu_percent(String cpu_percent) {
+		this.cpu_percent = cpu_percent;
 	}
 	public Object getDepends_on() {
 		return depends_on;
@@ -941,9 +963,6 @@ public class Service {
 	public Type getDnsType() {
 		return dnsType;
 	}
-	public void setDns_search(String dns_search) {
-		this.dns_search = dns_search;
-	}
 	public String getDns_searchS() {
 		return dns_searchS;
 	}
@@ -1333,6 +1352,12 @@ public class Service {
 	public void setOom_kill_disable(String oom_kill_disable) {
 		this.oom_kill_disable = oom_kill_disable;
 	}
+	public String getOom_score_adj() {
+		return oom_score_adj;
+	}
+	public void setOom_score_adj(String oom_score_adj) {
+		this.oom_score_adj = oom_score_adj;
+	}
 	public String getDevice_cgroup_rules() {
 		return device_cgroup_rules;
 	}
@@ -1360,7 +1385,8 @@ public class Service {
 	public String[] getDns_opt() {
 		return dns_opt;
 	}
-	public void setDns_opt(String[] dns_opt) {
+	public void setDns_opt(String[] dns_opt) 
+	{
 		this.dns_opt = dns_opt;
 	}
 

@@ -142,6 +142,7 @@ public class VersionValidator {
 	{
 		for(Service s : level.getServices().values())
 		{
+		
 			if(s.getInit() != null)
 			{
 				System.out.println("Init is only compatible with version 2.2+");

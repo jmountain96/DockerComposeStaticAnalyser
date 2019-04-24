@@ -23,6 +23,8 @@ services:
       dockerfile: tesxst.env
       args:
         buildno: 1
+      extra_hosts:
+        - "somehost:162.242.195.82"
       cache_from:
         - alpinelatest
         - corp/web_app:3.14
@@ -32,6 +34,7 @@ services:
         - "com.example.department=Finance"
         - "com.example.label-with-empty-value"
         - "com.example.label-with-empty-value"
+      network: host
       target: prod
       shm_size: '2fb'
     cap_add:
@@ -54,6 +57,15 @@ services:
     credential_spec:
       file: test.envasd
       registry: my-credential-spddec
+    cpu_count: 2
+    cpu_percent: 50
+    cpus: 0.5
+    cpu_shares: 73
+    cpu_quota: 50000
+    cpu_period: 20mas
+    cpuset: 0,1
+    cpu_rt_runtime: '400mas'
+    cpu_rt_period: '1400uss'
     depends_on:
       - dbs
     deploy:
@@ -98,6 +110,9 @@ services:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
     dns: 8.8.8.8,
     dns_search: example.com
+    dns_opt:
+      - use-vc
+      - no-tld-query
     domainname: foodw.coma.f
     entrypoint: ./testFiles/test.env
     env_file: ./testFiles/test.env
@@ -105,6 +120,9 @@ services:
       - RACK_ENV=development
       - SHOW=true
       - SESSION_SECRET
+    extends:
+      file: common.yml
+      service: webapp	
     expose:
       - "3000"
       - "800t0"
@@ -121,11 +139,16 @@ services:
       timeout: 10f
       retries: 3
       start_period: 40f
+      disable: true
     hostname: foo
     init: true 
     ipc: host
-    
+    image: redis
     isolation: defaudlt
+    labels:
+      - "com.example.description=Database volume"
+      - "com.example.department=IT/Ops"
+      - "com.example.label-with-empty-value"
     links:
       - db
       - db:database
@@ -137,6 +160,10 @@ services:
         max-size: "200"
         max-file: "10"
     mac_address: 02:42:ac:11:65asd!:43
+    mem_limit: 1000000000
+    memswap_limit: 2000000000
+    mem_reservation: 512mad
+    mem_swappiness: 3
     network_mode: briadge
     networks:
        some-netawork:
@@ -150,7 +177,11 @@ services:
        app_net:
          ipv4_address: 172.16.238.10a
          ipv6_address: 2001:3984:3989::1a
+    oom_score_adj: 500
+    oom_kill_disable: true
     pid: "asda"
+    pids_limit: 10
+    platform: osx
     ports:
       - target: 80s
         published: 8a080
@@ -160,6 +191,8 @@ services:
     read_only: true
     
     restart: "noo"
+    runtime: runc
+    scale: 3
     security_opt:
       - label:user:USER
       - label:role:ROLE
@@ -187,6 +220,7 @@ services:
     user: postgresql
     
     userns_mode: "host"
+    volume_driver: mydriver
     volumes:
        - type: xc
          source: mydatda
