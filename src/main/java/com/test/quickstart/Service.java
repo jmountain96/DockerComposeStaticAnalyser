@@ -50,9 +50,20 @@ public class Service {
 	private String cpu_shares;
 	private String cpu_quota;
 	private String cpuset;
+	private String cpu_rt_runtime;
+	@CheckStringFormat(message = "Invalid time format for cpu rt period", value = ValidationEnums.CheckStringType.TIME)
+	private String cpu_rt_period;
+	@CheckStringFormat(message = "Invalid time format for cpu period", value = ValidationEnums.CheckStringType.TIME)
+	private String cpu_period;
+	private String oom_kill_disable;
+	private String device_cgroup_rules;
 	private String mem_limit;
+	@CheckStringFormat(message = "mem reservation isn't a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
+	private String mem_reservation;
 	private String memswap_limit;
 	private String mem_swappiness;
+	private String pids_limit;
+	private String platform;
 	private Object depends_on;
 	private Map<String,Condition> depends_onM;
 	private String[] depends_onS;
@@ -73,6 +84,7 @@ public class Service {
 	private String dns_searchS;
 	private String[] dns_searchSL;
 	private Type dns_searchType;
+	private String[] dns_opt;
 	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String domainname;
 	private Object entrypoint;
@@ -168,6 +180,7 @@ public class Service {
 	private Ulimits ulimits;
 	private String user;
 	private String userns_mode;
+	private String volume_driver;
 	private Object volumes;
 	private Volume[] volumesVL;
 	@CheckDuplication(message = "Duplicate service volume detected")
@@ -188,8 +201,6 @@ public class Service {
 	private Dependencies SecretDependencies = new Dependencies();
 	@Dependency(message = "Service references a volume that isn't present")
 	private Dependencies VolumeDependencies = new Dependencies();
-	@Dependency(message = "Service references an env_file that isn't present")
-	private Dependencies EnvironmentDependencies = new Dependencies();
 	@Dependency(message = "Service references a network mode for a service that isn't present")
 	private Dependencies NetworkModeDependencies = new Dependencies();
 	
@@ -411,16 +422,6 @@ public class Service {
 	}
 	public void setEntrypointType(Type entrypointType) {
 		this.entrypointType = entrypointType;
-	}
-	public Dependencies getEnvironmentDependencies() {
-		return EnvironmentDependencies;
-	}
-	public void setEnvironmentDependencies(String[] environments) {
-		
-		EnvironmentDependencies.dependents = this.env_fileSL;
-		
-		
-		EnvironmentDependencies.target = environments;
 	}
 	public Object getEnvironment() {
 		return environment;
@@ -1105,6 +1106,12 @@ public class Service {
 	public void setUlimits(Ulimits ulimits) {
 		this.ulimits = ulimits;
 	}
+	public String getVolume_driver() {
+		return volume_driver;
+	}
+	public void setVolume_driver(String volume_driver) {
+		this.volume_driver = volume_driver;
+	}
 	public String getUser() {
 		return user;
 	}
@@ -1301,6 +1308,60 @@ public class Service {
 				dns_searchType = Type.STRING;
 			}
 		}
+	}
+	public String getCpu_rt_runtime() {
+		return cpu_rt_runtime;
+	}
+	public void setCpu_rt_runtime(String cpu_rt_runtime) {
+		this.cpu_rt_runtime = cpu_rt_runtime;
+	}
+	public String getCpu_rt_period() {
+		return cpu_rt_period;
+	}
+	public void setCpu_rt_period(String cpu_rt_period) {
+		this.cpu_rt_period = cpu_rt_period;
+	}
+	public String getCpu_period() {
+		return cpu_period;
+	}
+	public void setCpu_period(String cpu_period) {
+		this.cpu_period = cpu_period;
+	}
+	public String getOom_kill_disable() {
+		return oom_kill_disable;
+	}
+	public void setOom_kill_disable(String oom_kill_disable) {
+		this.oom_kill_disable = oom_kill_disable;
+	}
+	public String getDevice_cgroup_rules() {
+		return device_cgroup_rules;
+	}
+	public void setDevice_cgroup_rules(String device_cgroup_rules) {
+		this.device_cgroup_rules = device_cgroup_rules;
+	}
+	public String getMem_reservation() {
+		return mem_reservation;
+	}
+	public void setMem_reservation(String mem_reservation) {
+		this.mem_reservation = mem_reservation;
+	}
+	public String getPids_limit() {
+		return pids_limit;
+	}
+	public void setPids_limit(String pids_limit) {
+		this.pids_limit = pids_limit;
+	}
+	public String getPlatform() {
+		return platform;
+	}
+	public void setPlatform(String platform) {
+		this.platform = platform;
+	}
+	public String[] getDns_opt() {
+		return dns_opt;
+	}
+	public void setDns_opt(String[] dns_opt) {
+		this.dns_opt = dns_opt;
 	}
 
 

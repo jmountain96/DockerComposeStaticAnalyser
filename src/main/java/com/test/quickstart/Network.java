@@ -150,13 +150,14 @@ public class Network {
 	}
 	private void convertLabels() throws Exception 
 	{
+		
 		if(resolver.checkMap(labels) == true)
 		{
 			labelsM = converter.convertMap(labels);
 			labelType = Type.MAP_STRING_STRING;
 		}
 		
-		if(resolver.checkStringList(labels) == true)
+		else if(resolver.checkStringList(labels) == true)
 		{
 			labelsS = converter.convertStringList(labels);
 			labelType = Type.STRINGlIST;

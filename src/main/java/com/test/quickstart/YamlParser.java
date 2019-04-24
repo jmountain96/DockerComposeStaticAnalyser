@@ -27,11 +27,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class YamlParser {
 	 public static void main(String[] string) throws IOException 
 	 {
-		 File f = new File("testConfigs/testValidationPass.yaml");
-		 Start(f);
-		
+		 Start("testConfigs/testValidationPass.yaml");
 	 }
-	 public static void Start(File File)
+	 public static void Start(String File)
 	 {
 		 TopLevel level = new TopLevel();
 		 try 
@@ -47,7 +45,12 @@ public class YamlParser {
 	            // TODO Auto-generated catch block
 	            e.printStackTrace();
 	        }
-	        checkForDuplicateKeys(File);
+	        try {
+				checkForDuplicateKeys(File);
+			} catch (YamlException ex) {
+				// TODO Auto-generated catch block
+				System.out.println(ex.getMessage());
+			}
 	        level = setDependencies(level);
 	        Validate(level);
 	        VersionValidator v = new VersionValidator(level);
@@ -58,11 +61,12 @@ public class YamlParser {
 				e.printStackTrace();
 			}
 	 }
-	 public static TopLevel ParseFile(File file) throws JsonParseException, JsonMappingException, IOException
+	 public static TopLevel ParseFile(String file) throws JsonParseException, JsonMappingException, IOException
 	 {
+		 	File inputFile = new File(file);
 		 	ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 	        TopLevel level = new TopLevel();
-            level = mapper.readValue(file, TopLevel.class);
+            level = mapper.readValue(inputFile, TopLevel.class);
 	        return level;
 	 }
 	 /**
@@ -254,48 +258,63 @@ public class YamlParser {
 			    	 } 
 			    	 if(s.getBlkio_config().getDevice_read_bps() != null)
 			    	 {
-			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBB = validator.validate(s.getBlkio_config().getDevice_read_bps());
-				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBB) 
-				    	 {
-				    		 System.out.println(violation.getMessage());
-				    		 totalViolations += 1;
-				    	 } 
+			    		 for(Blkio_config_option b : s.getBlkio_config().getDevice_read_bps())
+			    		 {
+				    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBB = validator.validate(b);
+					    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBB) 
+					    	 {
+					    		 System.out.println(violation.getMessage());
+					    		 totalViolations += 1;
+					    	 } 
+			    		 }
 			    	 }
 			    	 if(s.getBlkio_config().getDevice_read_iops() != null)
 			    	 {
-			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBI = validator.validate(s.getBlkio_config().getDevice_read_iops());
-				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBI) 
-				    	 {
-				    		 System.out.println(violation.getMessage());
-				    		 totalViolations += 1;
-				    	 } 
+			    		 for(Blkio_config_option b : s.getBlkio_config().getDevice_read_iops())
+			    		 {
+				    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBI = validator.validate(b);
+					    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBI) 
+					    	 {
+					    		 System.out.println(violation.getMessage());
+					    		 totalViolations += 1;
+					    	 } 
+			    		 }
 			    	 }
 			    	 if(s.getBlkio_config().getDevice_write_bps() != null)
 			    	 {
-			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBW = validator.validate(s.getBlkio_config().getDevice_write_bps());
-				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBW) 
-				    	 {
-				    		 System.out.println(violation.getMessage());
-				    		 totalViolations += 1;
-				    	 } 
+			    		 for(Blkio_config_option b : s.getBlkio_config().getDevice_write_bps())
+			    		 {
+				    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBW = validator.validate(b);
+					    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBW) 
+					    	 {
+					    		 System.out.println(violation.getMessage());
+					    		 totalViolations += 1;
+					    	 } 
+			    		 }
 			    	 }
 			    	 if(s.getBlkio_config().getDevice_write_iops() != null)
 			    	 {
-			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBWI = validator.validate(s.getBlkio_config().getDevice_write_iops());
-				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBWI) 
-				    	 {
-				    		 System.out.println(violation.getMessage());
-				    		 totalViolations += 1;
-				    	 } 
+			    		 for(Blkio_config_option b : s.getBlkio_config().getDevice_write_iops())
+			    		 {
+				    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBBWI = validator.validate(b);
+					    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBBWI) 
+					    	 {
+					    		 System.out.println(violation.getMessage());
+					    		 totalViolations += 1;
+					    	 } 
+			    		 }
 			    	 }
 			    	 if(s.getBlkio_config().getWeight_device()!= null)
 			    	 {
-			    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBW = validator.validate(s.getBlkio_config().getWeight_device());
-				    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBW) 
-				    	 {
-				    		 System.out.println(violation.getMessage());
-				    		 totalViolations += 1;
-				    	 } 
+			    		 for(Blkio_config_option b : s.getBlkio_config().getWeight_device())
+			    		 {
+				    		 Set<ConstraintViolation<Blkio_config_option>> constraintViolationsSBW = validator.validate(b);
+					    	 for (ConstraintViolation<Blkio_config_option> violation : constraintViolationsSBW) 
+					    	 {
+					    		 System.out.println(violation.getMessage());
+					    		 totalViolations += 1;
+					    	 } 
+			    		 }
 			    	 }
 		    	 }
 		    	 if(s.getBuildB() != null)
@@ -477,17 +496,16 @@ public class YamlParser {
 	     }
 	     return totalViolations;
 	 }
-	 private static void checkForDuplicateKeys(File File)
+	 public static void checkForDuplicateKeys(String File) throws YamlException
 	 {
-		 
+		File inputFile = new File(File); 
      	try {
             YamlConfig yamlConfig = new YamlConfig();
             yamlConfig.setAllowDuplicates(false); // default value is true
-            YamlReader reader = new YamlReader(new FileReader(File), yamlConfig);
+            YamlReader reader = new YamlReader(new FileReader(inputFile), yamlConfig);
             reader.read();
-        } catch (YamlException ex) {
-            System.out.println(ex.getMessage());
-        } catch (FileNotFoundException e) {
+        } 
+         catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	    

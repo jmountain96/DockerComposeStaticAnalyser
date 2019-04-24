@@ -65,20 +65,22 @@ public class VersionValidator {
 	public void Validate2()
 	{
 		
-		if(level.getPids_limit() != null)
-		{
-			System.out.println("Pids Limit is only compatible with version 2.1+");
-		}
-		if(level.getOom_kill_disable() != null)
-		{
-			System.out.println("Oom kill disable is only compatible with version 2.1+");
-		}
-		if(level.getCpu_period() != null)
-		{
-			System.out.println("Cpu period is only compatible with version 2.1+");
-		}
+		
+		
 		for(Service s : level.getServices().values())
 		{
+			if(s.getOom_kill_disable() != null)
+			{
+				System.out.println("Oom kill disable is only compatible with version 2.1+");
+			}
+			if(s.getCpu_period() != null)
+			{
+				System.out.println("Cpu period is only compatible with version 2.1+");
+			}
+			if(s.getPids_limit() != null)
+			{
+				System.out.println("Pids Limit is only compatible with version 2.1+");
+			}
 			if(s.getNetworksM() != null)
 			{
 				for(Network n : s.getNetworksM().values())
@@ -138,21 +140,24 @@ public class VersionValidator {
 	}
 	public void Validate21()
 	{
-		if(level.getInit() != null)
+		for(Service s : level.getServices().values())
 		{
-			System.out.println("Init is only compatible with version 2.2+");
-		}
-		if(level.getScale() != null)
-		{
-			System.out.println("Scale is only compatible with version 2.2+");
-		}
-		if(level.getCpu_rt_period() != null)
-		{
-			System.out.println("Cpu rt period compatible with version 2.2+");
-		}
-		if(level.getCpu_rt_runtime() != null)
-		{
-			System.out.println("Cpu rt runtime compatible with version 2.2+");
+			if(s.getInit() != null)
+			{
+				System.out.println("Init is only compatible with version 2.2+");
+			}
+			if(s.getScale() != null)
+			{
+				System.out.println("Scale is only compatible with version 2.2+");
+			}
+			if(s.getCpu_rt_period() != null)
+			{
+				System.out.println("Cpu rt period compatible with version 2.2+");
+			}
+			if(s.getCpu_rt_runtime() != null)
+			{
+				System.out.println("Cpu rt runtime compatible with version 2.2+");
+			}
 		}
 		Validate22();
 	
@@ -179,6 +184,10 @@ public class VersionValidator {
 					System.out.println("Healthcheck start_period are only compatible with version 2.3+");
 				}
 			}
+			if(s.getDevice_cgroup_rules() != null)
+			{
+				System.out.println("Device c group rules are only compatible with version 2.3+");
+			}
 			if(s.getBuildB() != null)
 			{
 				if(s.getBuildB().getShm_size() != null)
@@ -193,20 +202,21 @@ public class VersionValidator {
 				{
 					System.out.println("Build target are only compatible with version 2.3+");
 				}
+				
 			}
 		}
-		if(level.getDevice_cgroup_rules() != null)
-		{
-			System.out.println("Device c group rules are only compatible with version 2.3+");
-		}
+		
 		Validate23();
 		
 	}
 	public void Validate23()
 	{
-		if(level.getPlatform() != null)
+		for(Service s : level.getServices().values())
 		{
-			System.out.println("Platform is only compatible with version 2.4+");
+			if(s.getPlatform() != null)
+			{
+				System.out.println("Platform is only compatible with version 2.4+");
+			}
 		}
 		Validate24();
 		
@@ -227,50 +237,52 @@ public class VersionValidator {
 	}
 	public void Version3Removal()
 	{
-		if(level.getVolume_driver() != null)
-		{
-			System.out.println("Volume Driver is only compatible with version 2.x");
-		}
+		
 		if(level.getVolumes_from() != null)
 		{
 			System.out.println("Volumes from is only compatible with version 2.x");
 		}
-		if(level.getCpu_shares() != null)
-		{
-			System.out.println("Cpu shares is only compatible with version 2.x");
-		}
-		if(level.getCpu_quota() != null)
-		{
-			System.out.println("Cpu quota is only compatible with version 2.x");
-		}
-		if(level.getCpuset() != null)
-		{
-			System.out.println("Cpu set is only compatible with version 2.x");
-		}
-		if(level.getMem_limit() != null)
-		{
-			System.out.println("Mem limit is only compatible with version 2.x");
-		}
-		if(level.getMemswap_limit() != null)
-		{
-			System.out.println("Mem swap limit is only compatible with version 2.x");
-		}
-		if(level.getExtends() != null)
-		{
-			System.out.println("Extends is only compatible with version 2.x");
-		}
-		if(level.getGroup_add() != null)
-		{
-			System.out.println("Group add is only compatible with version 2.x");
-		}
-		if(level.getPids_limit()!= null)
-		{
-			System.out.println("Pids limit is only compatible with version 2.x");
-		}
+		
 		for(Service s : level.getServices().values())
 		{
 			if(s.getNetworksM() != null)
 			{
+				if(s.getCpu_shares() != null)
+				{
+					System.out.println("Cpu shares is only compatible with version 2.x");
+				}
+				if(s.getVolume_driver() != null)
+				{
+					System.out.println("Volume Driver is only compatible with version 2.x");
+				}
+				if(s.getCpu_quota() != null)
+				{
+					System.out.println("Cpu quota is only compatible with version 2.x");
+				}
+				if(s.getCpuset() != null)
+				{
+					System.out.println("Cpu set is only compatible with version 2.x");
+				}
+				if(s.getMem_limit() != null)
+				{
+					System.out.println("Mem limit is only compatible with version 2.x");
+				}
+				if(s.getMemswap_limit() != null)
+				{
+					System.out.println("Mem swap limit is only compatible with version 2.x");
+				}
+				if(s.getExtends() != null)
+				{
+					System.out.println("Extends is only compatible with version 2.x");
+				}
+				if(s.getGroup_add() != null)
+				{
+					System.out.println("Group add is only compatible with version 2.x");
+				}
+				if(s.getPids_limit()!= null)
+				{
+					System.out.println("Pids limit is only compatible with version 2.x");
+				}
 				for(Network n : s.getNetworksM().values())
 				{
 					if(n.getLink_local_ips() != null)
@@ -286,9 +298,7 @@ public class VersionValidator {
 		}
 	}
 	public void Validate3()
-	{
-		
-		
+	{	
 		if(level.getConfigs() != null)
 		{
 			System.out.println("Configs are only compatible with version 3.3+");

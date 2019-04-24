@@ -1,6 +1,23 @@
 version: "3.7"
 services:
   webapp:
+    blkio_config:
+      weight: 300
+      weight_device:
+        - path: ./testFiles/
+          weight: 400
+      device_read_bps:
+        - path: ./testFiles/
+          rate: '12mb'
+      device_read_iops:
+        - path: ./testFiles/
+          rate: 120
+      device_write_bps:
+        - path: ./testFiles/
+          rate: '1024k'
+      device_write_iops:
+        - path: ./testFiles/
+          rate: 30
     build:
       context: ./testFiles/
       dockerfile: test.env
@@ -79,6 +96,9 @@ services:
     domainname: foo.com
     entrypoint: ./testFiles/test.env
     env_file: ./testFiles/test.env
+    extends:
+      file: ./testFiles/test.env
+      service: webapp	
     environment:
       - RACK_ENV=development
       - SHOW=true
@@ -114,12 +134,17 @@ services:
         max-size: "200k"
         max-file: "10"
     mac_address: 02:42:ac:11:65:43
+    name: "webapp"
     network_mode: bridge
     networks:
        some-network:
          aliases:
           - alias1
           - alias3
+         link_local_ips:
+          - 57.123.22.11
+          - 57.123.22.13
+         priority: 100
        app_net:
          ipv4_address: 172.16.238.10
          ipv6_address: 2001:3984:3989::1
@@ -192,11 +217,17 @@ networks:
     name: host
     attachable: true
     driver: bridge
+    driver_opts:
+      foo: "bar"
+      baz: 1
+    enable_ipv6:  true
     internal: true
     ipam:
       driver: default
       config:
       - subnet: 172.16.238.0/24
+    labels:
+      - "com.example.description=Financial transaction network"
   some-network:
     external: true
 

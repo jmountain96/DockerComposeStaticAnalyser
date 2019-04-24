@@ -25,8 +25,7 @@ public class ParsingTests {
 	public void testIncorrectKeys() 
 	{
 		try {
-			File f = new File("testConfigs/testIncorrectKeys.yaml");
-			YamlParser.ParseFile(f);
+			YamlParser.ParseFile("testConfigs/testIncorrectKeys.yaml");
 			fail("Expected an UnrecognizedPropertyException to be thrown");
 		} 
 		catch(UnrecognizedPropertyException UPE)
@@ -42,8 +41,7 @@ public class ParsingTests {
 	public void testIncorrectValue()
 	{
 		try {
-			File f = new File("testConfigs/testIncorrectValue.yaml");
-			YamlParser.ParseFile(f);
+			YamlParser.ParseFile("testConfigs/testIncorrectValue.yaml");
 			fail("Expected an MismatchedInputException to be thrown");
 		} 
 		catch(MismatchedInputException MIE)
@@ -60,8 +58,7 @@ public class ParsingTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			File f = new File("testConfigs/testValidationPass.yaml");
-			level = YamlParser.ParseFile(f);
+			level = YamlParser.ParseFile("testConfigs/testValidationPass.yaml");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -182,7 +179,10 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getLogging().getOptions().getMaxFile(), 10);
 		assertNotNull(level.getServices().get("webapp").getNetworksM());
 		String[] alias = {"alias1", "alias3"};
+		String[] link_ips = {"57.123.22.11", "57.123.22.13"};
+		assertArrayEquals(level.getServices().get("webapp").getNetworksM().get("some-network").getLink_local_ips(), link_ips);
 		assertArrayEquals(level.getServices().get("webapp").getNetworksM().get("some-network").getAliases(), alias);
+		assertEquals(level.getServices().get("webapp").getNetworksM().get("some-network").getPriority(), "100");
 		assertEquals(level.getServices().get("webapp").getNetworksM().get("app_net").getIpv4_address(), "172.16.238.10");
 		assertEquals(level.getServices().get("webapp").getNetworksM().get("app_net").getIpv6_address(), "2001:3984:3989::1");
 		assertNotNull(level.getServices().get("webapp").getSecretsSL());
@@ -221,9 +221,13 @@ public class ParsingTests {
 		assertEquals(level.getNetworksN().get("app_net").getIpam().getDriver(), "default");
 		String subnet = "172.16.238.0/24";
 		assertEquals(level.getNetworksN().get("app_net").getIpam().getSubnet(), subnet);
-		
-		
-		
+		Map<String,String> driver_opts2 = new HashMap<>();
+		driver_opts2.put("foo", "bar");
+		driver_opts2.put("baz", "1");
+		assertEquals(level.getNetworksN().get("app_net").getDriver_opts(), driver_opts2);
+		assertEquals(level.getNetworksN().get("app_net").getEnable_ipv6(), "true");
+		String[] labels2 = {"com.example.description=Financial transaction network" };
+		assertArrayEquals(level.getNetworksN().get("app_net").getLabelsS(), labels2);
 		assertEquals(level.getSecretsSL()[0].getFile(), "./testFiles/test.env");
 		assertEquals(level.getSecretsSL()[0].getSource(), "my_secret");
 		assertEquals(level.getSecretsSL()[0].getExternalS(), "true");

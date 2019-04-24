@@ -13,11 +13,9 @@ public class ValidationTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			File f = new File("testConfigs/testValidationPass.yaml");
-			level = YamlParser.ParseFile(f);
+			level = YamlParser.ParseFile("testConfigs/testValidationPass.yaml");
 		} 
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		assertEquals(YamlParser.Validate(level), 1);
@@ -27,13 +25,11 @@ public class ValidationTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			File f = new File("testConfigs/testValidationFail.yaml");
-			level = YamlParser.ParseFile(f);
+			level = YamlParser.ParseFile("testConfigs/testValidationFail.yaml");
 		} 
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertEquals(YamlParser.Validate(level), 42);
+		assertEquals(YamlParser.Validate(level), 47);
 	}
 }
