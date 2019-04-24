@@ -1,6 +1,23 @@
 version: "3.6"
 services:
   webapp:
+    blkio_config:
+      weight: 300
+      weight_device:
+        - path: ./tesatFAiles/
+          weight: 400
+      device_read_bps:
+        - path: ./testFidles/
+          rate: '12mb'
+      device_read_iops:
+        - path: ./testFiales/
+          rate: 120
+      device_write_bps:
+        - path: ./testFildes/
+          rate: '1024k'
+      device_write_iops:
+        - path: ./testFileds/
+          rate: 30
     build:
       context: ./testFadsiles/
       dockerfile: tesxst.env
@@ -126,6 +143,10 @@ services:
          aliases:
           - alias1
           - alias3
+         link_local_ips:
+          - 57.123.22.1a1
+          - 57.123.22.1b3
+         priority: 100
        app_net:
          ipv4_address: 172.16.238.10a
          ipv6_address: 2001:3984:3989::1a
@@ -198,11 +219,17 @@ networks:
     name: host
     attachable: true
     driver: qwdda
+    driver_opts:
+      foo: "bar"
+      baz: 1
+    enable_ipv6:  true
     internal: true
     ipam:
       driver: default
       config:
       - subnet: 172.16.238dqwdwq.0/24
+    labels:
+      com.example.description: "Financial transaction network"
   some-network:
     external: true
 
