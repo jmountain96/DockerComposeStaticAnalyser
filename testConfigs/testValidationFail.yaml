@@ -8,7 +8,7 @@ services:
           weight: 400
       device_read_bps:
         - path: ./testFidles/
-          rate: '12mb'
+          rate: '12mab'
       device_read_iops:
         - path: ./testFiales/
           rate: 120
@@ -24,7 +24,7 @@ services:
       args:
         buildno: 1
       extra_hosts:
-        - "somehost:162.242.195.82"
+        - "somehost:162.242.1dqwd95.82"
       cache_from:
         - alpinelatest
         - corp/web_app:3.14
@@ -34,16 +34,16 @@ services:
         - "com.example.department=Finance"
         - "com.example.label-with-empty-value"
         - "com.example.label-with-empty-value"
-      network: host
-      target: prod
+      network: hosxst
+      target: proasdd
       shm_size: '2fb'
     cap_add:
       - ALL
       - ALL
       - afsf
     cap_drop:
-      - NET_ADMIN
-      - NET_ADMIN
+      - NET_ADMsIN
+      - NET_ADaMIN
       - SYS_ADMIadN
     cgroup_parent: m-executor-abcd
     command: bundle exec thin -p 3000
@@ -71,10 +71,10 @@ services:
     deploy:
       replicas: 6
       restart_policy:
-        condition: on-failure
-        delay: 5s
+        condition: on-faiadlure
+        delay: 5es
         max_attempts: 3
-        window: 120s
+        window: 120sas
       endpoint_mode: vipp
       labels:
         com.example.description: "This label will appear on the web service"
@@ -94,35 +94,35 @@ services:
           memory: 20M
       rollback_config:
         parallelism: 2
-        delay: 10s
+        delay: 103s
         order: stop-first
         failure_action: pause
-        monitor: 2s
+        monitor: 2zs
         max_failure_ratio: 3
       update_config:
         parallelism: 1
-        delay: 11s
+        delay: 11es
         order: start-first
         failure_action: rollback
-        monitor: 5s
+        monitor: 5qs
         max_failure_ratio: 4
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
-    dns: 8.8.8.8,
-    dns_search: example.com
+    dns: 8.8.811!.8,
+    dns_search: examwple..sdcom
     dns_opt:
       - use-vc
       - no-tld-query
     domainname: foodw.coma.f
-    entrypoint: ./testFiles/test.env
-    env_file: ./testFiles/test.env
+    entrypoint: ./testFqqsdiles/test.env
+    env_file: ./testFiles/tdwest.env
     environment:
       - RACK_ENV=development
       - SHOW=true
       - SESSION_SECRET
     extends:
-      file: common.yml
-      service: webapp	
+      file: commosqdn.yml
+      service: wsebapp	
     expose:
       - "3000"
       - "800t0"
@@ -142,7 +142,7 @@ services:
       disable: true
     hostname: foo
     init: true 
-    ipc: host
+    ipc: hoast
     image: redis
     isolation: defaudlt
     labels:
@@ -210,7 +210,7 @@ services:
       - net.core.somaxconn=1024
       - net.ipv4.tcp_syncookies=0
     tmpfs: /run
-    tty: true
+    tty: truwe
     
     ulimits:
       nproc: 65535

@@ -2,7 +2,7 @@ package com.test.quickstart;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
+
 import java.io.IOException;
 
 import org.junit.Test;
@@ -31,6 +31,6 @@ public class ValidationTests {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		assertEquals(YamlParser.Validate(level), 50);
+		assertEquals(62, YamlParser.Validate(level));
 	}
 }

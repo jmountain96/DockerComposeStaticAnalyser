@@ -16,7 +16,7 @@ services:
       target: prod
       shm_size: '2gb'
     configs:
-      - source: my_config
+      - source: my_confsig
         target: ./testFiles/test.env
         uid: '103'
         gid: '104'

@@ -21,6 +21,7 @@ public class DependencyTests {
 		YamlParser.setDependencies(level);
 		assertEquals(YamlParser.Validate(level), 0);
 	}
+	@Test
 	public void DependencyFail()
 	{
 		TopLevel level = new TopLevel();
@@ -31,6 +32,6 @@ public class DependencyTests {
 			e.printStackTrace();
 		}
 		YamlParser.setDependencies(level);
-		assertEquals(YamlParser.Validate(level), 5);
+		assertEquals(YamlParser.Validate(level), 9);
 	}
 }

@@ -7,9 +7,8 @@ import java.util.Set;
 
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
-import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
 import com.test.quickstart.Validation.Interfaces.CheckUsed;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
 import com.test.quickstart.TypeEnums.Type;

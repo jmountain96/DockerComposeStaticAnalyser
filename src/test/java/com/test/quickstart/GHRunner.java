@@ -21,6 +21,7 @@ public class GHRunner
 			if (dirListing[index] != null)
 			{
 				YamlParser.Start(dirListing[index].getAbsolutePath());
+				
 			}
 		}
 	}

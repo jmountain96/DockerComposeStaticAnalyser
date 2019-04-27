@@ -6,14 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
@@ -33,7 +32,6 @@ public class ParsingTests {
 			assertTrue(UPE.getMessage().startsWith("Unrecognized field \"foo\""));
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -49,7 +47,6 @@ public class ParsingTests {
 			assertTrue(MIE.getMessage().startsWith("Cannot deserialize instance of `int` out of START_ARRAY token"));
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -60,7 +57,6 @@ public class ParsingTests {
 		try {
 			level = YamlParser.ParseFile("testConfigs/testValidationPass.yaml");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		assertEquals(level.getVersion(), "3.7");
@@ -85,6 +81,17 @@ public class ParsingTests {
 		String[] cap_drop = {"NET_ADMIN", "SYS_ADMIN"};
 		assertArrayEquals(level.getServices().get("webapp").getCap_drop(), cap_drop);
 		assertNotNull(level.getServices().get("webapp").getConfigsC());
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_read_bps()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_read_bps()[0].getRate(),"12mb");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_read_iops()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_read_iops()[0].getRate(),"120");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_write_bps()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_write_bps()[0].getRate(),"1024k");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_write_iops()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_write_iops()[0].getRate(),"30");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getWeight_device()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getWeight_device()[0].getWeight(),"400");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getWeight(),300);
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getSource(), "my_config");
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getTarget(), "./testFiles/test.env");
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getUid(), "103");

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -27,37 +28,45 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class YamlParser {
 	 public static void main(String[] string) throws IOException 
 	 {
-		 Start("testConfigs/testValidationPass.yaml");
+		 // Uncomment to use user input mode
+		// Scanner myObj = new Scanner(System.in);  
+		// System.out.println("Please enter the file path of the Compose configuration YAML file");
+		 //String File = myObj.nextLine(); 
+		// myObj.close();
+		 // Start(File); 
+		 Start("testConfigs/testValidationPass.yaml"); 
 	 }
+	 /**
+	  * Executes the 5 methods that perform validation
+	  * @param File - A string representing the destination of the file being parsed
+	  */
 	 public static void Start(String File)
 	 {
-		 TopLevel level = new TopLevel();
+		 TopLevel level = new TopLevel(); // Create the top level bean
 		 try 
 		 {
 	       level = ParseFile(File);
 		 }
 		 catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
 	        {
-	        	System.out.println(UPE.getMessage());
+	        	System.out.println(UPE.getMessage()); // Print the unrecognised property to the console
 	        	UPE.printStackTrace();
 	        }
          catch (Exception e) {
-	            // TODO Auto-generated catch block
 	            e.printStackTrace();
 	        }
 	        try {
 				checkForDuplicateKeys(File);
 			} catch (YamlException ex) {
-				// TODO Auto-generated catch block
-				System.out.println(ex.getMessage());
+				System.out.println(ex.getMessage() ); // Print any exceptions found
+				//ex.printStackTrace();
 			}
-	        level = setDependencies(level);
-	        Validate(level);
-	        VersionValidator v = new VersionValidator(level);
+	        level = setDependencies(level); // Set dependencies
+	        Validate(level); // Validate the parsed file
+	        VersionValidator v = new VersionValidator(level); // Perform version validation
 	        try {
 				v.Validate();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	 }
@@ -72,22 +81,22 @@ public class YamlParser {
 	 /**
 	  * Sets the required values within the input for dependency validation
 	  * @param input The input to be validated
-	  * @return
+	  * @return TopLevel The level object where dependencies have been set
 	  */
 	 public static TopLevel setDependencies(TopLevel input) 
 	 {
 		 YamlParserVisitor visitor = new YamlParserVisitorImpl();
 		 TopLevelReturn r = input.accept(visitor);
-		 String[] Configs = null;
-		 String[] Networks = null;
-		 String[] Secrets = null;
-		 String[] Volumes = null;
+		 String[] Configs = null; // Stores the Configs from every service
+		 String[] Networks = null; // Stores the Networks from every service
+		 String[] Secrets = null; // Stores the Secrets from every service
+		 String[] Volumes = null; // Stores the Volumes from every service
 		 if(input.getServices() != null)
 	     {
 			
-			for(Service s : input.getServices().values()) 
+			for(Service s : input.getServices().values()) // Loop through the services
 			{
-				if(r.getConfigs() != null && s.getConfigs() != null)
+				if(r.getConfigs() != null && s.getConfigs() != null) 
 				{
 					s.setConfigDependencies(r.getConfigs());
 					if(s.getConfigType() == Type.STRINGlIST)
@@ -102,7 +111,7 @@ public class YamlParser {
 							configSources[i] = s.getConfigsC()[i].getSource();
 							Configs = (String[])ArrayUtils.addAll(Configs, configSources);
 						}
-				}
+					}
 				}
 				if(r.getNetworks() != null && s.getNetworks() != null)
 				{
@@ -224,7 +233,64 @@ public class YamlParser {
 	    		 }
     		 }
 	     }
-	     
+	     if(level.getConfigs() != null)
+	     {
+	    	 for( String con  : level.getConfigs().keySet()) 
+	    		 
+	    	 {
+	    		 Configs c = level.getConfigs().get(con);
+	    		 Set<ConstraintViolation<Configs>> constraintViolationsC = validator.validate(c);
+		    	 for (ConstraintViolation<Configs> violation : constraintViolationsC) 
+		    	 {
+		    		 System.out.println(violation.getMessage());
+		    		 totalViolations += 1;
+		    	 }
+	    	 }
+	     }
+	     if(level.getVolumes() != null)
+	     {
+	    	 for( String vol  : level.getVolumes().keySet()) 
+	    		 
+	    	 {
+	    		 Volume v = level.getVolumes().get(vol);
+	    		 if(v != null)
+	    		 {
+		    		 Set<ConstraintViolation<Volume>> constraintViolationsV = validator.validate(v);
+			    	 for (ConstraintViolation<Volume> violation : constraintViolationsV) 
+			    	 {
+			    		 System.out.println(violation.getMessage());
+			    		 totalViolations += 1;
+			    	 }
+			    	 if(v.getBind() != null)
+	    			 {
+	    				 Set<ConstraintViolation<Bind>> constraintViolationsSVB = validator.validate(v.getBind());
+		    			 for (ConstraintViolation<Bind> violation : constraintViolationsSVB) 
+		    			 {
+		    				 System.out.println(violation.getMessage());
+		    				 totalViolations += 1;
+		    			 } 
+	    			 }
+	    			 if(v.getTmpfs() != null)
+	    			 {
+	    				 Set<ConstraintViolation<TMPFS>> constraintViolationsSVT = validator.validate(v.getTmpfs());
+		    			 for (ConstraintViolation<TMPFS> violation : constraintViolationsSVT) 
+		    			 {
+		    				 System.out.println(violation.getMessage());
+		    				 totalViolations += 1;
+		    			 } 
+	    			 }
+	    			 if(v.getVolume() != null)
+	    			 {
+	    				 Set<ConstraintViolation<VolumeV>> constraintViolationsSVV = validator.validate(v.getVolume());
+		    			 for (ConstraintViolation<VolumeV> violation : constraintViolationsSVV) 
+		    			 {
+		    				 System.out.println(violation.getMessage());
+		    				 totalViolations += 1;
+		    			 } 
+	    			 }
+	    		 }
+	    	 }
+	     }
 	     if(level.getSecretsType() == Type.SECRETLIST)
 	     {
 	    	 for(Secrets s : level.getSecretsSL()) 
@@ -330,6 +396,18 @@ public class YamlParser {
 			    		 System.out.println("A build context or an image must be given for each service");
 			    	 }
 		    	 }
+		    	 if(s.getConfigsC() != null)
+		    	 {
+		    		 for(Configs c : s.getConfigsC())
+		    		 {
+			    		 Set<ConstraintViolation<Configs>> constraintViolationsC = validator.validate(c);
+				    	 for (ConstraintViolation<Configs> violation : constraintViolationsC) 
+				    	 {
+				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
+				    	 }
+		    		 }
+		    	 }
 		    	 if(s.getDeploy() != null)
 		    	 {
 		    		 Set<ConstraintViolation<Deploy>> constraintViolationsSD = validator.validate(s.getDeploy());
@@ -355,6 +433,24 @@ public class YamlParser {
 				    		 System.out.println(violation.getMessage());
 				    		 totalViolations += 1;
 				    	 } 
+				    	 if(s.getDeploy().getResources().getLimits() != null)
+				    	 {
+				    		 Set<ConstraintViolation<Limits>> constraintViolationsSDRL = validator.validate(s.getDeploy().getResources().getLimits());
+					    	 for (ConstraintViolation<Limits> violation : constraintViolationsSDRL) 
+					    	 {
+					    		 System.out.println(violation.getMessage());
+					    		 totalViolations += 1;
+					    	 } 
+				    	 }
+				    	 if(s.getDeploy().getResources().getReservations() != null)
+				    	 {
+				    		 Set<ConstraintViolation<Reservations>> constraintViolationsSDRR = validator.validate(s.getDeploy().getResources().getReservations());
+					    	 for (ConstraintViolation<Reservations> violation : constraintViolationsSDRR) 
+					    	 {
+					    		 System.out.println(violation.getMessage());
+					    		 totalViolations += 1;
+					    	 } 
+				    	 }
 			    	 }
 			    	 if(s.getDeploy().getRestart_policy() != null)
 			    	 {
@@ -410,6 +506,15 @@ public class YamlParser {
 			    		 System.out.println(violation.getMessage());
 			    		 totalViolations += 1;
 			    	 } 
+			    	 if(s.getLogging().getOptions() != null)
+			    	 {
+			    		 Set<ConstraintViolation<Options>> constraintViolationsSLO = validator.validate(s.getLogging().getOptions());
+				    	 for (ConstraintViolation<Options> violation : constraintViolationsSLO) 
+				    	 {
+				    		 System.out.println(violation.getMessage());
+				    		 totalViolations += 1;
+				    	 } 
+			    	 }
 		    	 }
 		    	 if(s.getNetworksM() != null)
 		    	 {
@@ -496,6 +601,11 @@ public class YamlParser {
 	     }
 	     return totalViolations;
 	 }
+	 /**
+	  * Checks for duplicate keys within the File by parsing the file with the AllowDuplicates flag set to false
+	  * @param File
+	  * @throws YamlException
+	  */
 	 public static void checkForDuplicateKeys(String File) throws YamlException
 	 {
 		File inputFile = new File(File); 

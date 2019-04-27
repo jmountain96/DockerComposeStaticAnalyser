@@ -13,7 +13,6 @@ public class CheckUsedValidator implements ConstraintValidator<CheckUsed, Depend
 		boolean _ret = true;
 		boolean found = false;
 		String notUsed = "";
-		int index = 0;
 		if(value.dependents == null)
 		{
 			return true;
@@ -31,7 +30,6 @@ public class CheckUsedValidator implements ConstraintValidator<CheckUsed, Depend
 			{
 				_ret = false;
 				notUsed += x + " ";
-				index++;
 			}
 		}
 		if(_ret == false)

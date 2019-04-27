@@ -139,6 +139,7 @@ public class CheckStringFormatValidator implements ConstraintValidator<CheckStri
 						context.buildConstraintViolationWithTemplate( msg + " The following unix permutation is of the wrong format - " + value).addConstraintViolation();
 						return false;
 					}
+					return true;
 				}
 			case SYSLOG:
 				if(value.matches("(tcp|udp){1}(://)\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(:\\d{1,5})?") == true)
