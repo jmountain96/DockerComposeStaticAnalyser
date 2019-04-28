@@ -34,7 +34,7 @@ public class YamlParser {
 		 //String File = myObj.nextLine(); 
 		// myObj.close();
 		 // Start(File); 
-		 Start("testConfigs/testValidationPass.yaml"); 
+		 Start("test.yaml"); 
 	 }
 	 /**
 	  * Executes the 5 methods that perform validation
@@ -49,8 +49,23 @@ public class YamlParser {
 		 }
 		 catch(com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException UPE)
 	        {
-	        	System.out.println(UPE.getMessage()); // Print the unrecognised property to the console
+	        	System.out.println("An unrecognised key has been entered or the key is at the wrong level"); // Print the unrecognised property to the console
 	        	UPE.printStackTrace();
+	        }
+		 catch(com.fasterxml.jackson.databind.exc.InvalidFormatException IFE)
+	        {
+	        	System.out.println("Wrong type entered for a value"); // Print the unrecognised property to the console
+	        	IFE.printStackTrace();
+	        }
+		 catch(com.fasterxml.jackson.databind.exc.MismatchedInputException MIE)
+	        {
+	        	System.out.println("Unknown data entered, all data must be YAML key-value mappings"); // Print the unrecognised property to the console
+	        	MIE.printStackTrace();
+	        }
+		 catch(com.fasterxml.jackson.dataformat.yaml.snakeyaml.error.MarkedYAMLException MYE)
+	        {
+			 	System.out.println("A formatting error has occured, see below for details");
+	        	MYE.printStackTrace();
 	        }
          catch (Exception e) {
 	            e.printStackTrace();

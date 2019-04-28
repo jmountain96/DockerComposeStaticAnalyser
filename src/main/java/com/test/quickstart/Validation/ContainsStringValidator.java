@@ -20,7 +20,7 @@ public class ContainsStringValidator implements ConstraintValidator<ContainsStri
 	private List<String> isolation = Arrays.asList("DEFAULT","PROCESS","HYPERV");
 	private List<String> healthCheckTest= Arrays.asList("NONE", "CMD", "CMDSHELL");
 	private List<String> networkMode = Arrays.asList("BRIDGE", "HOST", "OVERLAY", "MACVLAN", "NONE");
-	private List<String> versions = Arrays.asList("1","1.0", "2","2.0", "2.1", "2.2", "2.3", "2.4", "3","3.0", "3.1", "3.2","3.3", "3.4", "3.5", "3.6", "3.7");
+	private List<String> versions = Arrays.asList("2","2.0", "2.1", "2.2", "2.3", "2.4", "3","3.0", "3.1", "3.2","3.3", "3.4", "3.5", "3.6", "3.7");
 	private String pid = "host";
 	private List<String> portProtocol = Arrays.asList("TCP", "UDP");
 	private List<String> portMode = Arrays.asList("HOST", "INGRESS");

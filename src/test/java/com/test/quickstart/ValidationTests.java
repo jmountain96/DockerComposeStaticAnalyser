@@ -31,6 +31,6 @@ public class ValidationTests {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		assertEquals(62, YamlParser.Validate(level));
+		assertEquals(63, YamlParser.Validate(level));
 	}
 }

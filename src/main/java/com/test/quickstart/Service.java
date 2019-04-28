@@ -52,6 +52,7 @@ public class Service {
 	private String cpu_quota;
 	private String cpuset;
 	private String cpus;
+	@CheckStringFormat(message = "Invalid time format for cpu rt runtime", value = ValidationEnums.CheckStringType.TIME)
 	private String cpu_rt_runtime;
 	@CheckStringFormat(message = "Invalid time format for cpu rt period", value = ValidationEnums.CheckStringType.TIME)
 	private String cpu_rt_period;
@@ -88,6 +89,7 @@ public class Service {
 	private String dns_searchS;
 	private String[] dns_searchSL;
 	private Type dns_searchType;
+	@CheckDuplication(message = "Duplicate dns_opt detected")
 	private String[] dns_opt;
 	@CheckStringFormat(message = "Invalid format for domain name", value = ValidationEnums.CheckStringType.DOMAIN)
 	private String domainname;
@@ -132,9 +134,9 @@ public class Service {
 	private String[] links;
 	private Logging logging;
 	private String[] group_add;
-	@CheckStringFormat(message = "mac_address must be a valid memory format", value = ValidationEnums.CheckStringType.MAC)
+	@CheckStringFormat(message = "mac_address must be a valid mac address format", value = ValidationEnums.CheckStringType.MAC)
 	private String mac_address;
-	@ContainsString(message = "Invalid network type", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
+	@ContainsString(message = "Invalid network type ", value = ValidationEnums.ContainsStringType.NETWORK_MODE)
 	private String network_mode;
 	private Object networks;
 	@CheckDuplication(message = "Duplicate service network detected")
@@ -705,9 +707,11 @@ public class Service {
 		}
 		else 
 		{
-			Map<String, Map<String,Object>> secretsSSO = (Map<String, Map<String,Object>>)secrets;
-			secretsSL = Converter.convertSecrets(secretsSSO);
-			this.secretsType = Type.SECRETLIST;
+			if(resolver.checkStringList(secrets) == true)
+			{
+				secretsL = Converter.convertStringList(secrets);
+				this.secretsType = Type.STRINGlIST;
+			}
 		}
 	}
 	public String[] getSecretsL() {

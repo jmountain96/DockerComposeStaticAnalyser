@@ -11,14 +11,16 @@ public class CheckUsedValidator implements ConstraintValidator<CheckUsed, Depend
 	
 	public boolean isValid(Dependencies value, ConstraintValidatorContext context) {
 		boolean _ret = true;
-		boolean found = false;
+		
 		String notUsed = "";
 		if(value.dependents == null)
 		{
 			return true;
 		}
+		
 		for(String x : value.dependents)
 		{
+			boolean found = false;
 			for(String y : value.target)
 			{
 				if(x.equals(y))
@@ -36,7 +38,7 @@ public class CheckUsedValidator implements ConstraintValidator<CheckUsed, Depend
 		{
 			String msg = context.getDefaultConstraintMessageTemplate();
 			context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate( msg + "The following are not in use by any service " + notUsed ).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate( msg + " The following are not in use by any service " + notUsed ).addConstraintViolation();
 		}
 		return _ret;
 	}

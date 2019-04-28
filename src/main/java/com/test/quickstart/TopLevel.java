@@ -5,8 +5,7 @@ import java.util.Map;
 
 import java.util.Set;
 
-
-
+import javax.validation.constraints.NotNull;
 
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckUsed;
@@ -31,7 +30,8 @@ public class TopLevel {
 	private Type secretsType;
 	private Map<String, Volume> volumes;
 	private String volumes_from;
-	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing Docker Compose Version, compiler will assume version 1 of Compose is being used")
+	@NotNull(message = "A version must be supplied")
+	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing Docker Compose Version, this analsyer supports versions 2+")
 	private String version;
 	private Map<String,Service> services;
 	
