@@ -4,12 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.kohsuke.github.GHContent;
-import org.kohsuke.github.GHContentSearchBuilder;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GHRepositorySearchBuilder;
-import org.kohsuke.github.GitHub;
-import org.kohsuke.github.PagedSearchIterable;
+
 
 public class GHRunner 
 {
@@ -25,7 +20,8 @@ public class GHRunner
 		{
 			if (dirListing[index] != null)
 			{
-				YamlParser.Start(dirListing[index]);
+				YamlParser.Start(dirListing[index].getAbsolutePath());
+				
 			}
 		}
 	}

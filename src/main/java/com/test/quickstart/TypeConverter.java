@@ -50,35 +50,35 @@ public class TypeConverter {
 	}
 	public Map<String, Network> convertNetworks(Map<String, Map<String,Object>> input)
 	{
-		Map<String,Network> ret = new HashMap<>();
+		Map<String,Network> ret = new HashMap<>(); 
 		for(String key : input.keySet()) 
 		{
-			Map<String,Object> s = input.get(key);
+			Map<String,Object> s = input.get(key); // Get the nested hashmap
 			if( s == null)
 			{
-				ret.put(key, null);
+				ret.put(key, null); // Some keys don't contain values, but the name still needs to be stored
 			}
 			else
 			{
 				Ipam I = null;
-				BeanWrapper newWrappedNetwork = new BeanWrapperImpl(new Network());
+				BeanWrapper newWrappedNetwork = new BeanWrapperImpl(new Network()); // Create a new wrapped network
 				for (Map.Entry<String, Object> property : s.entrySet())
 				{
 					if(property.getKey().equals("ipam")) 
 					{
-						I = convertIpam(property.getValue());
+						I = convertIpam(property.getValue()); // If an IPAM key exists, build the specified IPAM object
 					}
 					else 
 					{
-						newWrappedNetwork.setPropertyValue(property.getKey(), property.getValue());
+						newWrappedNetwork.setPropertyValue(property.getKey(), property.getValue()); // Set the field = key to the value = value
 					}
 				}
-				Network newNetwork = (Network)newWrappedNetwork.getWrappedInstance();
+				Network newNetwork = (Network)newWrappedNetwork.getWrappedInstance(); // Cast the wrapped Network to a network
 				if(I != null)
 				{
-					newNetwork.setIpam(I);
+					newNetwork.setIpam(I); // Set the IPAM object if it exists
 				}
-				ret.put(key, newNetwork);
+				ret.put(key, newNetwork); // Put the network in the map
 			}
 		}
 		return ret;

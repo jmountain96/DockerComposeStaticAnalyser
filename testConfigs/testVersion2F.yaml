@@ -1,4 +1,4 @@
-version: "3.7"
+version: "2"
 services:
   webapp:
     blkio_config:
@@ -62,8 +62,7 @@ services:
     cpu_rt_runtime: '400ms'
     cpu_rt_period: '1400us'
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     deploy:
       replicas: 6
       restart_policy:

@@ -1,11 +1,30 @@
 version: "3.6"
 services:
   webapp:
+    blkio_config:
+      weight: 300
+      weight_device:
+        - path: ./tesatFAiles/
+          weight: 400
+      device_read_bps:
+        - path: ./testFidles/
+          rate: '12mab'
+      device_read_iops:
+        - path: ./testFiales/
+          rate: 120
+      device_write_bps:
+        - path: ./testFildes/
+          rate: '1024k'
+      device_write_iops:
+        - path: ./testFileds/
+          rate: 30
     build:
       context: ./testFadsiles/
       dockerfile: tesxst.env
       args:
         buildno: 1
+      extra_hosts:
+        - "somehost:162.242.1dqwd95.82"
       cache_from:
         - alpinelatest
         - corp/web_app:3.14
@@ -15,15 +34,16 @@ services:
         - "com.example.department=Finance"
         - "com.example.label-with-empty-value"
         - "com.example.label-with-empty-value"
-      target: prod
+      network: hosxst
+      target: proasdd
       shm_size: '2fb'
     cap_add:
       - ALL
       - ALL
       - afsf
     cap_drop:
-      - NET_ADMIN
-      - NET_ADMIN
+      - NET_ADMsIN
+      - NET_ADaMIN
       - SYS_ADMIadN
     cgroup_parent: m-executor-abcd
     command: bundle exec thin -p 3000
@@ -37,15 +57,24 @@ services:
     credential_spec:
       file: test.envasd
       registry: my-credential-spddec
+    cpu_count: 2
+    cpu_percent: 50
+    cpus: 0.5
+    cpu_shares: 73
+    cpu_quota: 50000
+    cpu_period: 20mas
+    cpuset: 0,1
+    cpu_rt_runtime: '400mas'
+    cpu_rt_period: '1400uss'
     depends_on:
       - dbs
     deploy:
       replicas: 6
       restart_policy:
-        condition: on-failure
-        delay: 5s
+        condition: on-faiadlure
+        delay: 5es
         max_attempts: 3
-        window: 120s
+        window: 120sas
       endpoint_mode: vipp
       labels:
         com.example.description: "This label will appear on the web service"
@@ -65,29 +94,35 @@ services:
           memory: 20M
       rollback_config:
         parallelism: 2
-        delay: 10s
+        delay: 103s
         order: stop-first
         failure_action: pause
-        monitor: 2s
+        monitor: 2zs
         max_failure_ratio: 3
       update_config:
         parallelism: 1
-        delay: 11s
+        delay: 11es
         order: start-first
         failure_action: rollback
-        monitor: 5s
+        monitor: 5qs
         max_failure_ratio: 4
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
-    dns: 8.8.8.8,
-    dns_search: example.com
+    dns: 8.8.811!.8,
+    dns_search: examwple..sdcom
+    dns_opt:
+      - use-vc
+      - no-tld-query
     domainname: foodw.coma.f
-    entrypoint: ./testFiles/test.env
-    env_file: ./testFiles/test.env
+    entrypoint: ./testFqqsdiles/test.env
+    env_file: ./testFiles/tdwest.env
     environment:
       - RACK_ENV=development
       - SHOW=true
       - SESSION_SECRET
+    extends:
+      file: commosqdn.yml
+      service: wsebapp	
     expose:
       - "3000"
       - "800t0"
@@ -104,11 +139,16 @@ services:
       timeout: 10f
       retries: 3
       start_period: 40f
+      disable: true
     hostname: foo
     init: true 
-    ipc: host
-    
+    ipc: hoast
+    image: redis
     isolation: defaudlt
+    labels:
+      - "com.example.description=Database volume"
+      - "com.example.department=IT/Ops"
+      - "com.example.label-with-empty-value"
     links:
       - db
       - db:database
@@ -117,19 +157,31 @@ services:
       driver: sysalog
       options:
         syslog-address: "tcp://192.168.0.4r2:123"
-        max-size: "200j"
-        max-file: "10A"
+        max-size: "200"
+        max-file: "10"
     mac_address: 02:42:ac:11:65asd!:43
+    mem_limit: 1000000000
+    memswap_limit: 2000000000
+    mem_reservation: 512mad
+    mem_swappiness: 3
     network_mode: briadge
     networks:
        some-netawork:
          aliases:
           - alias1
           - alias3
+         link_local_ips:
+          - 57.123.22.1a1
+          - 57.123.22.1b3
+         priority: 100
        app_net:
          ipv4_address: 172.16.238.10a
          ipv6_address: 2001:3984:3989::1a
+    oom_score_adj: 500
+    oom_kill_disable: true
     pid: "asda"
+    pids_limit: 10
+    platform: osx
     ports:
       - target: 80s
         published: 8a080
@@ -139,7 +191,8 @@ services:
     read_only: true
     
     restart: "noo"
-    mode: host
+    runtime: runc
+    scale: 3
     security_opt:
       - label:user:USER
       - label:role:ROLE
@@ -157,7 +210,7 @@ services:
       - net.core.somaxconn=1024
       - net.ipv4.tcp_syncookies=0
     tmpfs: /run
-    tty: true
+    tty: truwe
     
     ulimits:
       nproc: 65535
@@ -167,6 +220,7 @@ services:
     user: postgresql
     
     userns_mode: "host"
+    volume_driver: mydriver
     volumes:
        - type: xc
          source: mydatda
@@ -199,11 +253,17 @@ networks:
     name: host
     attachable: true
     driver: qwdda
+    driver_opts:
+      foo: "bar"
+      baz: 1
+    enable_ipv6:  true
     internal: true
     ipam:
       driver: default
       config:
       - subnet: 172.16.238dqwdwq.0/24
+    labels:
+      com.example.description: "Financial transaction network"
   some-network:
     external: true
 

@@ -6,14 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
@@ -25,8 +24,7 @@ public class ParsingTests {
 	public void testIncorrectKeys() 
 	{
 		try {
-			File f = new File("testConfigs/testIncorrectKeys.yaml");
-			YamlParser.ParseFile(f);
+			YamlParser.ParseFile("testConfigs/testIncorrectKeys.yaml");
 			fail("Expected an UnrecognizedPropertyException to be thrown");
 		} 
 		catch(UnrecognizedPropertyException UPE)
@@ -34,7 +32,6 @@ public class ParsingTests {
 			assertTrue(UPE.getMessage().startsWith("Unrecognized field \"foo\""));
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -42,8 +39,7 @@ public class ParsingTests {
 	public void testIncorrectValue()
 	{
 		try {
-			File f = new File("testConfigs/testIncorrectValue.yaml");
-			YamlParser.ParseFile(f);
+			YamlParser.ParseFile("testConfigs/testIncorrectValue.yaml");
 			fail("Expected an MismatchedInputException to be thrown");
 		} 
 		catch(MismatchedInputException MIE)
@@ -51,7 +47,6 @@ public class ParsingTests {
 			assertTrue(MIE.getMessage().startsWith("Cannot deserialize instance of `int` out of START_ARRAY token"));
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -60,10 +55,8 @@ public class ParsingTests {
 	{
 		TopLevel level = new TopLevel();
 		try {
-			File f = new File("testConfigs/testValidationPass.yaml");
-			level = YamlParser.ParseFile(f);
+			level = YamlParser.ParseFile("testConfigs/testValidationPass.yaml");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		assertEquals(level.getVersion(), "3.7");
@@ -75,15 +68,30 @@ public class ParsingTests {
 		args.put("buildno", 1);
 		assertEquals(level.getServices().get("webapp").getBuildB().getArgsM().get("buildno"), args.get("buildno"));
 		String[] labels = {"com.example.description=Accounting webapp", "com.example.department=Finance","com.example.label-with-empty-value" };
+		String[] labelsV = {"com.example.description=Database volume", "com.example.department=IT/Ops","com.example.label-with-empty-value" };
 		String[] cache = {"alpine:latest", "corp/web_app:3.14"};
+		String[] extra_hosts2 = {"somehost:162.242.195.82"};
 		assertArrayEquals(level.getServices().get("webapp").getBuildB().getCache_from(), cache);
 		assertArrayEquals(level.getServices().get("webapp").getBuildB().getLabelsS(), labels);
+		assertArrayEquals(level.getServices().get("webapp").getBuildB().getExtra_hosts(), extra_hosts2);
 		assertEquals(level.getServices().get("webapp").getBuildB().getTarget(), "prod");
 		assertEquals(level.getServices().get("webapp").getBuildB().getShm_size(), "2gb");
+		assertEquals(level.getServices().get("webapp").getBuildB().getNetwork(), "host");
 		assertEquals(level.getServices().get("webapp").getCap_add()[0], "ALL");
 		String[] cap_drop = {"NET_ADMIN", "SYS_ADMIN"};
 		assertArrayEquals(level.getServices().get("webapp").getCap_drop(), cap_drop);
 		assertNotNull(level.getServices().get("webapp").getConfigsC());
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_read_bps()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_read_bps()[0].getRate(),"12mb");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_read_iops()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_read_iops()[0].getRate(),"120");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_write_bps()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_write_bps()[0].getRate(),"1024k");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_write_iops()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getDevice_write_iops()[0].getRate(),"30");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getWeight_device()[0].getPath(),"./testFiles/");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getWeight_device()[0].getWeight(),"400");
+		assertEquals(level.getServices().get("webapp").getBlkio_config().getWeight(),300);
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getSource(), "my_config");
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getTarget(), "./testFiles/test.env");
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getUid(), "103");
@@ -91,6 +99,15 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getConfigsC()[0].getMode(), "0440");
 		assertEquals(level.getServices().get("webapp").getCgroup_parent(), "m-executor-abcd");
 		assertEquals(level.getServices().get("webapp").getCommand(), "bundle exec thin -p 3000");
+		assertEquals(level.getServices().get("webapp").getCpu_count(), "2");
+		assertEquals(level.getServices().get("webapp").getCpu_percent(), "50");
+		assertEquals(level.getServices().get("webapp").getCpus(), "0.5");
+		assertEquals(level.getServices().get("webapp").getCpu_shares(), "73");
+		assertEquals(level.getServices().get("webapp").getCpu_quota(), "50000");
+		assertEquals(level.getServices().get("webapp").getCpu_period(), "20ms");
+		assertEquals(level.getServices().get("webapp").getCpuset(), "0,1");
+		assertEquals(level.getServices().get("webapp").getCpu_rt_runtime(), "400ms");
+		assertEquals(level.getServices().get("webapp").getCpu_rt_period(), "1400us");
 		assertEquals(level.getServices().get("webapp").getContainer_name(), "my-web-container");
 		assertEquals(level.getServices().get("webapp").getCredential_spec().getFile(), "test.env");
 		assertEquals(level.getServices().get("webapp").getCredential_spec().getRegistry(), "my-credential-spec");
@@ -98,6 +115,10 @@ public class ParsingTests {
 		assertArrayEquals(level.getServices().get("webapp").getDevices(), devices);
 		assertEquals(level.getServices().get("webapp").getDnsS(), "8.8.8.8");
 		assertEquals(level.getServices().get("webapp").getDns_search(), "example.com");
+		String[] dns_opt = {"use-vc","no-tld-query"};
+		assertArrayEquals(level.getServices().get("webapp").getDns_opt(), dns_opt);
+		assertEquals(level.getServices().get("webapp").getExtends().getFile(), "./testFiles/test.env");
+		assertEquals(level.getServices().get("webapp").getExtends().getService(), "webapp");
 		assertEquals(level.getServices().get("webapp").getEntrypointS(), "./testFiles/test.env");
 		String[] health_test = {"CMD", "curl", "-f", "http://localhost"};
 		assertArrayEquals(level.getServices().get("webapp").getHealthcheck().getTestSL(), health_test);
@@ -105,12 +126,19 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getHealthcheck().getTimeout(), "10s");
 		assertEquals(level.getServices().get("webapp").getHealthcheck().getRetries(), 3);
 		assertEquals(level.getServices().get("webapp").getHealthcheck().getStart_period(), "40s");
+		assertEquals(level.getServices().get("webapp").getHealthcheck().getDisable(), "true");
 		assertEquals(level.getServices().get("webapp").getIsolation(), "default");
+		assertEquals(level.getServices().get("webapp").getImage(), "redis");
+		assertEquals(level.getServices().get("webapp").getMem_limit(), "1000000000");
+		assertEquals(level.getServices().get("webapp").getMemswap_limit(), "2000000000");
+		assertEquals(level.getServices().get("webapp").getMem_reservation(), "512m");
+		assertEquals(level.getServices().get("webapp").getMem_swappiness(), "3");
 		assertEquals(level.getServices().get("webapp").getNetwork_mode(), "bridge");
 		String[] environment = {"RACK_ENV=development", "SHOW=true", "SESSION_SECRET"};
 		assertArrayEquals(level.getServices().get("webapp").getEnvironmentSL(), environment);
 		String[] expose = {"3000","8000"};
 		assertArrayEquals(level.getServices().get("webapp").getExpose(), expose);
+		assertArrayEquals(level.getServices().get("webapp").getLabelsS(), labelsV);
 		String[] external_links = {"redis_1","project_db_1:mysql", "project_db_1:postgresql"};
 		assertArrayEquals(level.getServices().get("webapp").getExternal_links(), external_links);
 		String[] extra_hosts = {"somehost:162.242.195.82","otherhost:50.31.209.229"};
@@ -118,10 +146,14 @@ public class ParsingTests {
 		assertNotNull(level.getServices().get("webapp").getHealthcheck());
 		assertEquals(level.getServices().get("webapp").getRestart(), "no");
 		assertEquals(level.getServices().get("webapp").getPid(), "host");
+		assertEquals(level.getServices().get("webapp").getPids_limit(), "10");
+		assertEquals(level.getServices().get("webapp").getPlatform(), "osx");
+		assertEquals(level.getServices().get("webapp").getOom_kill_disable(), "true");
+		assertEquals(level.getServices().get("webapp").getOom_score_adj(), "500");
 		String[] security_opt = {"label:user:USER","label:role:ROLE"};
 		assertArrayEquals(level.getServices().get("webapp").getSecurity_opt(), security_opt);
 		assertEquals(level.getServices().get("webapp").getStop_grace_period(), "1s");
-		assertEquals(level.getServices().get("webapp").getStop_signal(), "SIGUSR1");
+	    assertEquals(level.getServices().get("webapp").getStop_signal(), "SIGUSR1");
 		String[] sysctls = {"net.core.somaxconn=1024","net.ipv4.tcp_syncookies=0"};
 		assertArrayEquals(level.getServices().get("webapp").getSysctlsSL(), sysctls);
 		assertEquals(level.getServices().get("webapp").getTmpfsS(), "/run");
@@ -137,11 +169,17 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getMac_address(), "02:42:ac:11:65:43");
 		assertEquals(level.getServices().get("webapp").getPrivileged(), "true");
 		assertEquals(level.getServices().get("webapp").getRead_only(), "true");
+		assertEquals(level.getServices().get("webapp").getCpu_rt_runtime(), "400ms");
+		assertEquals(level.getServices().get("webapp").getScale(), "3");
 		assertEquals(level.getServices().get("webapp").getShm_size(), "64M");
 		assertEquals(level.getServices().get("webapp").getStdin_open(), "true");
 		assertEquals(level.getServices().get("webapp").getTty(), "true");
-		String[] depends = {"db"};
-		assertArrayEquals(level.getServices().get("webapp").getDepends_onS(), depends);
+		assertEquals(level.getServices().get("webapp").getVolume_driver(), "mydriver");
+		Map<String,Condition> depends = new HashMap<>();
+		Condition cond = new Condition();
+		cond.setCondition("service_healthy");
+		depends.put("db", cond);
+		assertEquals(level.getServices().get("webapp").getDepends_onM().get("db").getCondition(), depends.get("db").getCondition());
 		assertNotNull(level.getServices().get("webapp").getDeploy());
 		assertEquals(level.getServices().get("webapp").getDeploy().getReplicas(), 6);
 		assertEquals(level.getServices().get("webapp").getDeploy().getRestart_policy().getCondition(), "on-failure");
@@ -182,7 +220,10 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getLogging().getOptions().getMaxFile(), 10);
 		assertNotNull(level.getServices().get("webapp").getNetworksM());
 		String[] alias = {"alias1", "alias3"};
+		String[] link_ips = {"57.123.22.11", "57.123.22.13"};
+		assertArrayEquals(level.getServices().get("webapp").getNetworksM().get("some-network").getLink_local_ips(), link_ips);
 		assertArrayEquals(level.getServices().get("webapp").getNetworksM().get("some-network").getAliases(), alias);
+		assertEquals(level.getServices().get("webapp").getNetworksM().get("some-network").getPriority(), "100");
 		assertEquals(level.getServices().get("webapp").getNetworksM().get("app_net").getIpv4_address(), "172.16.238.10");
 		assertEquals(level.getServices().get("webapp").getNetworksM().get("app_net").getIpv6_address(), "2001:3984:3989::1");
 		assertNotNull(level.getServices().get("webapp").getSecretsSL());
@@ -204,15 +245,8 @@ public class ParsingTests {
 		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getBind().getPropagation(), "1");
 		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getTmpfs().getSize(), "3gb");
 		assertEquals(level.getServices().get("webapp").getVolumesVL()[0].getConsistency(), "cached");
-	
-		
-		
 		assertEquals(level.getConfigs().get("my_config").getFile(), "./testFiles/test.env");
 		assertEquals(level.getConfigs().get("my_config").getExternalM().get("name"), "redis_config");
-		
-		
-		
-		
 		assertNotNull(level.getNetworksN().get("app_net"));
 		assertEquals(level.getNetworksN().get("app_net").getExternal(), "true");
 		assertEquals(level.getNetworksN().get("app_net").getName(), "host");
@@ -221,24 +255,25 @@ public class ParsingTests {
 		assertEquals(level.getNetworksN().get("app_net").getIpam().getDriver(), "default");
 		String subnet = "172.16.238.0/24";
 		assertEquals(level.getNetworksN().get("app_net").getIpam().getSubnet(), subnet);
-		
-		
-		
+		Map<String,String> driver_opts2 = new HashMap<>();
+		driver_opts2.put("foo", "bar");
+		driver_opts2.put("baz", "1");
+		assertEquals(level.getNetworksN().get("app_net").getDriver_opts(), driver_opts2);
+		assertEquals(level.getNetworksN().get("app_net").getEnable_ipv6(), "true");
+		String[] labels2 = {"com.example.description=Financial transaction network" };
+		assertArrayEquals(level.getNetworksN().get("app_net").getLabelsS(), labels2);
 		assertEquals(level.getSecretsSL()[0].getFile(), "./testFiles/test.env");
 		assertEquals(level.getSecretsSL()[0].getSource(), "my_secret");
 		assertEquals(level.getSecretsSL()[0].getExternalS(), "true");
 		assertEquals(level.getSecretsSL()[0].getName(), "redis_secret");
-		
 		assertNotNull(level.getVolumes().get("mydata"));
 		Map<String,String> driver_opts = new HashMap<>();
 		driver_opts.put("type", "nfs");
 		driver_opts.put("o", "addr=10.40.0.199,nolock,soft,rw");
 		driver_opts.put("device", ":/docker/example");
 		assertEquals(level.getVolumes().get("mydata").getDriver_opts(), driver_opts);
-		String[] labelsV = {"com.example.description=Database volume", "com.example.department=IT/Ops","com.example.label-with-empty-value" };
 		assertArrayEquals(level.getVolumes().get("mydata").getLabelsS(), labelsV);
 		assertEquals(level.getVolumes().get("mydata").getName(), "my-app-data");	
-		
 	}
 	
 	

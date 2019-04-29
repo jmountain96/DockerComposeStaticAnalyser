@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  webapp:
+    build:
+      context: ./testFiles/
+      dockerfile: test.env
+      args:
+        buildno: 1
+      cache_from:
+        - alpine:latest
+        - corp/web_app:3.14
+      labels:
+        - "com.example.description=Accounting webapp"
+        - "com.example.department=Finance"
+        - "com.example.label-with-empty-value"
+      target: prod
+      target: prod
+      shm_size: '2gb'
+
+
+
+
+
+
+
+
+

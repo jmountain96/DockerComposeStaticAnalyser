@@ -1,6 +1,8 @@
 package com.test.quickstart;
 
 import java.util.Map;
+
+import com.test.quickstart.TypeEnums.Type;
 import com.test.quickstart.Validation.ValidationEnums;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
 import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
@@ -30,7 +32,7 @@ public class Volume {
 	private Map<String,String> labelsM;
 	@CheckDuplication(message = "Duplicate volume label detected")
 	private String[] labelsS;
-	private String labelType;
+	private Type labelType;
 	private String name;
 	
 	
@@ -145,10 +147,10 @@ public class Volume {
 	public void setLabelsS(String[] labelsS) {
 		this.labelsS = labelsS;
 	}
-	public String getLabelType() {
+	public Type getLabelType() {
 		return labelType;
 	}
-	public void setLabelType(String labelType) {
+	public void setLabelType(Type labelType) {
 		this.labelType = labelType;
 	}
 	public String getName() {
@@ -179,13 +181,13 @@ public class Volume {
 		if(Resolver.checkMap(labels) == true)
 		{
 			labelsM = converter.convertMap(labels);
-			labelType = "Map<String,String>";
+			labelType = Type.MAP_STRING_STRING;
 		}
 		
 		else if(Resolver.checkStringList(labels) == true)
 		{
 			labelsS = converter.convertStringList(labels);
-			labelType = "String[]";
+			labelType = Type.STRINGlIST;
 		}
 		else 
 		{

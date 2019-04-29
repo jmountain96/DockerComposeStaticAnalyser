@@ -8,7 +8,7 @@ public class Blkio_config_option {
 	private String rate;
 	private String weight;
 	
-	private String getPath() {
+	public String getPath() {
 		return path;
 	}
 	public void setPath(String path) {

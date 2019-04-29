@@ -1,99 +1,37 @@
 package com.test.quickstart;
 
-import java.util.ArrayList;
+
 import java.util.Map;
-import java.util.Map.Entry;
+
 import java.util.Set;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.quickstart.Validation.Interfaces.CheckDuplication;
-import com.test.quickstart.Validation.Interfaces.CheckFileExists;
-import com.test.quickstart.Validation.Interfaces.CheckFileListExists;
-import com.test.quickstart.Validation.Interfaces.CheckFolderExists;
-import com.test.quickstart.Validation.Interfaces.CheckStringFormat;
-import com.test.quickstart.Validation.Interfaces.CheckStringListFormat;
 import com.test.quickstart.Validation.Interfaces.CheckUsed;
 import com.test.quickstart.Validation.Interfaces.ContainsString;
-import com.test.quickstart.Validation.Interfaces.Dependency;
-import com.test.quickstart.Validation.Interfaces.ListContainsString;
+import com.test.quickstart.TypeEnums.Type;
 import com.test.quickstart.Validation.ValidationEnums;
-import javax.validation.constraints.Email;
+
 
 public class TopLevel {
 	private TypeConverter converter = new TypeConverter();
 	private TypeResolver resolver = new TypeResolver();
 	private Map<String,Configs> configs;
-	
-	private String cpu_shares;
-	private String cpu_quota;
-	private String cpu_rt_runtime;
-	@CheckStringFormat(message = "Invalid time format for cpu rt period", value = ValidationEnums.CheckStringType.TIME)
-	private String cpu_rt_period;
-	private String cpuset;
-	@CheckStringFormat(message = "Invalid time format for cpu period", value = ValidationEnums.CheckStringType.TIME)
-	private String cpu_period;
-	private String oom_kill_disable;
-	private String oom_score_adj;
-	private String device_cgroup_rules;
-	
-	private String[] dns_opt;
-	
-	@JsonProperty("extends")
-	private String Extends;
-	
-
-	private String image;
-	
-	
-	private String init;
-	private String[] group_add;
-	private Object labels;
-	private Map<String,String> labelsM;
-	@CheckDuplication(message = "Duplicate label detected")
-	private String[] labelsS;
-	private String labelType;
-	
-	private String mem_limit;
-	private String memswap_limit;
-	private String mem_swappiness;
-	@CheckStringFormat(message = "mem reservation isn't a valid memory format", value = ValidationEnums.CheckStringType.MEMORY)
-	private String mem_reservation;
 	private Object networks;
 	@CheckDuplication(message = "Duplicate network detected")
 	private String[] networksSL;
 	private Map<String, Network> networksN;
-	private String networkType;
-	
-	private String pids_limit;
-	private String platform;
-	private String scale;
-	
-	
-	
+	private Type networkType;
 	private Object secrets;
 	@CheckDuplication(message = "Duplicate secret detected")
 	private String[] secretsL;
 	private Secrets[] secretsSL;
-	private String secretsType;
-	
-	
-	
-	
-	
-	
-	
-	
+	private Type secretsType;
 	private Map<String, Volume> volumes;
-	private String volume_driver;
 	private String volumes_from;
-	
-	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing Docker Compose Version, compiler will assume version 1 of Compose is being used")
+	@NotNull(message = "A version must be supplied")
+	@ContainsString(value = ValidationEnums.ContainsStringType.VERSION, message = "Missing Docker Compose Version, this analsyer supports versions 2+")
 	private String version;
 	private Map<String,Service> services;
 	
@@ -125,38 +63,7 @@ public class TopLevel {
 	
 	
 	
-	public String getImage() {
-		return image;
-	}
-	public void setImage(String image) {
-		this.image = image;
-	}
 	
-	public Object getLabels() {
-		return labels;
-	}
-	public void setLabels(Object labels) throws Exception {
-		this.labels = labels;
-		convertLabels();
-	}
-	public Map<String, String> getLabelsM() {
-		return labelsM;
-	}
-	public void setLabelsM(Map<String, String> labelsM) {
-		this.labelsM = labelsM;
-	}
-	public String[] getLabelsS() {
-		return labelsS;
-	}
-	public void setLabelsS(String[] labelsS) {
-		this.labelsS = labelsS;
-	}
-	public String getLabelType() {
-		return labelType;
-	}
-	public void setLabelType(String labelType) {
-		this.labelType = labelType;
-	}
 	
 	public Object getNetworks() {
 		return networks;
@@ -177,10 +84,10 @@ public class TopLevel {
 	public void setNetworksN(Map<String, Network> networksN) {
 		this.networksN = networksN;
 	}
-	public String getNetworkType() {
+	public Type getNetworkType() {
 		return networkType;
 	}
-	public void setNetworkType(String networkType) {
+	public void setNetworkType(Type networkType) {
 		this.networkType = networkType;
 	}
 	
@@ -196,13 +103,13 @@ public class TopLevel {
 		if(resolver.checkStringList(secrets) == true)
 		{
 			this.secretsL = converter.convertStringList(secrets);
-			this.secretsType = "String[]";
+			this.secretsType = Type.STRINGlIST;
 		}
 		else 
 		{
 			secretsAL = (Map<String, Map<String,Object>>)secrets;
 			secretsSL = converter.convertSecrets(secretsAL);
-			this.secretsType = "Secrets[]";
+			this.secretsType = Type.SECRETLIST;
 		}
 	}
 	public String[] getSecretsL() {
@@ -217,10 +124,10 @@ public class TopLevel {
 	public void setSecretsSL(Secrets[] secretsSL) {
 		this.secretsSL = secretsSL;
 	}
-	public String getSecretsType() {
+	public Type getSecretsType() {
 		return secretsType;
 	}
-	public void setSecretsType(String secretsType) {
+	public void setSecretsType(Type secretsType) {
 		this.secretsType = secretsType;
 	}
 	
@@ -242,66 +149,7 @@ public class TopLevel {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	public String getCpu_shares() {
-		return cpu_shares;
-	}
-	public void setCpu_shares(String cpu_shares) {
-		this.cpu_shares = cpu_shares;
-	}
-	public String getCpu_quota() {
-		return cpu_quota;
-	}
-	public void setCpu_quota(String cpu_quota) {
-		this.cpu_quota = cpu_quota;
-	}
-	public String getCpuset() {
-		return cpuset;
-	}
-	public void setCpuset(String cpuset) {
-		this.cpuset = cpuset;
-	}
-	public String getExtends() {
-		return Extends;
-	}
-	public void setExtends(String extends1) {
-		Extends = extends1;
-	}
-	public String[] getGroup_add() {
-		return group_add;
-	}
-	public void setGroup_add(String[] group_add) {
-		this.group_add = group_add;
-	}
-	public String getMem_limit() {
-		return mem_limit;
-	}
-	public void setMem_limit(String mem_limit) {
-		this.mem_limit = mem_limit;
-	}
-	public String getMemswap_limit() {
-		return memswap_limit;
-	}
-	public void setMemswap_limit(String memswap_limit) {
-		this.memswap_limit = memswap_limit;
-	}
-	public String getMem_swappiness() {
-		return mem_swappiness;
-	}
-	public void setMem_swappiness(String mem_swappiness) {
-		this.mem_swappiness = mem_swappiness;
-	}
-	public String getPids_limit() {
-		return pids_limit;
-	}
-	public void setPids_limit(String pids_limit) {
-		this.pids_limit = pids_limit;
-	}
-	public String getVolume_driver() {
-		return volume_driver;
-	}
-	public void setVolume_driver(String volume_driver) {
-		this.volume_driver = volume_driver;
-	}
+	
 	public String getVolumes_from() {
 		return volumes_from;
 	}
@@ -319,7 +167,7 @@ public class TopLevel {
 	}
 	public void setSecretCheckUsed(String[] secretCheckUsed) {
 		SecretCheckUsed.target = secretCheckUsed;
-		if(this.secretsType == "String[]")
+		if(this.secretsType == Type.STRINGlIST)
 		{
 			SecretCheckUsed.dependents = this.secretsL;
 		}
@@ -356,7 +204,7 @@ public class TopLevel {
 	public void setNetworkCheckUsed(String[]  networkCheckUsed) {
 		NetworkCheckUsed.target = networkCheckUsed;
 		String[] networks;
-		if(getNetworkType() == "String[]")
+		if(getNetworkType() == Type.STRINGlIST)
 		{
 			networks = getNetworksSL();
 		}
@@ -371,36 +219,20 @@ public class TopLevel {
 	
 	
 	
-	private void convertLabels() throws Exception 
-	{
-		if(resolver.checkMap(labels) == true)
-		{
-			labelsM = converter.convertMap(labels);
-			labelType = "Map<String,String>";
-		}
-		else if(resolver.checkStringList(labels) == true)
-		{
-			labelsS = converter.convertStringList(labels);
-			labelType = "String[]";
-		}
-		else
-		{
-			throw new Exception ("Unknown type entered for Top Level Labels");
-		}
-	}
+
 	private void convertNetworks() throws Exception 
 	{
 		Map<String, Map<String,Object>> networksAL = null;;
 		if(resolver.checkStringList(networks) == true)
 		{
 			this.networksSL = converter.convertStringList(networks);
-			this.networkType = "String[]";
+			this.networkType = Type.STRINGlIST;
 		}
 		else if(resolver.checkNestedMap(networks) == true)
 		{
 			networksAL = (Map<String, Map<String,Object>>)networks;
 			networksN = converter.convertNetworks(networksAL);
-			this.networkType = "Map<String,Network>";
+			this.networkType = Type.MAP_STRING_NETWORK;
 		}
 		else if(resolver.checkMap(networks))
 		{
@@ -408,7 +240,7 @@ public class TopLevel {
 			Set<String> keys = map.keySet();
 			String[] netList = keys.toArray(new String[keys.size()]);
 			this.networksSL = netList;
-			this.networkType = "String[]";
+			this.networkType = Type.STRINGlIST;
 		}
 		else
 		{
@@ -423,53 +255,6 @@ public class TopLevel {
 	{
 		return parser.visit(this);
 	}
-	public String getPlatform() {
-		return platform;
-	}
-	public void setPlatform(String platform) {
-		this.platform = platform;
-	}
-	public String getCpu_rt_runtime() {
-		return cpu_rt_runtime;
-	}
-	public void setCpu_rt_runtime(String cpu_rt_runtime) {
-		this.cpu_rt_runtime = cpu_rt_runtime;
-	}
-	public String getCpu_rt_period() {
-		return cpu_rt_period;
-	}
-	public void setCpu_rt_period(String cpu_rt_period) {
-		this.cpu_rt_period = cpu_rt_period;
-	}
-	public String getCpu_period() {
-		return cpu_period;
-	}
-	public void setCpu_period(String cpu_period) {
-		this.cpu_period = cpu_period;
-	}
-	public String getOom_kill_disable() {
-		return oom_kill_disable;
-	}
-	public void setOom_kill_disable(String oom_kill_disable) {
-		this.oom_kill_disable = oom_kill_disable;
-	}
-	public String getInit() {
-		return init;
-	}
-	public void setInit(String init) {
-		this.init = init;
-	}
-	public String getScale() {
-		return scale;
-	}
-	public void setScale(String scale) {
-		this.scale = scale;
-	}
-	public String getDevice_cgroup_rules() {
-		return device_cgroup_rules;
-	}
-	public void setDevice_cgroup_rules(String device_cgroup_rules) {
-		this.device_cgroup_rules = device_cgroup_rules;
-	}
+
 	
 }
