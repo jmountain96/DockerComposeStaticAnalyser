@@ -31,3 +31,5 @@ The average analysis time of a YAML file is 0.04 seconds.
 The analysis is executed within Eclipse.
 
 To run the linter, the path to the target file must be inserted into the main method as a string. An alternative to this, disabled by default, allows the user to insert the file name in the console at run time. After the run button is pressed the validation will start. All validation messages will be printed to the console and should be descriptive enough to allow the user to gain an understanding of what has caused the issue. Any uncaught exceptions, such as an IOException caused by an incorrect file path for the compose file, will cause the program to halt as the validation can’t take place while these errors are present. The linter can then be executed by running the main method of the YAMLParser class as a Java application. 
+
+The parsing implemented by this analsyer makes use of the Jackson YAML parsing libaries. 
